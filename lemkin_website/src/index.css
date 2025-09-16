@@ -1,0 +1,108 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Premium Apple/OpenAI Inspired Design System */
+:root {
+  /* Surfaces */
+  --color-bg-default: #FDFDFD; /* Slightly off-white */
+  --color-bg-surface: #F7F8FA;
+  --color-bg-elevated: #F1F3F7;
+
+  /* Text */
+  --color-fg-primary: #1d1d1f; /* Apple's near-black */
+  --color-fg-muted: #515154;
+  --color-fg-subtle: #8a8a8e;
+  --color-fg-inverse: #FDFDFD;
+
+  /* Accent & CTA */
+  --color-accent-cta: #1d1d1f;
+  --color-border-default: #E1E1E6;
+  --color-border-focus: #0071e3; /* Apple's focus blue */
+
+  /* Centralized Status Colors */
+  --color-status-success: #30d158; /* Apple's green */
+  --color-status-warning: #ffd60a;
+  --color-status-danger: #ff453a;
+  --color-status-info: #5AA2FF;
+
+  /* Shadow System */
+  --shadow-color: 220 20% 5%; /* HSL values for black */
+  --shadow-sm: 0 1px 2px hsl(var(--shadow-color) / 0.07);
+  --shadow-md: 0 3px 6px hsl(var(--shadow-color) / 0.07), 0 2px 4px hsl(var(--shadow-color) / 0.06);
+  --shadow-lg: 0 10px 15px hsl(var(--shadow-color) / 0.07), 0 4px 6px hsl(var(--shadow-color) / 0.05);
+  --shadow-interactive: 0 4px 6px -1px hsl(var(--shadow-color) / 0.1), 0 2px 4px -1px hsl(var(--shadow-color) / 0.06);
+}
+
+.dark {
+  --color-bg-default: #080808; /* Slightly off-black */
+  --color-bg-surface: #121212;
+  --color-bg-elevated: #1d1d1d;
+
+  --color-fg-primary: #f5f5f7; /* Apple's off-white */
+  --color-fg-muted: #a1a1a6;
+  --color-fg-subtle: #8a8a8e;
+  --color-fg-inverse: #1d1d1f;
+
+  --color-accent-cta: #f5f5f7;
+  --color-border-default: #2c2c2e;
+  --color-border-focus: #0a84ff; /* Apple's dark focus blue */
+
+  /* Shadow System for Dark Mode */
+  --shadow-color: 220 20% 95%; /* HSL values for white */
+  --shadow-glow: 0 0 24px hsl(210 100% 70% / 0.15); /* A subtle blue glow */
+}
+
+/* Global focus rings - neutral only */
+:where(a, button, [role="tab"], [role="menuitem"], input, select, textarea):focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-border-focus),
+              0 0 0 4px var(--color-bg-surface);
+}
+
+/* Neutral text selection */
+::selection {
+  background: color-mix(in oklab, var(--color-fg-primary) 18%, transparent);
+  color: var(--color-fg-inverse);
+}
+
+/* Typography System */
+html {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Tighter tracking for headings */
+h1, h2, h3, h4, h5, h6 {
+  letter-spacing: -0.02em;
+}
+
+body {
+  color: var(--color-fg-primary);
+  background-color: var(--color-bg-default);
+}
+
+/* Enhanced transitions with more professional easing */
+:where(a,button,[role="tab"],input,select,textarea){
+  transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Animations */
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes pan-grid {
+  from { background-position: 0 0; }
+  to { background-position: 32px 32px; }
+}
+
+.animate-pan-grid {
+  animation: pan-grid 20s linear infinite;
+}
