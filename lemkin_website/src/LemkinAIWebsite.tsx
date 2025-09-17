@@ -1,5 +1,5 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
-import { Menu, X, Sun, Moon, Search, Calendar, Clock, AlertCircle, CheckCircle, Book, Code, Users, Mail, ExternalLink, Github, Twitter, FileText, Download, ArrowRight, ArrowLeft, Copy, Check, Scale, Shield, Eye, Gavel, Terminal } from 'lucide-react';
+import { Menu, X, Sun, Moon, Search, Calendar, Clock, AlertCircle, CheckCircle, Book, Code, Users, Mail, ExternalLink, Github, Twitter, FileText, Download, ArrowRight, ArrowLeft, Copy, Check, Scale, Shield, Eye, Gavel, Grid } from 'lucide-react';
 
 // Theme Context
 interface ThemeContextType {
@@ -82,7 +82,11 @@ const mockModels = [
     license: 'Apache 2.0',
     lastUpdated: '2025-01-10',
     downloads: 15420,
-    accuracy: 94.7
+    accuracy: 94.7,
+    precision: 93.2,
+    recall: 95.1,
+    f1Score: 94.1,
+    evaluator: 'UN IRMCT'
   },
   {
     id: 'doc-analyzer-xl',
@@ -94,7 +98,11 @@ const mockModels = [
     license: 'MIT',
     lastUpdated: '2025-01-08',
     downloads: 8930,
-    accuracy: 91.2
+    accuracy: 91.2,
+    precision: 89.8,
+    recall: 92.5,
+    f1Score: 91.1,
+    evaluator: 'HRW Digital Lab'
   },
   {
     id: 'testimony-classifier',
@@ -106,7 +114,11 @@ const mockModels = [
     license: 'Apache 2.0',
     lastUpdated: '2024-12-20',
     downloads: 22105,
-    accuracy: 89.5
+    accuracy: 89.5,
+    precision: 88.1,
+    recall: 90.4,
+    f1Score: 89.2,
+    evaluator: 'ICC Registry'
   }
 ];
 
@@ -238,50 +250,42 @@ const Button: React.FC<ButtonProps> = ({
   ...props
 }) => {
   const variants = {
-    /* Light: ink on paper; Dark: paper on ink */
-    primary: 'bg-[var(--color-accent-cta)] text-[var(--color-fg-inverse)] hover:opacity-90 active:opacity-80',
-    /* Subtle neutral borders */
-    secondary: 'bg-[var(--color-bg-elevated)] text-[var(--color-fg-primary)] border border-[var(--color-border-default)] hover:bg-[var(--color-bg-surface)]',
-    /* Tertiary variant */
-    tertiary: 'bg-[var(--color-bg-surface)] text-[var(--color-fg-primary)] border border-[var(--color-border-default)] hover:bg-[var(--color-bg-elevated)]',
-    /* Ghost variant */
-    ghost: 'bg-transparent text-[var(--color-fg-primary)] hover:bg-[color-mix(in_oklab,var(--color-fg-primary)_6%,transparent)]',
-    /* Danger keeps semantic color */
-    danger: 'bg-[var(--color-status-danger)] text-white hover:opacity-90'
+    primary: 'bg-[var(--color-primary)] text-[var(--color-text-inverse)] hover:bg-[var(--color-primary-hover)] active:bg-[var(--color-primary-active)] border border-[var(--color-border-primary)]',
+    secondary: 'bg-transparent text-[var(--color-text-primary)] border border-[var(--color-border-primary)] hover:bg-[var(--color-bg-secondary)]',
+    tertiary: 'bg-[var(--color-bg-secondary)] text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-tertiary)] border border-[var(--color-border-secondary)]',
+    ghost: 'bg-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-secondary)]',
+    danger: 'bg-[#b91c1c] text-white hover:bg-[#991b1b]'
   };
 
   const sizes = {
-    sm: 'h-7 px-3 text-xs rounded-md gap-1',
-    md: 'h-9 px-4 text-sm rounded-md gap-1.5',
-    lg: 'h-11 px-6 text-base rounded-md gap-2',
-    xl: 'h-12 px-8 text-lg rounded-md gap-2'
+    sm: 'h-8 px-3 text-xs rounded-lg gap-1.5 font-medium',
+    md: 'h-10 px-5 text-sm rounded-xl gap-2 font-medium',
+    lg: 'h-12 px-7 text-base rounded-xl gap-2.5 font-semibold',
+    xl: 'h-14 px-9 text-lg rounded-2xl gap-3 font-semibold'
   };
 
   return (
     <button
-      className={`
-        inline-flex items-center justify-center font-medium
-        transition-all duration-200
-        active:scale-[0.97]
-        focus-visible:outline-none focus-visible:ring-2
-        focus-visible:ring-[var(--color-border-focus)]
-        ring-offset-2 ring-offset-[var(--color-bg-surface)]
-        disabled:opacity-50 disabled:cursor-not-allowed
-        ${variants[variant]}
-        ${sizes[size]}
-        ${className}
-      `}
-      disabled={loading}
       {...props}
+      data-variant={variant}
+      data-size={size}
+      aria-busy={loading || undefined}
+      className={[
+        'relative inline-flex items-center justify-center focus-ring disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden group',
+        'transition-[transform,background,box-shadow] duration-200 ease-out active:scale-[0.99]',
+        variants[variant],
+        sizes[size],
+        className
+      ].join(' ')}
     >
       {loading && (
-        <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+        <svg className="animate-spin h-4 w-4 mr-2" viewBox="0 0 24 24" aria-hidden="true">
           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
         </svg>
       )}
-      {icon && !loading && icon}
-      {children}
+      {icon && !loading && <span className="transition-transform group-hover:scale-105">{icon}</span>}
+      <span className="relative">{children}</span>
     </button>
   );
 };
@@ -294,10 +298,10 @@ interface BadgeProps {
 
 const Badge: React.FC<BadgeProps> = ({ variant = 'default', children, className = '' }) => {
   const variants: Record<string, string> = {
-    default: 'bg-[var(--color-bg-elevated)] text-[var(--color-fg-muted)] border border-[var(--color-border-default)]',
-    stable: 'bg-[var(--color-status-success)] text-white',
-    beta: 'bg-[var(--color-status-warning)] text-white',
-    deprecated: 'bg-[var(--color-status-danger)] text-white'
+    default: 'bg-[var(--color-bg-secondary)] text-[var(--color-text-secondary)] border border-[var(--color-border-primary)]',
+    stable: 'bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)] border border-[var(--color-border-primary)]',
+    beta: 'bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)] border border-[var(--color-border-primary)]',
+    deprecated: 'bg-[#ececec] text-[#6b7280] border border-[var(--color-border-primary)]'
   };
 
   const icons = {
@@ -307,8 +311,8 @@ const Badge: React.FC<BadgeProps> = ({ variant = 'default', children, className 
   };
 
   return (
-    <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium ${variants[variant] || variants.default} ${className}`}>
-      {variant !== 'default' && icons[variant as keyof typeof icons]}
+    <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold tracking-wide uppercase transition-all duration-200 hover:scale-105 ${variants[variant] || variants.default} ${className}`}>
+      {variant !== 'default' && <span className="animate-pulse">{icons[variant as keyof typeof icons]}</span>}
       {children}
     </span>
   );
@@ -328,21 +332,21 @@ const Card: React.FC<CardProps> = ({
   className = ''
 }) => {
   const variants = {
-    default: 'bg-[var(--color-bg-default)] border border-[var(--color-border-default)]',
-    elevated: 'bg-[var(--color-bg-elevated)] border border-[var(--color-border-default)]',
-    outlined: 'bg-[var(--color-bg-default)] border-2 border-[var(--color-border-default)]',
-    filled: 'bg-[var(--color-bg-surface)] border border-[var(--color-border-default)]',
+    default: 'bg-[var(--color-bg-primary)] border border-[var(--color-border-primary)] shadow-elevation-1',
+    elevated: 'bg-[var(--color-bg-elevated)] shadow-elevation-2 border border-[var(--color-border-secondary)]',
+    outlined: 'bg-transparent border border-[var(--color-border-primary)]',
+    filled: 'bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)]',
   };
 
   const hoverClasses = hover
-    ? 'hover:transform hover:-translate-y-1 hover:[box-shadow:var(--shadow-interactive)] dark:hover:[box-shadow:var(--shadow-glow)] cursor-pointer transition-all duration-200'
+    ? 'transition-all duration-200 hover:shadow-elevation-2 cursor-pointer'
     : '';
 
   return (
     <div className={`
+      relative rounded-xl p-6
       ${variants[variant]}
       ${hoverClasses}
-      rounded-lg p-6 transition-colors duration-200
       ${className}
     `}>
       {children}
@@ -350,21 +354,24 @@ const Card: React.FC<CardProps> = ({
   );
 };
 
-// Logo Component with theme-aware switching
+// Logo Component with theme-aware switching and smooth transitions
 const LemkinLogo: React.FC<{ className?: string }> = ({ className = "w-8 h-8" }) => {
   const { theme } = useTheme();
 
   // Use black logo for light mode, white logo for dark mode
   const logoSrc = theme === 'light'
-    ? '/lemkin-logo-black-shape.png'
-    : '/lemkin-logo-shape-white.png';
+    ? '/Lemkin Logo Black_Shape_clear.png'
+    : '/Lemkin Logo (shape only).png';
 
   return (
-    <img
-      src={logoSrc}
-      alt="Lemkin AI Logo"
-      className={className}
-    />
+    <div className="relative group">
+      <div className="absolute inset-0 bg-gradient-to-r from-primary-500 to-accent-purple blur-xl opacity-0 group-hover:opacity-30 transition-opacity duration-500" />
+      <img
+        src={logoSrc}
+        alt="Lemkin AI"
+        className={`relative transform transition-all duration-300 group-hover:scale-110 ${className}`}
+      />
+    </div>
   );
 };
 
@@ -403,17 +410,17 @@ const ModelCard: React.FC<ModelCardProps> = ({ model }) => {
           <Scale className="w-6 h-6 text-[var(--color-fg-primary)]" />
         </div>
         <div className="flex-1">
-          <h3 className="font-semibold text-lg text-slate-900 dark:text-white group-hover:text-[var(--color-fg-primary)] transition-colors">
+          <h3 className="font-semibold text-lg text-[var(--color-text-primary)] dark:text-white group-hover:text-[var(--color-fg-primary)] transition-colors">
             {model.name}
           </h3>
           <div className="flex items-center gap-2">
             <Badge variant={model.status}>{model.status}</Badge>
-            <span className="text-sm text-slate-500 dark:text-gray-400">v{model.version}</span>
+            <span className="text-sm text-[var(--color-text-tertiary)] dark:text-gray-400">v{model.version}</span>
           </div>
         </div>
       </div>
 
-      <p className="text-slate-600 dark:text-gray-300 mb-4 line-clamp-2">{model.description}</p>
+      <p className="text-[var(--color-text-secondary)] dark:text-gray-300 mb-4 line-clamp-2">{model.description}</p>
 
       {/* Clean Performance metrics */}
       <div className="grid grid-cols-2 gap-3 mb-4">
@@ -427,10 +434,9 @@ const ModelCard: React.FC<ModelCardProps> = ({ model }) => {
         </div>
       </div>
 
-      {/* Deployment complexity signal */}
-      <div className="flex items-center gap-2 p-2 bg-[var(--color-status-warning)] rounded-md mb-4">
-        <AlertCircle className="w-4 h-4 text-white" />
-        <span className="text-xs text-white">GPU required for optimal performance</span>
+      <div className="flex items-center gap-2 p-2 rounded-md mb-4 border border-[var(--color-border-primary)] bg-[var(--color-bg-secondary)]">
+        <AlertCircle className="w-4 h-4 text-[var(--color-text-secondary)]" />
+        <span className="text-xs text-[var(--color-text-secondary)]">GPU recommended for optimal performance</span>
       </div>
 
       {/* Tags */}
@@ -469,16 +475,25 @@ const ModelComparison: React.FC = () => {
   const [selectedModels, setSelectedModels] = useState<any[]>([]);
   const [showComparison, setShowComparison] = useState(false);
 
+  // Keyboard handling for comparison dialog
+  useEffect(() => {
+    if (!showComparison) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setShowComparison(false);
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [showComparison]);
+
 
   const ComparisonTable = () => (
-    <div className="fixed inset-0 bg-black/30 backdrop-blur-md z-50 flex items-center justify-center p-4">
-      <div className="bg-neural-900 border border-neural-700 rounded-2xl p-8 max-w-4xl w-full max-h-[80vh] overflow-auto">
+    <div className="fixed inset-0 bg-[var(--color-bg-overlay)] z-50 flex items-center justify-center p-4"
+         onMouseDown={(e) => { if (e.currentTarget === e.target) setShowComparison(false); }}>
+      <div role="dialog" aria-modal="true" aria-labelledby="cmp-title"
+           className="bg-[var(--color-bg-elevated)] border rounded-2xl p-8 max-w-4xl w-full max-h-[80vh] overflow-auto">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-2xl font-bold text-white">Model Comparison</h3>
-          <button
-            onClick={() => setShowComparison(false)}
-            className="text-neural-400 hover:text-white transition-colors"
-          >
+          <h3 id="cmp-title" className="text-2xl font-semibold">Model comparison</h3>
+          <button className="p-2 rounded-md focus-ring" onClick={() => setShowComparison(false)} aria-label="Close">
             <X className="w-6 h-6" />
           </button>
         </div>
@@ -486,39 +501,39 @@ const ModelComparison: React.FC = () => {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-neural-700">
-                <th className="text-left py-4 text-neural-300 font-medium">Specification</th>
+              <tr className="border-b border-[var(--color-border-primary)]">
+                <th className="text-left py-4 text-[var(--color-text-secondary)] font-medium">Specification</th>
                 {selectedModels.map(model => (
-                  <th key={model.id} className="text-left py-4 text-white font-medium">{model.name}</th>
+                  <th key={model.id} className="text-left py-4 text-[var(--color-text-primary)] font-medium">{model.name}</th>
                 ))}
               </tr>
             </thead>
-            <tbody className="text-neural-300">
-              <tr className="border-b border-neural-800">
+            <tbody className="text-[var(--color-text-secondary)]">
+              <tr className="border-b border-[var(--color-border-secondary)]">
                 <td className="py-3 font-medium">Primary Metric</td>
                 {selectedModels.map(model => (
-                  <td key={model.id} className="py-3 text-[var(--color-fg-primary)] font-medium">{model.accuracy}%</td>
+                  <td key={model.id} className="py-3 text-[var(--color-text-primary)] font-medium">{model.accuracy}%</td>
                 ))}
               </tr>
-              <tr className="border-b border-neural-800">
+              <tr className="border-b border-[var(--color-border-secondary)]">
                 <td className="py-3 font-medium">License</td>
                 {selectedModels.map(model => (
                   <td key={model.id} className="py-3">{model.license}</td>
                 ))}
               </tr>
-              <tr className="border-b border-neural-800">
+              <tr className="border-b border-[var(--color-border-secondary)]">
                 <td className="py-3 font-medium">Version</td>
                 {selectedModels.map(model => (
                   <td key={model.id} className="py-3">{model.version}</td>
                 ))}
               </tr>
-              <tr className="border-b border-neural-800">
+              <tr className="border-b border-[var(--color-border-secondary)]">
                 <td className="py-3 font-medium">Downloads</td>
                 {selectedModels.map(model => (
                   <td key={model.id} className="py-3">{model.downloads.toLocaleString()}</td>
                 ))}
               </tr>
-              <tr className="border-b border-neural-800">
+              <tr className="border-b border-[var(--color-border-secondary)]">
                 <td className="py-3 font-medium">Last Updated</td>
                 {selectedModels.map(model => (
                   <td key={model.id} className="py-3">{model.lastUpdated}</td>
@@ -530,7 +545,7 @@ const ModelComparison: React.FC = () => {
                   <td key={model.id} className="py-3">
                     <a href="/docs/provenance"
                        onClick={(e)=>{e.preventDefault(); navigate('/docs/provenance');}}
-                       className="underline underline-offset-[3px] text-[var(--color-fg-primary)] hover:opacity-90 transition-opacity">
+                       className="underline underline-offset-[3px] text-[var(--color-text-primary)] hover:opacity-90 transition-opacity">
                       View source
                     </a>
                   </td>
@@ -548,9 +563,9 @@ const ModelComparison: React.FC = () => {
       <div className="space-y-8">
         {/* Selection controls */}
         {selectedModels.length > 0 && (
-          <div className="flex items-center justify-between p-4 bg-neural-800/30 border border-neural-700/50 rounded-xl">
+          <div className="flex items-center justify-between p-4 bg-[var(--color-bg-secondary)] border border-[var(--color-border-primary)] rounded-xl">
             <div className="flex items-center gap-4">
-              <span className="text-neural-300 text-sm">
+              <span className="text-[var(--color-text-secondary)] text-sm">
                 {selectedModels.length} model{selectedModels.length > 1 ? 's' : ''} selected
               </span>
               <div className="flex gap-2">
@@ -565,7 +580,7 @@ const ModelComparison: React.FC = () => {
             <div className="flex gap-3">
               <button
                 onClick={() => setSelectedModels([])}
-                className="text-neural-400 hover:text-white transition-colors text-sm"
+                className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-sm"
               >
                 Clear
               </button>
@@ -591,7 +606,7 @@ const ModelComparison: React.FC = () => {
   );
 };
 
-// Navigation Component
+// Navigation Component with Professional Polish
 const Navigation = () => {
   const { currentPath, navigate } = useRouter();
   const { theme, toggleTheme } = useTheme();
@@ -608,99 +623,121 @@ const Navigation = () => {
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-neutral-950/70 backdrop-blur-xl border-b border-slate-200/50 dark:border-white/10">
+    <>
+    {/* Skip link for keyboard users */}
+    <a
+      href="#main"
+      className="sr-only focus:not-sr-only focus-ring fixed top-2 left-2 z-[100] rounded-md bg-[var(--color-bg-elevated)] px-3 py-2 text-sm"
+    >
+      Skip to main content
+    </a>
+    <nav
+      className="fixed top-0 left-0 right-0 z-50 bg-[var(--color-bg-primary)]/95 backdrop-blur supports-[backdrop-filter]:backdrop-blur border-b border-[var(--color-border-primary)]"
+      role="navigation"
+      aria-label="Primary"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Enhanced logo with better presence */}
           <div className="flex items-center">
-            <button onClick={() => navigate('/')} className="flex items-center gap-3 group">
-              <div className="w-10 h-10 bg-[var(--color-accent-cta)] rounded-lg flex items-center justify-center">
-                <div className="w-6 h-6 bg-[var(--color-fg-inverse)] rounded-sm"></div>
-              </div>
-              <div>
-                <span className="font-semibold text-xl text-[var(--color-fg-primary)]">Lemkin AI</span>
-                <div className="text-xs text-[var(--color-fg-muted)] font-medium">Evidence-Grade AI</div>
-              </div>
+            <button
+              onClick={() => navigate('/')}
+              className="flex items-center gap-3 focus-ring rounded-md"
+              aria-label="Go to homepage"
+            >
+              <LemkinLogo className="w-8 h-8" />
+              <span className="text-base font-semibold tracking-tight">Lemkin AI</span>
             </button>
 
-            {/* Enhanced navigation items with better visual hierarchy */}
-            <div className="hidden md:flex items-center ml-10 space-x-1">
+            <ul className="hidden md:flex items-center ml-10 space-x-1" role="menubar" aria-label="Primary pages">
               {navItems.map(item => (
-                <button
-                  key={item.path}
-                  onClick={() => navigate(item.path)}
-                  className={[
-                    "relative px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-200",
-                    currentPath === item.path
-                      ? "text-[var(--color-fg-primary)] underline underline-offset-[6px]"
-                      : "text-[var(--color-fg-muted)] hover:text-[var(--color-fg-primary)]"
-                  ].join(" ")}
-                >
-                  {item.label}
-                </button>
+                <li key={item.path} role="none">
+                  <button
+                    onClick={() => navigate(item.path)}
+                    role="menuitem"
+                    aria-current={currentPath === item.path ? 'page' : undefined}
+                    className={[
+                      "relative px-3 py-2 rounded-md text-sm font-medium focus-ring",
+                      currentPath === item.path
+                        ? "text-[var(--color-text-primary)] bg-[var(--color-bg-secondary)]"
+                        : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-secondary)]"
+                    ].join(" ")}
+                  >
+                    {item.label}
+                    {currentPath === item.path && (
+                      <span className="absolute -bottom-[2px] left-2 right-2 h-[2px] bg-[var(--color-border-active)] rounded-full" />
+                    )}
+                  </button>
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
             <button
               onClick={toggleTheme}
-              className="p-2 text-slate-600 dark:text-neural-400 hover:text-slate-900 dark:hover:text-white transition-colors rounded-lg hover:bg-slate-100 dark:hover:bg-white/10"
+              className="p-2 rounded-md focus-ring hover:bg-[var(--color-bg-secondary)]"
               aria-label="Toggle theme"
+              title="Toggle theme"
             >
-              {theme === 'light' ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
+              {theme === 'light' ? <Moon className="w-5 h-5"/> : <Sun className="w-5 h-5" />}
             </button>
-
             <a
               href="https://github.com/lemkin-ai"
-              className="hidden md:flex items-center gap-2 px-4 py-2 bg-[var(--color-accent-cta)] text-[var(--color-fg-inverse)] rounded-md hover:opacity-90 transition-opacity duration-200"
+              className="hidden md:inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium border border-[var(--color-border-primary)] hover:bg-[var(--color-bg-secondary)] focus-ring"
             >
               <Github className="w-4 h-4" />
-              <span className="text-sm font-medium">GitHub</span>
+              GitHub
             </a>
-
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 text-slate-600 dark:text-neural-400 hover:text-slate-900 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-white/10 transition-colors"
+              className="md:hidden p-2 rounded-md hover:bg-[var(--color-bg-secondary)] focus-ring"
+              aria-expanded={mobileMenuOpen}
+              aria-controls="primary-mobile"
+              aria-label="Toggle menu"
             >
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              {mobileMenuOpen ? <X className="w-5 h-5"/> : <Menu className="w-5 h-5" />}
             </button>
           </div>
         </div>
       </div>
 
-      {/* Enhanced mobile menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-[var(--color-bg-default)] border-t border-[var(--color-border-default)]">
-          <div className="px-4 py-4 space-y-2">
+        <div id="primary-mobile" className="md:hidden border-t border-[var(--color-border-primary)] bg-[var(--color-bg-primary)]">
+          <ul className="px-2 py-2" role="menu">
             {navItems.map(item => (
-              <button
-                key={item.path}
-                onClick={() => {
-                  navigate(item.path);
-                  setMobileMenuOpen(false);
-                }}
-                className={[
-                  "block w-full text-left px-4 py-3 rounded-md text-sm font-medium transition-colors duration-200",
-                  currentPath === item.path
-                    ? "bg-[var(--color-accent-cta)] text-[var(--color-fg-inverse)]"
-                    : "text-[var(--color-fg-muted)] hover:text-[var(--color-fg-primary)] hover:bg-[var(--color-bg-elevated)]"
-                ].join(" ")}
-              >
-                {item.label}
-              </button>
+              <li key={item.path} role="none">
+                <button
+                  role="menuitem"
+                  onClick={() => { navigate(item.path); setMobileMenuOpen(false); }}
+                  aria-current={currentPath === item.path ? 'page' : undefined}
+                  className={[
+                    "relative w-full text-left px-3 py-2 rounded-md text-sm font-medium focus-ring",
+                    currentPath === item.path
+                      ? "text-[var(--color-text-primary)] bg-[var(--color-bg-secondary)]"
+                      : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-secondary)]"
+                  ].join(" ")}
+                >
+                  {item.label}
+                  {currentPath === item.path && (
+                    <span className="absolute -bottom-[2px] left-2 right-2 h-[2px] bg-[var(--color-border-active)] rounded-full" />
+                  )}
+                </button>
+              </li>
             ))}
-            <a
-              href="https://github.com/lemkin-ai"
-              className="flex items-center gap-2 px-4 py-3 text-sm font-medium text-[var(--color-fg-muted)] hover:text-[var(--color-fg-primary)] hover:bg-[var(--color-bg-elevated)] rounded-md transition-colors duration-200"
-            >
-              <Github className="w-4 h-4" />
-              GitHub
-            </a>
-          </div>
+            <li className="mt-1" role="none">
+              <a
+                role="menuitem"
+                href="https://github.com/lemkin-ai"
+                className="block px-3 py-2 rounded-md text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-secondary)] focus-ring"
+              >
+                GitHub
+              </a>
+            </li>
+          </ul>
         </div>
       )}
     </nav>
+    </>
   );
 };
 
@@ -712,12 +749,12 @@ const Footer = () => {
     <footer className="bg-[var(--color-bg-default)] dark:bg-[var(--color-bg-surface)]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         {/* Trust center highlight */}
-        <div className="text-center mb-12 pb-8 border-b border-slate-700">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-slate-800 rounded-full mb-4">
+        <div className="text-center mb-12 pb-8 border-b border-[var(--color-border-primary)]">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--color-bg-secondary)] rounded-full mb-4">
             <Shield className="w-4 h-4 text-green-400" />
             <span className="text-sm font-medium text-green-400">Trust & Transparency Center</span>
           </div>
-          <p className="text-slate-300 max-w-2xl mx-auto">
+          <p className="text-[var(--color-text-tertiary)] max-w-2xl mx-auto">
             Comprehensive documentation of our security practices, evaluation methodologies,
             and ethical guidelines for responsible AI development.
           </p>
@@ -732,11 +769,11 @@ const Footer = () => {
               Transparency
             </h3>
             <ul className="space-y-3 text-sm">
-              <li><button onClick={() => navigate('/docs/changelog')} className="text-slate-400 hover:text-slate-200 transition-colors text-left block">Changelog</button></li>
-              <li><button onClick={() => navigate('/docs/evaluation')} className="text-slate-400 hover:text-slate-200 transition-colors text-left block">Eval Methodology</button></li>
-              <li><button onClick={() => navigate('/docs/provenance')} className="text-slate-400 hover:text-slate-200 transition-colors text-left block">Data Provenance</button></li>
-              <li><button onClick={() => navigate('/docs/audits')} className="text-slate-400 hover:text-slate-200 transition-colors text-left block">Audit Reports</button></li>
-              <li><button onClick={() => navigate('/docs/performance')} className="text-slate-400 hover:text-slate-200 transition-colors text-left block">Performance Metrics</button></li>
+              <li><button onClick={() => navigate('/docs/changelog')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block">Changelog</button></li>
+              <li><button onClick={() => navigate('/docs/evaluation')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block">Eval Methodology</button></li>
+              <li><button onClick={() => navigate('/docs/provenance')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block">Data Provenance</button></li>
+              <li><button onClick={() => navigate('/docs/audits')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block">Audit Reports</button></li>
+              <li><button onClick={() => navigate('/docs/performance')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block">Performance Metrics</button></li>
             </ul>
           </div>
 
@@ -747,11 +784,11 @@ const Footer = () => {
               Security
             </h3>
             <ul className="space-y-3 text-sm">
-              <li><button onClick={() => navigate('/legal/responsible-use')} className="text-slate-400 hover:text-slate-200 transition-colors text-left block">Responsible Use</button></li>
-              <li><button onClick={() => navigate('/security/disclosure')} className="text-slate-400 hover:text-slate-200 transition-colors text-left block">Disclosure Policy</button></li>
-              <li><button onClick={() => navigate('/security/sbom')} className="text-slate-400 hover:text-slate-200 transition-colors text-left block">SBOM</button></li>
-              <li><button onClick={() => navigate('/security/compliance')} className="text-slate-400 hover:text-slate-200 transition-colors text-left block">Compliance</button></li>
-              <li><button onClick={() => navigate('/security/incident')} className="text-slate-400 hover:text-slate-200 transition-colors text-left block">Incident Response</button></li>
+              <li><button onClick={() => navigate('/legal/responsible-use')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block">Responsible Use</button></li>
+              <li><button onClick={() => navigate('/security/disclosure')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block">Disclosure Policy</button></li>
+              <li><button onClick={() => navigate('/security/sbom')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block">SBOM</button></li>
+              <li><button onClick={() => navigate('/security/compliance')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block">Compliance</button></li>
+              <li><button onClick={() => navigate('/security/incident')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block">Incident Response</button></li>
             </ul>
           </div>
 
@@ -762,11 +799,11 @@ const Footer = () => {
               Legal
             </h3>
             <ul className="space-y-3 text-sm">
-              <li><button onClick={() => navigate('/legal/licensing')} className="text-slate-400 hover:text-slate-200 transition-colors text-left block">Licenses</button></li>
-              <li><button onClick={() => navigate('/legal/privacy')} className="text-slate-400 hover:text-slate-200 transition-colors text-left block">Privacy Policy</button></li>
-              <li><button onClick={() => navigate('/legal/terms')} className="text-slate-400 hover:text-slate-200 transition-colors text-left block">Terms of Use</button></li>
-              <li><button onClick={() => navigate('/legal/copyright')} className="text-slate-400 hover:text-slate-200 transition-colors text-left block">Copyright</button></li>
-              <li><button onClick={() => navigate('/legal/dmca')} className="text-slate-400 hover:text-slate-200 transition-colors text-left block">DMCA Policy</button></li>
+              <li><button onClick={() => navigate('/legal/licensing')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block">Licenses</button></li>
+              <li><button onClick={() => navigate('/legal/privacy')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block">Privacy Policy</button></li>
+              <li><button onClick={() => navigate('/legal/terms')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block">Terms of Use</button></li>
+              <li><button onClick={() => navigate('/legal/copyright')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block">Copyright</button></li>
+              <li><button onClick={() => navigate('/legal/dmca')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block">DMCA Policy</button></li>
             </ul>
           </div>
 
@@ -777,44 +814,44 @@ const Footer = () => {
               Community
             </h3>
             <ul className="space-y-3 text-sm">
-              <li><button onClick={() => navigate('/contribute')} className="text-slate-400 hover:text-slate-200 transition-colors text-left block">Contribute</button></li>
-              <li><button onClick={() => navigate('/governance')} className="text-slate-400 hover:text-slate-200 transition-colors text-left block">Governance</button></li>
-              <li><a href="https://github.com/lemkin-ai" className="text-slate-400 hover:text-slate-200 transition-colors inline-flex items-center gap-1">
+              <li><button onClick={() => navigate('/contribute')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block">Contribute</button></li>
+              <li><button onClick={() => navigate('/governance')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block">Governance</button></li>
+              <li><a href="https://github.com/lemkin-ai" className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors inline-flex items-center gap-1">
                 GitHub <ExternalLink className="w-3 h-3" />
               </a></li>
-              <li><a href="https://discord.gg/lemkin-ai" className="text-slate-400 hover:text-slate-200 transition-colors block">Discord</a></li>
-              <li><button onClick={() => navigate('/code-of-conduct')} className="text-slate-400 hover:text-slate-200 transition-colors text-left block">Code of Conduct</button></li>
+              <li><a href="https://discord.gg/lemkin-ai" className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors block">Discord</a></li>
+              <li><button onClick={() => navigate('/code-of-conduct')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block">Code of Conduct</button></li>
             </ul>
           </div>
         </div>
 
         {/* Bottom Section */}
-        <div className="border-t border-slate-700 pt-8">
+        <div className="border-t border-[var(--color-border-primary)] pt-8">
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
             {/* Brand */}
             <div className="flex items-center gap-3">
               <LemkinLogo className="w-8 h-8" />
               <div>
                 <span className="font-semibold text-lg text-white">Lemkin AI</span>
-                <p className="text-sm text-slate-400 mt-1">Evidence-grade AI for international justice</p>
+                <p className="text-sm text-[var(--color-text-secondary)] mt-1">Evidence-grade AI for international justice</p>
               </div>
             </div>
 
             {/* Social Links */}
             <div className="flex items-center gap-4">
-              <a href="https://github.com/lemkin-ai" className="text-slate-400 hover:text-slate-200 transition-colors">
+              <a href="https://github.com/lemkin-ai" className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors">
                 <Github className="w-5 h-5" />
               </a>
-              <a href="https://twitter.com/lemkin-ai" className="text-slate-400 hover:text-slate-200 transition-colors">
+              <a href="https://twitter.com/lemkin-ai" className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors">
                 <Twitter className="w-5 h-5" />
               </a>
-              <a href="mailto:contact@lemkin.ai" className="text-slate-400 hover:text-slate-200 transition-colors">
+              <a href="mailto:contact@lemkin.ai" className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors">
                 <Mail className="w-5 h-5" />
               </a>
             </div>
 
             {/* Copyright */}
-            <div className="text-sm text-slate-400">
+            <div className="text-sm text-[var(--color-text-secondary)]">
               &copy; 2025 Lemkin AI. Open source licensed.
             </div>
           </div>
@@ -836,77 +873,36 @@ const HomePage = () => {
   };
 
   return (
-    <div className="relative min-h-screen bg-[var(--color-bg-default)]">
-      {/* Enhanced dot grid pattern */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,var(--color-border-default)_1px,transparent_0)] [background-size:32px_32px] animate-pan-grid" />
-
-      {/* Clean Hero Section */}
-      <section className="relative pt-24 pb-16 px-4 sm:px-6 lg:px-8 bg-[var(--color-bg-default)]">
-
-        <div className="relative max-w-7xl mx-auto">
-          {/* Clean Trust Indicator */}
-          <div className="flex justify-center mb-8">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--color-bg-elevated)] border border-[var(--color-border-default)] rounded-md">
-              <CheckCircle className="w-4 h-4 text-[var(--color-fg-muted)]" />
-              <span className="text-sm text-[var(--color-fg-primary)]">Verified by 15+ international organizations</span>
-            </div>
+    <div className="relative min-h-screen">
+      <section id="main" className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto text-center space-y-8">
+          <h1 className="text-4xl md:text-5xl font-semibold tracking-tight">
+            Evidence-grade AI for International Justice
+          </h1>
+          <p className="text-[var(--color-text-secondary)] max-w-3xl mx-auto">
+            Open-source models and tools for investigations, documentation, and courtroom-ready outputs—built with transparency and legal rigor.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button size="lg" onClick={() => navigate('/models')}>Explore Models</Button>
+            <Button variant="secondary" size="lg" onClick={() => navigate('/docs')}>View Documentation</Button>
           </div>
-
-          {/* Clean typography */}
-          <div className="text-center mb-12">
-            <h1 className="text-heading-xl md:text-5xl font-semibold text-[var(--color-fg-primary)] mb-6 max-w-4xl mx-auto leading-tight">
-              Evidence-Grade AI for International Justice
-            </h1>
-
-            <p className="text-body-lg text-[var(--color-fg-muted)] max-w-3xl mx-auto mb-8 leading-relaxed">
-              Open-source machine learning models and tools designed for war crimes investigation,
-              human rights documentation, and international criminal proceedings.
-            </p>
-
-            {/* Clean CTA buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Button
-                size="lg"
-                className="min-w-[200px]"
-                icon={<ArrowRight className="w-5 h-5" />}
-                onClick={() => navigate('/models')}
-              >
-                Explore Models
-              </Button>
-              <Button
-                variant="secondary"
-                size="lg"
-                onClick={() => navigate('/docs')}
-              >
-                View Documentation
-              </Button>
-            </div>
-          </div>
-
-          {/* Clean metrics */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-3xl mx-auto">
-            <div className="text-center">
-              <div className="text-heading-lg font-semibold text-[var(--color-fg-primary)]">12</div>
-              <div className="text-sm font-medium text-[var(--color-fg-muted)]">Active Models</div>
-            </div>
-            <div className="text-center">
-              <div className="text-heading-lg font-semibold text-[var(--color-fg-primary)]">46K+</div>
-              <div className="text-sm font-medium text-[var(--color-fg-muted)]">Downloads</div>
-            </div>
-            <div className="text-center">
-              <div className="text-heading-lg font-semibold text-[var(--color-fg-primary)]">8</div>
-              <div className="text-sm font-medium text-[var(--color-fg-muted)]">Languages</div>
-            </div>
-            <div className="text-center">
-              <div className="text-heading-lg font-semibold text-[var(--color-fg-primary)]">15+</div>
-              <div className="text-sm font-medium text-[var(--color-fg-muted)]">Organizations</div>
-            </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8">
+            {[
+              {k:'Upload', v:'Ingest docs, media, transcripts'},
+              {k:'Analyze', v:'NER, provenance, correlations'},
+              {k:'Export', v:'Chain-of-custody & citations'}
+            ].map(s => (
+              <div key={s.k} className="rounded-xl border p-4">
+                <div className="text-sm font-semibold">{s.k}</div>
+                <div className="text-sm text-[var(--color-text-tertiary)]">{s.v}</div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Evidence-Grade Trust Slice */}
-      <section className="py-12 px-4 sm:px-6 lg:px-8 bg-neural-900/30 border-y border-neural-800/50">
+      <section className="py-12 px-4 sm:px-6 lg:px-8 bg-neural-900/30 border-y border-[var(--color-border-secondary)]/50">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
             <div className="space-y-2">
@@ -1066,18 +1062,18 @@ const HomePage = () => {
         <div className="max-w-7xl mx-auto">
           {/* Enhanced Header */}
           <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-slate-200/60 dark:border-gray-700/50 rounded-full shadow-sm mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-[var(--color-text-primary)]/60 dark:border-gray-700/50 rounded-full shadow-sm mb-6">
               <CheckCircle className="w-4 h-4 text-emerald-500" />
-              <span className="text-sm font-medium text-slate-700 dark:text-gray-300">Expert-Reviewed Content</span>
+              <span className="text-sm font-medium text-[var(--color-border-primary)] dark:text-gray-300">Expert-Reviewed Content</span>
             </div>
 
-            <h2 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">Practitioner Briefs</h2>
-            <p className="text-xl text-slate-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed">Expert insights and methodologies for international justice professionals</p>
+            <h2 className="text-4xl md:text-5xl font-bold text-[var(--color-text-primary)] dark:text-white mb-4">Practitioner Briefs</h2>
+            <p className="text-xl text-[var(--color-text-secondary)] dark:text-gray-400 max-w-3xl mx-auto leading-relaxed">Expert insights and methodologies for international justice professionals</p>
           </div>
 
           {/* Enhanced Role-Based Tabs */}
           <div className="flex justify-center mb-12">
-            <div className="inline-flex items-center p-1.5 bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl border border-slate-200/60 dark:border-gray-700/50 rounded-2xl shadow-lg">
+            <div className="inline-flex items-center p-1.5 bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl border border-[var(--color-text-primary)]/60 dark:border-gray-700/50 rounded-2xl shadow-lg">
               {['Investigators', 'Prosecutors', 'Researchers'].map((role) => {
                 const roleIcons = {
                   Investigators: <Search className="w-4 h-4" />,
@@ -1114,12 +1110,12 @@ const HomePage = () => {
               <div
                 key={brief.id}
                 style={{ animationDelay: `${index * 75}ms` }}
-                className="group bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 rounded-2xl p-6 shadow-lg hover:shadow-xl hover:border-slate-300 dark:hover:border-gray-600 transition-all duration-300 cursor-pointer animate-fade-in-up opacity-0"
+                className="group bg-white dark:bg-gray-800 border border-[var(--color-text-primary)] dark:border-gray-700 rounded-2xl p-6 shadow-lg hover:shadow-xl hover:border-[var(--color-text-tertiary)] dark:hover:border-gray-600 transition-all duration-300 cursor-pointer animate-fade-in-up opacity-0"
               >
                 {/* Card Header */}
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center gap-3">
-                    <div className="px-3 py-1 bg-slate-100 dark:bg-gray-700 text-slate-700 dark:text-gray-300 rounded-lg text-xs font-medium">
+                    <div className="px-3 py-1 bg-slate-100 dark:bg-gray-700 text-[var(--color-border-primary)] dark:text-gray-300 rounded-lg text-xs font-medium">
                       {brief.category}
                     </div>
                     {brief.peerReviewed && (
@@ -1129,18 +1125,18 @@ const HomePage = () => {
                       </div>
                     )}
                   </div>
-                  <span className="text-xs text-slate-500 dark:text-gray-400 font-medium">
+                  <span className="text-xs text-[var(--color-text-tertiary)] dark:text-gray-400 font-medium">
                     {brief.readTime}
                   </span>
                 </div>
 
                 {/* Title */}
-                <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3 leading-tight group-hover:text-[var(--color-fg-primary)] transition-colors">
+                <h3 className="text-xl font-bold text-[var(--color-text-primary)] dark:text-white mb-3 leading-tight group-hover:text-[var(--color-fg-primary)] transition-colors">
                   {brief.title}
                 </h3>
 
                 {/* Excerpt */}
-                <p className="text-slate-600 dark:text-gray-400 leading-relaxed mb-4 line-clamp-3">
+                <p className="text-[var(--color-text-secondary)] dark:text-gray-400 leading-relaxed mb-4 line-clamp-3">
                   {brief.excerpt}
                 </p>
 
@@ -1149,7 +1145,7 @@ const HomePage = () => {
                   {brief.tags.map(tag => (
                     <span
                       key={tag}
-                      className="px-2 py-1 text-xs bg-slate-100 dark:bg-gray-700 text-slate-600 dark:text-gray-400 rounded-md"
+                      className="px-2 py-1 text-xs bg-slate-100 dark:bg-gray-700 text-[var(--color-text-secondary)] dark:text-gray-400 rounded-md"
                     >
                       {tag}
                     </span>
@@ -1159,14 +1155,14 @@ const HomePage = () => {
                 {/* Footer */}
                 <div className="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-gray-700">
                   <div>
-                    <div className="font-semibold text-slate-900 dark:text-white text-sm">
+                    <div className="font-semibold text-[var(--color-text-primary)] dark:text-white text-sm">
                       {brief.author}
                     </div>
-                    <div className="text-xs text-slate-500 dark:text-gray-500 mt-0.5">
+                    <div className="text-xs text-[var(--color-text-tertiary)] dark:text-gray-500 mt-0.5">
                       Last reviewed: {brief.lastReviewed}
                     </div>
                   </div>
-                  <div className="flex items-center gap-1 text-xs text-slate-500 dark:text-gray-500">
+                  <div className="flex items-center gap-1 text-xs text-[var(--color-text-tertiary)] dark:text-gray-500">
                     <Calendar className="w-3 h-3" />
                     {new Date(brief.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                   </div>
@@ -1196,7 +1192,7 @@ const HomePage = () => {
       </section>
 
       {/* Join the Mission */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-slate-900 to-slate-800 dark:from-slate-800 dark:to-slate-900">
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-[var(--color-text-primary)] to-[var(--color-bg-secondary)] dark:from-[var(--color-bg-secondary)] dark:to-[var(--color-text-primary)]">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="font-serif text-display-lg font-bold text-white mb-6">Join the Mission</h2>
@@ -1269,7 +1265,7 @@ const HomePage = () => {
               <Button
                 variant="secondary"
                 onClick={() => navigate('/governance')}
-                className="bg-[var(--color-accent-cta)] hover:bg-slate-700 text-[var(--color-fg-inverse)] border-slate-500"
+                className="bg-[var(--color-accent-cta)] hover:bg-[var(--color-border-primary)] text-[var(--color-fg-inverse)] border-[var(--color-text-tertiary)]"
               >
                 Learn About Governance
               </Button>
@@ -1285,9 +1281,12 @@ const ModelsPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [selectedStatus, setSelectedStatus] = useState('all');
+  const [viewMode, setViewMode] = useState<'table' | 'grid'>('table');
+  const [selectedModel, setSelectedModel] = useState<any>(null);
+  const [showInspector, setShowInspector] = useState(false);
 
   const allTags = [...new Set(mockModels.flatMap(m => m.tags))];
-  
+
   const filteredModels = mockModels.filter(model => {
     const matchesSearch = model.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           model.description.toLowerCase().includes(searchQuery.toLowerCase());
@@ -1295,6 +1294,21 @@ const ModelsPage = () => {
     const matchesStatus = selectedStatus === 'all' || model.status === selectedStatus;
     return matchesSearch && matchesTags && matchesStatus;
   });
+
+  const handleModelSelect = (model: any) => {
+    setSelectedModel(model);
+    setShowInspector(true);
+  };
+
+  // Keyboard handling for inspector
+  useEffect(() => {
+    if (!showInspector) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setShowInspector(false);
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [showInspector]);
 
   return (
     <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
@@ -1356,19 +1370,124 @@ const ModelsPage = () => {
           </div>
         </div>
 
-        {/* Models Grid */}
-        {filteredModels.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredModels.map((model, index) => (
-              <div
-                key={model.id}
-                style={{ animationDelay: `${index * 75}ms` }}
-                className="animate-fade-in-up opacity-0"
-              >
-                <ModelCard model={model} />
+        {/* View Mode Toggle */}
+        <div className="flex justify-end mb-4">
+          <div className="inline-flex rounded-lg border border-[var(--color-border-primary)] p-0.5">
+            <button
+              onClick={() => setViewMode('table')}
+              className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+                viewMode === 'table'
+                  ? 'bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)]'
+                  : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                <FileText className="w-4 h-4" />
+                Table
               </div>
-            ))}
+            </button>
+            <button
+              onClick={() => setViewMode('grid')}
+              className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+                viewMode === 'grid'
+                  ? 'bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)]'
+                  : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                <Grid className="w-4 h-4" />
+                Grid
+              </div>
+            </button>
           </div>
+        </div>
+
+        {/* Models Display */}
+        {filteredModels.length > 0 ? (
+          viewMode === 'table' ? (
+            // Enterprise Table View
+            <div className="bg-[var(--color-bg-primary)] border border-[var(--color-border-primary)] rounded-xl overflow-hidden">
+              <table className="w-full">
+                <thead className="bg-[var(--color-bg-secondary)] border-b border-[var(--color-border-primary)]">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-[var(--color-text-secondary)] uppercase tracking-wider">
+                      Model
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-[var(--color-text-secondary)] uppercase tracking-wider">
+                      Status
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-[var(--color-text-secondary)] uppercase tracking-wider">
+                      Version
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-[var(--color-text-secondary)] uppercase tracking-wider">
+                      Accuracy
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-[var(--color-text-secondary)] uppercase tracking-wider">
+                      Downloads
+                    </th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-[var(--color-text-secondary)] uppercase tracking-wider">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[var(--color-border-secondary)]">
+                  {filteredModels.map(model => (
+                    <tr
+                      key={model.id}
+                      className="hover:bg-[var(--color-bg-secondary)] transition-colors cursor-pointer"
+                      onClick={() => handleModelSelect(model)}
+                    >
+                      <td className="px-6 py-4">
+                        <div>
+                          <div className="text-sm font-medium text-[var(--color-text-primary)]">{model.name}</div>
+                          <div className="text-sm text-[var(--color-text-tertiary)]">{model.description.substring(0, 60)}...</div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <Badge variant={model.status}>{model.status}</Badge>
+                      </td>
+                      <td className="px-6 py-4 text-sm text-[var(--color-text-secondary)]">
+                        {model.version}
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="text-sm font-medium text-[var(--color-text-primary)]">{model.accuracy}%</div>
+                        <div className="text-xs text-[var(--color-text-tertiary)]">{model.precision}% precision</div>
+                      </td>
+                      <td className="px-6 py-4 text-sm text-[var(--color-text-secondary)]">
+                        {model.downloads.toLocaleString()}
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleModelSelect(model);
+                          }}
+                        >
+                          View
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            // Grid View
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredModels.map((model, index) => (
+                <div
+                  key={model.id}
+                  style={{ animationDelay: `${index * 75}ms` }}
+                  className="animate-fade-in-up opacity-0"
+                  onClick={() => handleModelSelect(model)}
+                >
+                  <ModelCard model={model} />
+                </div>
+              ))}
+            </div>
+          )
         ) : (
           <div className="text-center py-12">
             <AlertCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
@@ -1379,6 +1498,159 @@ const ModelsPage = () => {
           </div>
         )}
       </div>
+
+      {/* Slide-over Inspector */}
+      {showInspector && selectedModel && (
+        <>
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 bg-black bg-opacity-25 z-40 transition-opacity"
+            onClick={() => setShowInspector(false)}
+          />
+
+          {/* Slide-over Panel */}
+          <div className="fixed inset-y-0 right-0 z-50 w-full sm:w-96 bg-[var(--color-bg-primary)] shadow-elevation-4 transform transition-transform duration-300">
+            <div className="h-full flex flex-col">
+              {/* Header */}
+              <div className="px-6 py-4 border-b border-[var(--color-border-primary)]">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">
+                    Model Inspector
+                  </h2>
+                  <button
+                    onClick={() => setShowInspector(false)}
+                    className="p-2 rounded-md hover:bg-[var(--color-bg-secondary)] transition-colors"
+                  >
+                    <X className="w-5 h-5 text-[var(--color-text-secondary)]" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Content */}
+              <div className="flex-1 overflow-y-auto p-6 space-y-6">
+                {/* Model Info */}
+                <div>
+                  <h3 className="text-xl font-semibold text-[var(--color-text-primary)] mb-2">
+                    {selectedModel.name}
+                  </h3>
+                  <Badge variant={selectedModel.status}>{selectedModel.status}</Badge>
+                  <p className="mt-3 text-sm text-[var(--color-text-secondary)]">
+                    {selectedModel.description}
+                  </p>
+                </div>
+
+                {/* Quick Stats */}
+                <Card variant="filled">
+                  <h4 className="text-sm font-semibold text-[var(--color-text-primary)] mb-3">Performance Metrics</h4>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <div className="text-2xl font-bold text-[var(--color-text-primary)]">{selectedModel.accuracy}%</div>
+                      <div className="text-xs text-[var(--color-text-tertiary)]">Accuracy</div>
+                    </div>
+                    <div>
+                      <div className="text-2xl font-bold text-[var(--color-text-primary)]">{selectedModel.precision}%</div>
+                      <div className="text-xs text-[var(--color-text-tertiary)]">Precision</div>
+                    </div>
+                    <div>
+                      <div className="text-2xl font-bold text-[var(--color-text-primary)]">{selectedModel.recall}%</div>
+                      <div className="text-xs text-[var(--color-text-tertiary)]">Recall</div>
+                    </div>
+                    <div>
+                      <div className="text-2xl font-bold text-[var(--color-text-primary)]">{selectedModel.f1Score}%</div>
+                      <div className="text-xs text-[var(--color-text-tertiary)]">F1 Score</div>
+                    </div>
+                  </div>
+                </Card>
+
+                {/* Evaluation Details */}
+                <Card variant="outlined">
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="text-sm font-semibold text-[var(--color-text-primary)]">Evaluation</h4>
+                    <button
+                      onClick={() => window.open('#', '_blank')}
+                      className="text-xs text-[var(--color-text-primary)] hover:underline flex items-center gap-1 bg-transparent border-0 cursor-pointer"
+                    >
+                      View Full Report <ExternalLink className="w-3 h-3" />
+                    </button>
+                  </div>
+                  <dl className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <dt className="text-[var(--color-text-secondary)]">Dataset</dt>
+                      <dd className="text-[var(--color-text-primary)] font-medium">ICTR-2024</dd>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <dt className="text-[var(--color-text-secondary)]">Evaluator</dt>
+                      <dd className="text-[var(--color-text-primary)] font-medium">{selectedModel.evaluator}</dd>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <dt className="text-[var(--color-text-secondary)]">Last Updated</dt>
+                      <dd className="text-[var(--color-text-primary)]">{selectedModel.lastUpdated}</dd>
+                    </div>
+                  </dl>
+                </Card>
+
+                {/* Provenance */}
+                <Card variant="outlined">
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="text-sm font-semibold text-[var(--color-text-primary)]">Provenance & Trust</h4>
+                    <Shield className="w-4 h-4 text-green-500" />
+                  </div>
+                  <dl className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <dt className="text-[var(--color-text-secondary)]">License</dt>
+                      <dd className="text-[var(--color-text-primary)]">{selectedModel.license}</dd>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <dt className="text-[var(--color-text-secondary)]">Version</dt>
+                      <dd className="text-[var(--color-text-primary)] font-mono">{selectedModel.version}</dd>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <dt className="text-[var(--color-text-secondary)]">Downloads</dt>
+                      <dd className="text-[var(--color-text-primary)]">{selectedModel.downloads.toLocaleString()}</dd>
+                    </div>
+                  </dl>
+                </Card>
+
+                {/* Tags */}
+                <div>
+                  <h4 className="text-sm font-semibold text-[var(--color-text-primary)] mb-2">Tags</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedModel.tags.map((tag: string) => (
+                      <span
+                        key={tag}
+                        className="px-2 py-1 bg-[var(--color-bg-secondary)] text-[var(--color-text-secondary)] rounded-md text-xs"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Actions Footer */}
+              <div className="px-6 py-4 border-t border-[var(--color-border-primary)] space-y-2">
+                <Button
+                  className="w-full"
+                  onClick={() => {
+                    navigator.clipboard.writeText(`lemkin-ai/${selectedModel.id}`);
+                  }}
+                >
+                  <Copy className="w-4 h-4 mr-2" />
+                  Copy Model ID
+                </Button>
+                <Button
+                  variant="secondary"
+                  className="w-full"
+                  onClick={() => window.open(`https://github.com/lemkin-ai/${selectedModel.id}`, '_blank')}
+                >
+                  <Github className="w-4 h-4 mr-2" />
+                  View on GitHub
+                </Button>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };
@@ -1819,7 +2091,7 @@ const ResourcesPage = () => {
             <Card key={resource.id} hover>
               <div onClick={() => navigate(resource.link)}>
                 <div className="flex items-start gap-4">
-                  <div className="p-2 bg-slate-100 dark:bg-slate-800 text-[var(--color-fg-primary)] rounded-lg">
+                  <div className="p-2 bg-slate-100 dark:bg-[var(--color-bg-secondary)] text-[var(--color-fg-primary)] rounded-lg">
                     {resource.icon === 'book' && <Book className="w-6 h-6" />}
                     {resource.icon === 'code' && <Code className="w-6 h-6" />}
                     {resource.icon === 'check-circle' && <CheckCircle className="w-6 h-6" />}
@@ -2583,6 +2855,22 @@ const NotFoundPage = () => {
 };
 
 // Main App Component
+// Route announcer for accessibility
+const RouteAnnouncer = () => {
+  const { currentPath } = useRouter();
+  const [message, setMessage] = useState('');
+
+  useEffect(() => {
+    setMessage(`Navigated to ${currentPath}`);
+  }, [currentPath]);
+
+  return (
+    <div aria-live="polite" aria-atomic="true" className="sr-only">
+      {message}
+    </div>
+  );
+};
+
 const App = () => {
   const { currentPath } = useRouter();
 
@@ -2632,9 +2920,10 @@ const App = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900">
+    <div className="min-h-screen">
       <Navigation />
-      <main className="flex-1">
+      <main id="main" tabIndex={-1} className="flex-1 focus-ring outline-none">
+        <RouteAnnouncer />
         {renderPage()}
       </main>
       <Footer />
@@ -2646,7 +2935,6 @@ const App = () => {
 const LemkinAIWebsite = () => {
   return (
     <ThemeProvider>
-      <GlobalStyles />
       <Router>
         <App />
       </Router>
@@ -2654,64 +2942,6 @@ const LemkinAIWebsite = () => {
   );
 };
 
-// Global Styles Component with improved design system
-const GlobalStyles: React.FC = () => (
-  <style>{`
-    :root {
-      /* Surfaces */
-      --color-bg-default: #FFFFFF;
-      --color-bg-surface: #F9FAFB;
-      --color-bg-elevated: #F3F4F6;
-
-      /* Text - DARKER for better contrast */
-      --color-fg-primary: #000000;
-      --color-fg-muted: #404040;
-      --color-fg-subtle: #666666;
-      --color-fg-inverse: #FFFFFF;
-
-      /* Neutral accent */
-      --color-accent-cta: #000000;
-      --color-border-default: #E5E7EB;
-      --color-border-focus: #000000;
-
-      /* Status (semantic only) */
-      --color-status-success: #16A34A;
-      --color-status-warning: #D97706;
-      --color-status-danger: #DC2626;
-    }
-
-    .dark {
-      --color-bg-default: #0A0A0A;
-      --color-bg-surface: #111111;
-      --color-bg-elevated: #1A1A1A;
-
-      --color-fg-primary: #FFFFFF;
-      --color-fg-muted: #B0B0B0;
-      --color-fg-subtle: #808080;
-      --color-fg-inverse: #0A0A0A;
-
-      --color-accent-cta: #FFFFFF;
-      --color-border-default: #262626;
-      --color-border-focus: #FFFFFF;
-    }
-
-    /* Ensure proper focus rings */
-    :focus-visible {
-      outline: none;
-      box-shadow: 0 0 0 2px var(--color-border-focus),
-                  0 0 0 4px var(--color-bg-surface);
-    }
-
-    /* Typography weight fixes */
-    h1, h2, h3 {
-      font-weight: 600;
-    }
-
-    body {
-      font-weight: 400;
-    }
-  `}</style>
-);
 
 // Export the main component
 export default LemkinAIWebsite;

@@ -1,216 +1,166 @@
-Your current color system is a great achromatic start. To achieve a more premium feel, we'll refine it for greater subtlety and visual comfort, and ensure typography is treated as a primary design element.
-
-Recommendations:
-Soften the Palette: Pure black (#000000) and pure white (#FFFFFF) can be harsh. Apple and OpenAI often use off-blacks and off-whites to create a softer, more sophisticated feel. Let's adjust your base colors slightly.
-
-Centralize All Colors: Your React components sometimes use hardcoded Tailwind colors (e.g., text-green-400, bg-slate-900). To maintain system integrity, all colors, including semantic ones, should be mapped to CSS variables.
-
-Refine Typography: Introduce a professional, modern font stack and apply subtle typographic enhancements like tighter letter-spacing on headings for a cleaner look.
-
-Implementation (index.css):
-Update your :root and .dark selectors with these more nuanced variables.
-
-CSS
-
-/* In index.css */
-:root {
-  /* Surfaces */
-  --color-bg-default: #FDFDFD; /* Slightly off-white */
-  --color-bg-surface: #F7F8FA;
-  --color-bg-elevated: #F1F3F7;
-
-  /* Text */
-  --color-fg-primary: #1d1d1f; /* Apple's near-black */
-  --color-fg-muted: #515154;
-  --color-fg-subtle: #8a8a8e;
-  --color-fg-inverse: #FDFDFD;
-
-  /* Accent & CTA */
-  --color-accent-cta: #1d1d1f;
-  --color-border-default: #E1E1E6;
-  --color-border-focus: #0071e3; /* Apple's focus blue */
-
-  /* Centralized Status Colors */
-  --color-status-success: #30d158; /* Apple's green */
-  --color-status-warning: #ffd60a;
-  --color-status-danger: #ff453a;
-}
-
-.dark {
-  --color-bg-default: #080808; /* Slightly off-black */
-  --color-bg-surface: #121212;
-  --color-bg-elevated: #1d1d1d;
-
-  --color-fg-primary: #f5f5f7; /* Apple's off-white */
-  --color-fg-muted: #a1a1a6;
-  --color-fg-subtle: #8a8a8e;
-  --color-fg-inverse: #1d1d1f;
-
-  --color-accent-cta: #f5f5f7;
-  --color-border-default: #2c2c2e;
-  --color-border-focus: #0a84ff; /* Apple's dark focus blue */
-}
-Implementation (LemkinAIWebsite.tsx - GlobalStyles):
-Add a font-family and other typographic defaults.
-
-JavaScript
-
-// In the GlobalStyles component
-const GlobalStyles: React.FC = () => (
-  <style>{`
-    /* ... your color variables from above ... */
-
-    html {
-      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
-
-    /* Tighter tracking for headings */
-    h1, h2, h3, h4, h5, h6 {
-      letter-spacing: -0.02em;
-    }
-
-    body {
-      color: var(--color-fg-primary);
-      background-color: var(--color-bg-default);
-    }
-  `}</style>
+import React, { useEffect, useMemo, useRef, useState, createContext, useContext } from 'react';
+</section>
 );
-✨ 2. Shadows & Depth
-Premium interfaces create a sense of physical space. Your current shadows are functional but can be evolved into a multi-layered system that provides subtle, realistic depth.
+};
 
-Recommendations:
-Implement a Layered Shadow System: Instead of single box-shadow values, use multiple layers to create a soft penumbra (the fuzzy edge) and a harder umbra (the core shadow), which feels more natural.
 
-Create an Interactive "Glow": For dark mode, use colored glows on hover to create a futuristic, energetic feel, similar to what you see in modern tech interfaces.
-
-Implementation (index.css):
-Define a set of custom shadow properties.
-
-CSS
-
-/* In index.css */
-:root {
-  /* ... existing variables ... */
-  --shadow-color: 220 20% 5%; /* HSL values for black */
-  --shadow-sm: 0 1px 2px hsl(var(--shadow-color) / 0.07);
-  --shadow-md: 0 3px 6px hsl(var(--shadow-color) / 0.07), 0 2px 4px hsl(var(--shadow-color) / 0.06);
-  --shadow-lg: 0 10px 15px hsl(var(--shadow-color) / 0.07), 0 4px 6px hsl(var(--shadow-color) / 0.05);
-  --shadow-interactive: 0 4px 6px -1px hsl(var(--shadow-color) / 0.1), 0 2px 4px -1px hsl(var(--shadow-color) / 0.06);
-}
-
-.dark {
-  /* ... existing variables ... */
-  --shadow-color: 220 20% 95%; /* HSL values for white */
-  --shadow-glow: 0 0 24px hsl(210 100% 70% / 0.15); /* A subtle blue glow */
-}
-Then, you can apply these in Tailwind's config or directly. For example, in the Card component, you could replace shadow-lg with [box-shadow:var(--shadow-lg)].
-
-🪄 3. Motion & Microinteractions
-Motion should be purposeful and feel physical. It provides feedback, guides attention, and makes the interface feel alive and responsive.
-
-Recommendations:
-Refined Easing: Use a more deliberate easing curve for all transitions to make them feel smoother and less robotic.
-
-Staggered Animations: When loading lists of items (like the Model or Brief cards), animate them in with a slight delay between each. This "stagger" effect is visually delightful and directs the user's eye naturally.
-
-Tactile Button Feedback: Make buttons feel more "pressable" by adding a subtle scale-down transform on the active state.
-
-"Lift" on Hover: Instead of just changing a border color, make cards and interactive elements subtly lift towards the user on hover, enhancing the sense of depth.
-
-Implementation (index.css):
-Update your global transition timing.
-
-CSS
-
-/* In index.css */
-:where(a,button,[role="tab"],input,select,textarea) {
-  /* A more professional easing curve */
-  transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1);
-}
-Implementation (LemkinAIWebsite.tsx):
-Button Component: Add an active:scale-[0.97] class.
-
-JavaScript
-
-<button
-  className={`
-    ...
-    transition-all duration-200 // Use a consistent duration
-    active:scale-[0.97]
-    ...
-  `}
->
-Card Component: Update the hover effect to use transform and our new shadow system.
-
-JavaScript
-
-const hoverClasses = hover
-  ? 'hover:transform hover:-translate-y-1 hover:[box-shadow:var(--shadow-interactive)] dark:hover:[box-shadow:var(--shadow-glow)] cursor-pointer'
-  : '';
-List Animation: For the ModelCard and Practitioner Brief maps, add an inline style for animation delay. You'll need to define the fade-in-up animation in your index.css.
-
-JavaScript
-
-// In getFilteredBriefs().map((brief, index) => (...))
-<div
-  key={brief.id}
-  style={{ animationDelay: `${index * 75}ms` }}
-  className="... animate-fade-in-up opacity-0" // Animate and start hidden
-  // ...
->
-CSS
-
-/* In index.css */
-@keyframes fade-in-up {
-  from { opacity: 0; transform: translateY(16px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.animate-fade-in-up {
-  animation: fade-in-up 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-🧊 4. Layout & Materiality
-We can introduce modern layout techniques to create a cleaner hierarchy and a more tangible feel to UI elements.
-
-Recommendations:
-Increased "Breathability": Use more generous vertical spacing in your main page sections (<section>) to reduce cognitive load and create a more serene, confident layout.
-
-Consistent Glassmorphism: You use backdrop-blur in a few places. Let's embrace this fully for a modern, layered "glass" effect, especially on elements that float above the content, like the navigation bar and modals.
-
-Dynamic Background: Make the background dot-grid more subtle and dynamic. A slow, gentle animation can add a high-tech, ambient feel without being distracting.
-
-Implementation (LemkinAIWebsite.tsx):
-Navigation Component: Apply a more pronounced glass effect.
-
-JavaScript
-
-<nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-neural-950/70 backdrop-blur-xl border-b border-slate-200/50 dark:border-white/10">
-  {/* ... */}
-</nav>
-Model Comparison Modal: Apply the same effect to the modal overlay.
-
-JavaScript
-
-<div className="fixed inset-0 bg-black/30 backdrop-blur-md z-50 ...">
-    {/* ... */}
+/***********************
+* PAGE CHROME
+***********************/
+const PageHeader: React.FC<{ title: string; description?: string; actions?: React.ReactNode }> = ({ title, description, actions }) => (
+<div className="mb-6 flex flex-col md:flex-row md:items-end md:justify-between gap-3">
+<div>
+<h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
+{description && <p className="text-[var(--color-text-secondary)] mt-1">{description}</p>}
 </div>
-Dynamic Dot Grid: Update the hero background and define a CSS animation.
+{actions}
+</div>
+);
 
-JavaScript
 
-// In HomePage component
-<div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,var(--color-border-default)_1px,transparent_0)] [background-size:32px_32px] animate-pan-grid" />
-CSS
+const Footer: React.FC = () => (
+<footer className="border-t mt-16">
+<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 text-sm">
+<div className="text-center mb-6">
+<Badge tone="info" className="uppercase"><Shield className="w-3 h-3"/> Trust & Transparency Center</Badge>
+<p className="text-[var(--color-text-tertiary)] mt-3">Security practices, evaluation methodologies, and ethical guidelines.</p>
+</div>
+<div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+<div><div className="font-semibold mb-2 flex items-center gap-2"><Eye className="w-4 h-4"/>Transparency</div><ul className="space-y-1 text-[var(--color-text-secondary)]"><li><a href="#" className="hover:underline">Changelog</a></li><li><a href="#" className="hover:underline">Eval Methodology</a></li><li><a href="#" className="hover:underline">Data Provenance</a></li></ul></div>
+<div><div className="font-semibold mb-2 flex items-center gap-2"><Shield className="w-4 h-4"/>Security</div><ul className="space-y-1 text-[var(--color-text-secondary)]"><li><a href="#" className="hover:underline">Disclosure Policy</a></li><li><a href="#" className="hover:underline">SBOM</a></li><li><a href="#" className="hover:underline">Incident Response</a></li></ul></div>
+<div><div className="font-semibold mb-2 flex items-center gap-2"><Gavel className="w-4 h-4"/>Legal</div><ul className="space-y-1 text-[var(--color-text-secondary)]"><li><a href="#" className="hover:underline">Licenses</a></li><li><a href="#" className="hover:underline">Privacy Policy</a></li><li><a href="#" className="hover:underline">Terms</a></li></ul></div>
+<div><div className="font-semibold mb-2 flex items-center gap-2"><Github className="w-4 h-4"/>Community</div><ul className="space-y-1 text-[var(--color-text-secondary)]"><li><a href="https://github.com/lemkin-ai" className="inline-flex items-center gap-1 hover:underline">GitHub <ExternalLink className="w-3 h-3"/></a></li><li><a href="#" className="hover:underline">Governance</a></li><li><a href="#" className="hover:underline">Code of Conduct</a></li></ul></div>
+</div>
+<div className="mt-8 text-[var(--color-text-secondary)] text-center">© 2025 Lemkin AI. Open source licensed.</div>
+</div>
+</footer>
+);
 
-/* In index.css */
-@keyframes pan-grid {
-  from { background-position: 0 0; }
-  to { background-position: 32px 32px; }
+
+/***********************
+* ROOT APP
+***********************/
+const RouteSwitch: React.FC = () => {
+const { path } = useRouter();
+if (path === '/models') return <ModelsPage/>;
+// Stubs for other routes
+if (path === '/docs') return <Stub title="Docs"/>;
+if (path === '/articles') return <Stub title="Articles"/>;
+if (path === '/ecosystem') return <Stub title="Ecosystem"/>;
+if (path === '/about') return <Stub title="About"/>;
+return <HomePage/>;
+};
+
+
+const Stub: React.FC<{ title: string }> = ({ title }) => (
+<section id="main" className="pt-24 pb-16 max-w-5xl mx-auto px-4">
+<PageHeader title={title} description="Coming soon." />
+<Card>
+<p className="text-[var(--color-text-secondary)]">This area is scaffolded. Replace with your real content.</p>
+</Card>
+</section>
+);
+
+
+const AppShell: React.FC<{children: React.ReactNode}> = ({ children }) => (
+<div className="min-h-screen bg-[var(--color-bg-primary)] text-[var(--color-text-primary)]">
+<TopNav/>
+<main className="pt-16">{children}</main>
+<Footer/>
+</div>
+);
+
+
+export default function LemkinApp() {
+return (
+<ThemeProvider>
+<Router>
+<AppShell>
+<RouteSwitch/>
+</AppShell>
+</Router>
+</ThemeProvider>
+);
 }
 
-.animate-pan-grid {
-  animation: pan-grid 20s linear infinite;
+Lemkin UI Redesign – AppShell + Models Workspace (single-file .tsx)
+(ready to paste in for a drop-in replacement)
+
+What changed (at a glance)
+
+AppShell & Chrome
+
+Fixed, minimal TopNav with active-state tabs, theme toggle, skip link, and mobile menu.
+
+Command Palette (⌘/Ctrl + K) for fast nav to Models/Docs/Articles/Trust pages; ESC closes; focus management built-in.
+
+Models Workspace
+
+Token-driven list view (enterprise default) with quick-scan columns: name/desc, status, version, accuracy, actions.
+
+Slide-over inspector with evaluation/provenance cards and action buttons (copy spec / open repo).
+
+Inline search that filters by name/tags.
+
+Home (mission-critical posture)
+
+Tighter hero copy; neutral CTA pair; compact “Upload / Analyze / Export” capability tiles.
+
+Featured models in a readable, dense list (not glossy cards), matching high-trust tools.
+
+A11y & Interaction Quality
+
+Skip link, focus rings, ARIA roles on dialogs/menus, keyboard shortcuts, and ESC to close overlays.
+
+All buttons/inputs sized to enterprise Fitts’ Law defaults (≥40px tap targets).
+
+Why this meets OpenAI × Palantir expectations
+
+Neutral, tokenized palette with restrained elevation and crisp borders for clarity in high-stakes contexts.
+
+Power-first information architecture (table/list density, secondary text, compact tags) optimized for expert scanning.
+
+Transparent model handling (status pill + accuracy + evaluator/provenance links) to signal reliability and legal rigor.
+
+Integration steps (copy/paste)
+
+Replace your current page component with the canvas file (it exports default function LemkinApp()).
+
+Keep your tokens (your index.css variable system is solid) and add tiny utilities for consistent elevation (below).
+
+CSS patch (add to index.css)
+
+Your TSX previously used several shadow classes that weren’t defined in your tokens. Add these neutral, readable elevations to keep the look consistent across light/dark:
+
+@layer utilities {
+  .shadow-elevation-1 { box-shadow: 0 1px 2px rgba(14,17,22,.05); }
+  .shadow-elevation-2 { box-shadow: 0 4px 12px rgba(14,17,22,.07); }
+  .shadow-elevation-3 { box-shadow: 0 8px 24px rgba(14,17,22,.08); }
+  .shadow-elevation-4 { box-shadow: 0 14px 40px rgba(14,17,22,.10); }
 }
-By implementing these changes, you will transform a highly functional website into an elegant, intuitive, and memorable user experience that stands alongside the most respected brands in technology.
+
+Important cleanups I made (and why)
+
+Removed non-token classes like bg-neural-950, text-neural-300, bg-neural-net, accent-* that aren’t defined in your tokens—these drift visual language and can fail silently in Tailwind builds. Everything now uses CSS variables and Tailwind primitives from your system for consistency and easier auditing. 
+
+LemkinAIWebsite
+
+Kept and relied on your design tokens (ink/neutral, --color-bg-*, --color-text-*, borders, focus rings). Your base theme and dark-mode variables already match the neutral, institutional aesthetic—we’re just applying them more strictly across UI primitives and pages. 
+
+index
+
+What you now have
+
+Single-file, production-style scaffold you can splice into your codebase now (keeps your mock data shape).
+
+Consistent, accessible primitives: Button, Badge, Card, MetricTile, StatusPill.
+
+Enterprise-grade patterns: command bar, slide-over inspector, dense list/table defaults, focused IA.
+
+If you want, I can follow up with:
+
+A real DataTable (sortable columns, column density controls).
+
+Evaluation panel that reads from a JSON spec and renders methodologies, datasets, and bias checks.
+
+A Documented UI kit (Props tables + Storybook-style examples) that mirrors this token system.
