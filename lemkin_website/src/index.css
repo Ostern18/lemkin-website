@@ -2,120 +2,300 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Achromatic, Institutional Design System */
+/* Desktop-only Design System (Palantir/OpenAI inspired) */
 @layer base {
   :root {
-    /* Achromatic, institutional */
-    --ink-0: #ffffff;
-    --ink-1: #f7f8fa;     /* paper */
-    --ink-2: #f1f3f7;     /* sheet */
-    --ink-3: #e6eaf0;     /* card line */
-    --ink-8: #0e1116;     /* brand neutral (OpenAI/Palantir vibe) */
-
-    /* Base surfaces */
-    --color-bg-primary: var(--ink-0);
-    --color-bg-secondary: var(--ink-1);
-    --color-bg-tertiary: var(--ink-2);
-    --color-bg-elevated: var(--ink-0);
-    --color-bg-overlay: rgba(0,0,0,.5);
+    /* Surfaces */
+    --bg: #FFFFFF;   /* page */
+    --surface: #F7F8FA;   /* section */
+    --elevated: #F1F3F7;   /* cards/panels */
 
     /* Text */
-    --color-text-primary: var(--ink-8);
-    --color-text-secondary: #3f4752;
-    --color-text-tertiary: #6b7280;
-    --color-text-disabled: #9aa2ad;
-    --color-text-inverse: #ffffff;
+    --ink: #0E1116;   /* primary */
+    --muted: #3F4752;   /* body on surface */
+    --subtle: #6B7280;   /* captions */
 
-    /* Borders & focus */
-    --color-border-primary: rgba(14,17,22, .10);
-    --color-border-secondary: rgba(14,17,22, .06);
-    --color-border-active: var(--ink-8);
+    /* Accent */
+    --accent: #2563EB;   /* AA on white */
+    --accent-ink: #0B3C9C;
 
-    /* "Primary" becomes neutral black for CTAs/links */
-    --color-primary: var(--ink-8);
-    --color-primary-hover: #141922;
-    --color-primary-active: #0a0d12;
+    /* Lines */
+    --line: #D9DFEA;   /* hard rule */
+    --line-soft: #E8EDF5;   /* inner separators */
 
-    /* Subtle/disabled gradients set to near-none by default */
-    --gradient-brand: linear-gradient(135deg, rgba(14,17,22,.04), rgba(14,17,22,.06));
-    --gradient-mesh: radial-gradient(at 40% 20%, rgba(14,17,22,.04) 0px, transparent 50%);
+    /* States */
+    --success: #16A34A;
+    --warning: #D97706;
+    --danger: #DC2626;
+    --info: #0EA5E9;
 
-    /* Aliases to match existing TSX usage (no mass renames needed) */
-    --color-fg-primary: var(--color-text-primary);
-    --color-fg-muted: var(--color-text-secondary);
-    --color-fg-subtle: var(--color-text-tertiary);
-    --color-fg-inverse: var(--color-text-inverse);
-    --color-bg-default: var(--color-bg-primary);
-    --color-border-default: var(--color-border-primary);
-    --color-accent-cta: var(--ink-8);
+    /* Focus & Shadows */
+    --focus: 0 0 0 4px rgba(37, 99, 235, .20);
+    --shadow-sm: 0 1px 2px rgba(14,17,22,.06);
+    --shadow-md: 0 2px 8px rgba(14,17,22,.10);
+    --shadow-lg: 0 8px 24px rgba(14,17,22,.12);
+
+    /* Legacy aliases for existing code compatibility */
+    --color-text-primary: var(--ink);
+    --color-text-secondary: var(--muted);
+    --color-text-tertiary: var(--subtle);
+    --color-bg-primary: var(--bg);
+    --color-bg-secondary: var(--surface);
+    --color-bg-elevated: var(--elevated);
+    --color-border-primary: var(--line);
+    --color-border-secondary: var(--line-soft);
+    --color-primary: var(--accent);
+    --color-success: var(--success);
+    --color-warning: var(--warning);
+    --color-critical: var(--danger);
+    --color-info: var(--info);
+    --shadow-elevation-1: var(--shadow-sm);
+    --shadow-elevation-2: var(--shadow-md);
+    --shadow-elevation-3: var(--shadow-lg);
   }
 
   .dark {
-    --color-bg-primary: #0a0a0a;
-    --color-bg-secondary: #111111;
-    --color-bg-tertiary: #171717;
-    --color-bg-elevated: #121212;
-    --color-bg-overlay: rgba(0,0,0,.7);
+    --bg: #0B0F14;
+    --surface: #10151B;
+    --elevated: #121923;
 
-    --color-text-primary: #f5f7fa;
-    --color-text-secondary: #b8c0cc;
-    --color-text-tertiary: #8a94a3;
-    --color-text-disabled: #5b6470;
-    --color-text-inverse: #0a0a0a;
+    --ink: #E6EAF0;
+    --muted: #B8C1CC;
+    --subtle: #8C96A3;
 
-    --color-border-primary: rgba(255,255,255,.10);
-    --color-border-secondary: rgba(255,255,255,.06);
-    --color-border-active: #e6eaf0;
+    --accent: #5DA1FF;   /* tuned for dark */
+    --accent-ink: #CFE2FF;
 
-    --color-primary: #e6eaf0;
-    --color-primary-hover: #f0f3f7;
-    --color-primary-active: #ffffff;
+    --line: #243041;
+    --line-soft: #1A2432;
 
-    --gradient-brand: linear-gradient(135deg, rgba(255,255,255,.06), rgba(255,255,255,.04));
-    --gradient-mesh: radial-gradient(at 40% 20%, rgba(255,255,255,.05) 0px, transparent 50%);
+    --focus: 0 0 0 4px rgba(93,161,255,.28);
+    --shadow-sm: 0 1px 2px rgba(0,0,0,.35);
+    --shadow-md: 0 2px 8px rgba(0,0,0,.45);
+    --shadow-lg: 0 8px 24px rgba(0,0,0,.55);
+
+    /* Legacy aliases for existing code compatibility */
+    --color-text-primary: var(--ink);
+    --color-text-secondary: var(--muted);
+    --color-text-tertiary: var(--subtle);
+    --color-bg-primary: var(--bg);
+    --color-bg-secondary: var(--surface);
+    --color-bg-elevated: var(--elevated);
+    --color-border-primary: var(--line);
+    --color-border-secondary: var(--line-soft);
+    --color-primary: var(--accent);
+    --shadow-elevation-1: var(--shadow-sm);
+    --shadow-elevation-2: var(--shadow-md);
+    --shadow-elevation-3: var(--shadow-lg);
   }
 
-  * {
+  /* Scoped border defaults to avoid affecting SVGs and third-party widgets */
+  :where(div, section, article, header, footer, main, aside, nav, form, fieldset, table, th, td, input, textarea, button, select):not(svg *) {
     border-color: var(--color-border-primary);
   }
 
+  html, body {
+    height: 100%;
+  }
+
   body {
-    @apply bg-[var(--color-bg-primary)] text-[var(--color-text-primary)];
+    color: var(--ink);
+    background: var(--bg);
+    font: 400 16px/1.5 system-ui, -apple-system, 'Segoe UI', Roboto, Inter, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
     font-feature-settings: "rlig" 1, "calt" 1, "ss01" 1, "ss02" 1;
   }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  ::selection {
+    background: rgba(37,99,235,.18);
+  }
+
+  hr, .divider {
+    border-top: 1px solid var(--line);
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-sm);
+    border-radius: 16px;
+  }
 }
 
-/* Professional Typography */
+/* Desktop Typography Scale */
 @layer base {
-  html {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-rendering: optimizeLegibility;
+  /* Typography scale: 12, 14, 16, 18, 20, 24, 32, 48 */
+  h1 {
+    font-size: 48px;
+    line-height: 1.2;
+    font-weight: 700;
+    letter-spacing: -0.02em; /* Tighter for desktop */
   }
 
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-semibold tracking-tight;
+  h2 {
+    font-size: 32px;
+    line-height: 1.25;
+    font-weight: 700;
+    letter-spacing: -0.01em;
   }
 
-  code, pre {
-    @apply font-mono;
+  h3 {
+    font-size: 24px;
+    line-height: 1.3;
+    font-weight: 600;
+  }
+
+  h4 {
+    font-size: 20px;
+    line-height: 1.3;
+    font-weight: 600;
+  }
+
+  h5, h6 {
+    font-size: 18px;
+    line-height: 1.3;
+    font-weight: 600;
+  }
+
+  body {
+    font-size: 16px;
+    line-height: 24px;
+    color: var(--muted); /* Body text on surfaces */
+  }
+
+  .text-caption {
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--subtle);
+  }
+
+  .text-hero {
+    max-width: 22ch;
+  }
+
+  .text-body-max {
+    max-width: 72ch;
   }
 }
 
-/* Strong, neutral focus ring (WCAG AA on both themes) */
+/* Desktop Component Styles */
+@layer components {
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 12px;
+    background: var(--accent);
+    color: #fff;
+    border: 1px solid transparent;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s ease;
+  }
+
+  .btn-primary:hover {
+    filter: brightness(.98);
+  }
+
+  .btn-primary:focus-visible {
+    box-shadow: var(--focus);
+    outline: none;
+  }
+
+  .btn-outline {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 12px;
+    background: var(--bg);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    transition: all 0.2s ease;
+  }
+
+  .btn-outline:hover {
+    background: var(--surface);
+  }
+
+  .btn-outline:focus-visible {
+    box-shadow: var(--focus);
+    outline: none;
+  }
+
+  .link {
+    color: var(--accent);
+    text-underline-offset: 2px;
+    transition: all 0.2s ease;
+  }
+
+  .link:hover {
+    text-decoration: underline;
+  }
+
+  .link:focus-visible {
+    box-shadow: var(--focus);
+    outline: none;
+  }
+
+  .input {
+    height: 40px;
+    padding: 0 12px;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    background: var(--bg);
+    color: var(--ink);
+    transition: all 0.2s ease;
+  }
+
+  .input:focus-visible {
+    box-shadow: var(--focus);
+    outline: none;
+  }
+}
+
+/* Focus ring utilities */
 @layer utilities {
   .focus-ring {
-    @apply focus-visible:outline-none ring-2 ring-offset-2;
-    --tw-ring-color: var(--color-border-active);
-    --tw-ring-offset-color: var(--color-bg-primary);
+    @apply focus-visible:outline-none;
+    transition: box-shadow 0.2s ease;
   }
 
-  .focus-within-ring {
-    @apply focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2;
-    --tw-ring-color: var(--color-border-active);
-    --tw-ring-offset-color: var(--color-bg-primary);
+  .focus-ring:focus-visible {
+    box-shadow: var(--focus);
   }
+
+  /* Placeholder text styling */
+  ::placeholder { color: var(--color-text-tertiary); opacity: .95; }
+  .dark ::placeholder { color: var(--color-text-tertiary); opacity: .8; }
+
+  /* Fallbacks for color-mix() when not supported */
+  @supports not (background: color-mix(in srgb, red, blue)) {
+    .bg-primary-fallback:hover {
+      background: rgba(0, 102, 255, 0.05) !important;
+    }
+    .bg-primary-fallback:active {
+      background: rgba(0, 102, 255, 0.10) !important;
+    }
+    .bg-critical-fallback:hover {
+      background: var(--color-critical) !important;
+      filter: brightness(0.9);
+    }
+    .bg-critical-fallback:active {
+      background: var(--color-critical) !important;
+      filter: brightness(0.8);
+    }
+  }
+
+  /* Information density utilities */
+  .density-compact  :where(.btn,.chip,.row) { --y: 0.625rem; }
+  .density-regular  :where(.btn,.chip,.row) { --y: 0.75rem;  }
+  .density-comfort  :where(.btn,.chip,.row) { --y: 0.875rem; }
+
+  .row { padding-block: var(--y); }
 }
 
 /* Tone down flashy utilities by default (kept for optional use) */
@@ -225,6 +405,12 @@
   }
 }
 
+/* Reduce motion support */
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+  html { scroll-behavior: auto; }
+}
+
 /* Selection Styles */
 @layer base {
   ::selection {
@@ -263,10 +449,41 @@
 
 /* Shadow Elevation System */
 @layer utilities {
-  .shadow-elevation-1 { box-shadow: 0 1px 2px rgba(14,17,22,.05); }
-  .shadow-elevation-2 { box-shadow: 0 4px 12px rgba(14,17,22,.07); }
-  .shadow-elevation-3 { box-shadow: 0 8px 24px rgba(14,17,22,.08); }
-  .shadow-elevation-4 { box-shadow: 0 14px 40px rgba(14,17,22,.10); }
+  .shadow-elevation-1 { box-shadow: 0 1px 2px rgba(var(--shadow-rgb), .06); }
+  .shadow-elevation-2 { box-shadow: 0 4px 12px rgba(var(--shadow-rgb), .08); }
+  .shadow-elevation-3 { box-shadow: 0 8px 24px rgba(var(--shadow-rgb), .10); }
+  .shadow-elevation-4 { box-shadow: 0 14px 40px rgba(var(--shadow-rgb), .12); }
+
+  /* Standardized surface combinations */
+  .surface-default {
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border-primary);
+    box-shadow: var(--shadow-elevation-1);
+  }
+
+  .surface-card {
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border-primary);
+    box-shadow: var(--shadow-elevation-1);
+  }
+
+  .surface-elevated {
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border-primary);
+    box-shadow: var(--shadow-elevation-2);
+  }
+
+  .surface-modal {
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border-primary);
+    box-shadow: var(--shadow-elevation-4);
+  }
+
+  .surface-menu {
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border-primary);
+    box-shadow: var(--shadow-elevation-3);
+  }
 }
 
 /* Sophisticated Hover Effects */

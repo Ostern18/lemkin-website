@@ -1,10 +1,11 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
-import { Menu, X, Sun, Moon, Search, Calendar, Clock, AlertCircle, CheckCircle, Book, Code, Users, Mail, ExternalLink, Github, Twitter, FileText, Download, ArrowRight, ArrowLeft, Copy, Check, Scale, Shield, Eye, Gavel, Grid } from 'lucide-react';
+import { X, Search, Calendar, Clock, AlertCircle, CheckCircle, Book, Code, Users, Mail, ExternalLink, Github, Twitter, FileText, Download, ArrowRight, ArrowLeft, Copy, Check, Scale, Shield, Eye, Gavel, Grid } from 'lucide-react';
 
 // Theme Context
 interface ThemeContextType {
-  theme: string;
-  toggleTheme: () => void;
+  theme: 'light' | 'dark' | 'system';
+  resolvedTheme: 'light' | 'dark';
+  setTheme: (theme: 'light' | 'dark' | 'system') => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -16,26 +17,39 @@ const useTheme = () => {
 };
 
 const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [theme, setTheme] = useState<'light'|'dark'>(() => {
-    if (typeof window === "undefined") return 'light';
-    return (localStorage.getItem("theme") as 'light'|'dark')
-      ?? (window.matchMedia("(prefers-color-scheme: dark)").matches ? 'dark' : 'light');
+  const [theme, setTheme] = useState<'light' | 'dark' | 'system'>(() => {
+    if (typeof window === "undefined") return 'system';
+    return (localStorage.getItem("theme") as 'light' | 'dark' | 'system') ?? 'system';
   });
+
+  const [systemTheme, setSystemTheme] = useState<'light' | 'dark'>(() => {
+    if (typeof window === "undefined") return 'light';
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? 'dark' : 'light';
+  });
+
+  const resolvedTheme = theme === 'system' ? systemTheme : theme;
+
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    const onChange = (e: MediaQueryListEvent) => {
+      setSystemTheme(e.matches ? 'dark' : 'light');
+    };
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
 
   useEffect(() => {
     const root = document.documentElement;
-    if (theme === 'dark') {
+    if (resolvedTheme === 'dark') {
       root.classList.add('dark');
     } else {
       root.classList.remove('dark');
     }
     localStorage.setItem("theme", theme);
-  }, [theme]);
-
-  const toggleTheme = () => setTheme(prev => prev === 'light' ? 'dark' : 'light');
+  }, [theme, resolvedTheme]);
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider value={{ theme, resolvedTheme, setTheme }}>
       {children}
     </ThemeContext.Provider>
   );
@@ -57,7 +71,7 @@ const useRouter = () => {
 
 const Router: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [currentPath, setCurrentPath] = useState('/');
-  
+
   const navigate = (path: string) => {
     setCurrentPath(path);
     window.scrollTo(0, 0);
@@ -69,6 +83,141 @@ const Router: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     </RouterContext.Provider>
   );
 };
+
+// Practitioners' Brief Component with Robust States
+interface Brief {
+  title: string;
+  content: string;
+  author: string;
+  date: string;
+}
+
+interface PractitionersBriefProps {
+  state: 'loading' | 'empty' | 'ready';
+  data?: Brief;
+}
+
+const PractitionersBrief: React.FC<PractitionersBriefProps> = ({ state, data }) => {
+  return (
+    <section className="mx-auto" style={{ maxWidth: 1440, paddingInline: 48, paddingBlock: 56 }}>
+      <div className="card p-6" style={{ minHeight: 240 }}>
+        <header className="flex items-center justify-between mb-6">
+          <h2 className="text-xl font-semibold text-[var(--ink)]">Practitioners' Brief</h2>
+          <a className="btn-outline" href="/docs/methodology">
+            View methodology
+          </a>
+        </header>
+
+        {state === 'loading' && (
+          <div className="space-y-4">
+            <div className="h-4 bg-[var(--surface)] rounded animate-pulse" style={{ width: '72%' }}></div>
+            <div className="h-4 bg-[var(--surface)] rounded animate-pulse" style={{ width: '64%' }}></div>
+            <div className="h-4 bg-[var(--surface)] rounded animate-pulse" style={{ width: '48%' }}></div>
+            <div className="h-6 bg-[var(--surface)] rounded-full animate-pulse" style={{ width: '120px' }}></div>
+          </div>
+        )}
+
+        {state === 'empty' && (
+          <div className="text-center py-8">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-[var(--surface)] flex items-center justify-center">
+              <FileText className="w-8 h-8 text-[var(--subtle)]" />
+            </div>
+            <h3 className="text-lg font-medium text-[var(--ink)] mb-2">No brief available yet</h3>
+            <p className="text-[var(--muted)] mb-4">
+              We're preparing concise, deployable guidance for legal workflows.
+            </p>
+            <a className="btn-primary" href="/docs">
+              Browse docs
+            </a>
+          </div>
+        )}
+
+        {state === 'ready' && data && (
+          <div>
+            <h3 className="text-lg font-semibold text-[var(--ink)] mb-3">{data.title}</h3>
+            <p className="text-[var(--muted)] mb-4 leading-relaxed">{data.content}</p>
+            <div className="flex items-center justify-between text-sm text-[var(--subtle)]">
+              <span>By {data.author}</span>
+              <span>{new Date(data.date).toLocaleDateString()}</span>
+            </div>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+};
+
+// Table Helper Components
+interface ThProps {
+  children: React.ReactNode;
+  align?: 'left' | 'right' | 'center';
+  sticky?: 'left' | 'right';
+}
+
+const Th: React.FC<ThProps> = ({ children, align = 'left', sticky }) => {
+  const classes = [
+    'text-sm font-medium px-4 py-3 border-b border-[var(--line)]',
+    align === 'right' && 'text-right',
+    align === 'center' && 'text-center',
+    sticky === 'left' && 'sticky left-0 bg-[var(--surface)] z-10',
+    sticky === 'right' && 'sticky right-0 bg-[var(--surface)] z-10'
+  ].filter(Boolean).join(' ');
+
+  return <th className={classes}>{children}</th>;
+};
+
+interface TdProps {
+  children: React.ReactNode;
+  align?: 'left' | 'right' | 'center';
+  sticky?: 'left' | 'right';
+}
+
+const Td: React.FC<TdProps> = ({ children, align = 'left', sticky }) => {
+  const classes = [
+    'px-4 py-2.5 text-[var(--muted)]',
+    align === 'right' && 'text-right',
+    align === 'center' && 'text-center',
+    sticky === 'left' && 'sticky left-0 bg-[var(--bg)]',
+    sticky === 'right' && 'sticky right-0 bg-[var(--bg)]'
+  ].filter(Boolean).join(' ');
+
+  return <td className={classes}>{children}</td>;
+};
+
+const ModelCell: React.FC<{ model: any }> = ({ model }) => (
+  <div className="flex items-center gap-3">
+    <div className="w-8 h-8 rounded bg-[var(--accent)]/10 flex items-center justify-center">
+      <Scale className="w-4 h-4 text-[var(--accent)]" />
+    </div>
+    <div>
+      <div className="text-sm font-medium text-[var(--ink)]">{model.name}</div>
+      <div className="text-xs text-[var(--subtle)] max-w-[300px] truncate">{model.description}</div>
+    </div>
+  </div>
+);
+
+const StatusTag: React.FC<{ status: string }> = ({ status }) => {
+  const colors = {
+    stable: 'bg-[var(--success)]/10 text-[var(--success)]',
+    beta: 'bg-[var(--warning)]/10 text-[var(--warning)]',
+    deprecated: 'bg-[var(--danger)]/10 text-[var(--danger)]'
+  };
+
+  return (
+    <span className={`px-2 py-1 rounded-full text-xs font-medium ${colors[status as keyof typeof colors] || colors.stable}`}>
+      {status}
+    </span>
+  );
+};
+
+const ViewButton: React.FC<{ onClick: () => void }> = ({ onClick }) => (
+  <button
+    onClick={onClick}
+    className="text-sm text-[var(--accent)] hover:text-[var(--accent-ink)] focus:ring-1 focus:ring-[var(--accent)]/40 rounded px-2 py-1 transition-colors"
+  >
+    View
+  </button>
+);
 
 // Mock Data
 const mockModels = [
@@ -250,18 +399,42 @@ const Button: React.FC<ButtonProps> = ({
   ...props
 }) => {
   const variants = {
-    primary: 'bg-[var(--color-primary)] text-[var(--color-text-inverse)] hover:bg-[var(--color-primary-hover)] active:bg-[var(--color-primary-active)] border border-[var(--color-border-primary)]',
-    secondary: 'bg-transparent text-[var(--color-text-primary)] border border-[var(--color-border-primary)] hover:bg-[var(--color-bg-secondary)]',
-    tertiary: 'bg-[var(--color-bg-secondary)] text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-tertiary)] border border-[var(--color-border-secondary)]',
-    ghost: 'bg-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-secondary)]',
-    danger: 'bg-[#b91c1c] text-white hover:bg-[#991b1b]'
+    primary: `
+      bg-[var(--color-primary)] text-[var(--color-text-inverse)]
+      hover:bg-[var(--color-primary-hover)] active:bg-[var(--color-primary-active)]
+      border border-[var(--color-border-secondary)]
+      shadow-[0_1px_0_rgba(var(--shadow-rgb),0.04),inset_0_1px_0_rgba(255,255,255,0.03)]
+    `,
+    secondary: `
+      bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)]
+      hover:bg-[var(--color-bg-tertiary)] active:bg-[var(--color-bg-secondary)]
+      border border-[var(--color-border-primary)]
+      shadow-[0_1px_0_rgba(var(--shadow-rgb),0.04),inset_0_1px_0_rgba(255,255,255,0.10)]
+    `,
+    tertiary: `
+      bg-transparent text-[var(--color-text-primary)]
+      hover:bg-[var(--color-bg-secondary)] active:bg-[var(--color-bg-tertiary)]
+      border border-[var(--color-border-primary)]
+    `,
+    ghost: `
+      bg-transparent text-[var(--color-primary)]
+      hover:bg-[color-mix(in_srgb,var(--color-primary),transparent_95%)]
+      active:bg-[color-mix(in_srgb,var(--color-primary),transparent_90%)]
+    `,
+    danger: `
+      bg-[var(--color-critical)] text-[var(--color-text-inverse)]
+      hover:bg-[color-mix(in_srgb,var(--color-critical),black_10%)]
+      active:bg-[color-mix(in_srgb,var(--color-critical),black_20%)]
+      border border-[var(--color-border-secondary)]
+      shadow-[0_1px_0_rgba(var(--shadow-rgb),0.04),inset_0_1px_0_rgba(255,255,255,0.03)]
+    `
   };
 
   const sizes = {
-    sm: 'h-8 px-3 text-xs rounded-lg gap-1.5 font-medium',
-    md: 'h-10 px-5 text-sm rounded-xl gap-2 font-medium',
-    lg: 'h-12 px-7 text-base rounded-xl gap-2.5 font-semibold',
-    xl: 'h-14 px-9 text-lg rounded-2xl gap-3 font-semibold'
+    sm: 'h-7 px-3 text-[12px] rounded-[6px] gap-1.5 font-medium',
+    md: 'h-8 px-4 text-[13px] rounded-[6px] gap-2 font-medium',
+    lg: 'h-10 px-5 text-[14px] rounded-[6px] gap-2.5 font-medium',
+    xl: 'h-12 px-6 text-[15px] rounded-[8px] gap-3 font-medium'
   };
 
   return (
@@ -271,8 +444,12 @@ const Button: React.FC<ButtonProps> = ({
       data-size={size}
       aria-busy={loading || undefined}
       className={[
-        'relative inline-flex items-center justify-center focus-ring disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden group',
-        'transition-[transform,background,box-shadow] duration-200 ease-out active:scale-[0.99]',
+        'relative inline-flex items-center justify-center',
+        'transition-all duration-150 ease-out',
+        'disabled:opacity-60 disabled:cursor-not-allowed',
+        'active:scale-[0.98] active:transition-none',
+        'tracking-[-0.01em]',
+        'focus-ring',
         variants[variant],
         sizes[size],
         className
@@ -301,7 +478,7 @@ const Badge: React.FC<BadgeProps> = ({ variant = 'default', children, className 
     default: 'bg-[var(--color-bg-secondary)] text-[var(--color-text-secondary)] border border-[var(--color-border-primary)]',
     stable: 'bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)] border border-[var(--color-border-primary)]',
     beta: 'bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)] border border-[var(--color-border-primary)]',
-    deprecated: 'bg-[#ececec] text-[#6b7280] border border-[var(--color-border-primary)]'
+    deprecated: 'bg-[var(--color-bg-tertiary)] text-[var(--color-text-secondary)] border border-[var(--color-border-primary)]'
   };
 
   const icons = {
@@ -312,7 +489,7 @@ const Badge: React.FC<BadgeProps> = ({ variant = 'default', children, className 
 
   return (
     <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold tracking-wide uppercase transition-all duration-200 hover:scale-105 ${variants[variant] || variants.default} ${className}`}>
-      {variant !== 'default' && <span className="animate-pulse">{icons[variant as keyof typeof icons]}</span>}
+      {variant !== 'default' && <span aria-hidden>{icons[variant as keyof typeof icons]}</span>}
       {children}
     </span>
   );
@@ -356,16 +533,21 @@ const Card: React.FC<CardProps> = ({
 
 // Logo Component with theme-aware switching and smooth transitions
 const LemkinLogo: React.FC<{ className?: string }> = ({ className = "w-8 h-8" }) => {
-  const { theme } = useTheme();
+  const { resolvedTheme } = useTheme();
 
   // Use black logo for light mode, white logo for dark mode
-  const logoSrc = theme === 'light'
+  const logoSrc = resolvedTheme === 'light'
     ? '/Lemkin Logo Black_Shape_clear.png'
     : '/Lemkin Logo (shape only).png';
 
   return (
     <div className="relative group">
-      <div className="absolute inset-0 bg-gradient-to-r from-primary-500 to-accent-purple blur-xl opacity-0 group-hover:opacity-30 transition-opacity duration-500" />
+      <div
+        className="absolute inset-0 blur-xl opacity-0 group-hover:opacity-25 transition-opacity duration-500"
+        style={{
+          background: "linear-gradient(90deg, color-mix(in srgb, var(--color-primary), transparent 85%), color-mix(in srgb, var(--color-border-active), transparent 90%))"
+        }}
+      />
       <img
         src={logoSrc}
         alt="Lemkin AI"
@@ -396,74 +578,73 @@ const ModelCard: React.FC<ModelCardProps> = ({ model }) => {
   const performance = getPerformanceLevel(model.accuracy);
 
   return (
-    <Card hover className="group relative overflow-hidden">
-      {/* Quick-scan badge */}
-      <div className="absolute top-4 right-4">
-        <div className={`text-xs font-semibold ${performance.color}`}>
-          {performance.label}
-        </div>
-      </div>
+    <Card hover className="group relative overflow-hidden border-[var(--color-border-primary)] hover:border-[var(--color-border-active)]/50 transition-all duration-300">
+      {/* Status indicator bar */}
+      <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-border-active)]" />
 
-      <div className="flex items-start gap-3 mb-4">
-        <div className="w-12 h-12 rounded-xl flex items-center justify-center
-                     bg-[var(--color-bg-elevated)] border border-[var(--color-border-default)]">
-          <Scale className="w-6 h-6 text-[var(--color-fg-primary)]" />
-        </div>
-        <div className="flex-1">
-          <h3 className="font-semibold text-lg text-[var(--color-text-primary)] dark:text-white group-hover:text-[var(--color-fg-primary)] transition-colors">
-            {model.name}
-          </h3>
-          <div className="flex items-center gap-2">
-            <Badge variant={model.status}>{model.status}</Badge>
-            <span className="text-sm text-[var(--color-text-tertiary)] dark:text-gray-400">v{model.version}</span>
+      {/* Enhanced header with better hierarchy */}
+      <div className="mb-4">
+        <div className="flex items-start justify-between mb-3">
+          <div>
+            <h3 className="text-[15px] font-semibold text-[var(--ink-8)] dark:text-white tracking-[-0.01em] mb-1">
+              {model.name}
+            </h3>
+            <div className="flex items-center gap-2">
+              <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium tracking-[0.02em] uppercase
+                             bg-[color-mix(in_srgb,var(--color-info),white_85%)] text-[var(--color-info)] dark:bg-[var(--color-info)]/10 dark:text-[var(--color-info)]">
+                {model.status}
+              </span>
+              <span className="text-[12px] text-[var(--color-text-secondary)] dark:text-[var(--color-text-tertiary)] font-mono">
+                v{model.version}
+              </span>
+            </div>
+          </div>
+
+          {/* Performance badge */}
+          <div className="text-right">
+            <div className="text-[20px] font-semibold text-[var(--ink-8)] dark:text-white tracking-[-0.02em]">
+              {model.accuracy}%
+            </div>
+            <div className="text-[10px] font-medium tracking-[0.08em] uppercase text-[var(--color-text-secondary)] dark:text-[var(--color-text-tertiary)]">
+              Accuracy
+            </div>
           </div>
         </div>
+
+        <p className="text-[13px] leading-[1.6] text-[var(--color-text-secondary)] dark:text-[var(--color-text-tertiary)] line-clamp-2">
+          {model.description}
+        </p>
       </div>
 
-      <p className="text-[var(--color-text-secondary)] dark:text-gray-300 mb-4 line-clamp-2">{model.description}</p>
-
-      {/* Clean Performance metrics */}
-      <div className="grid grid-cols-2 gap-3 mb-4">
-        <div className="bg-[var(--color-bg-elevated)] border border-[var(--color-border-default)] rounded-md p-3">
-          <div className="text-lg font-semibold text-[var(--color-fg-primary)]">{model.accuracy}%</div>
-          <div className="text-xs text-[var(--color-fg-subtle)]">accuracy score</div>
+      {/* Metrics grid with better visual separation */}
+      <div className="grid grid-cols-3 gap-[1px] bg-[var(--color-border-primary)] dark:bg-[var(--color-border-primary)] rounded-[6px] overflow-hidden mb-4">
+        <div className="bg-[var(--color-bg-primary)] dark:bg-[var(--color-bg-elevated)] p-3 text-center">
+          <div className="text-[13px] font-semibold text-[var(--ink-8)] dark:text-white">{model.precision}%</div>
+          <div className="text-[10px] text-[var(--color-text-secondary)] dark:text-[var(--color-text-tertiary)] uppercase tracking-[0.05em]">Precision</div>
         </div>
-        <div className="bg-[var(--color-bg-elevated)] border border-[var(--color-border-default)] rounded-md p-3">
-          <div className="text-lg font-semibold text-[var(--color-fg-primary)]">{model.downloads.toLocaleString()}</div>
-          <div className="text-xs text-[var(--color-fg-subtle)]">downloads</div>
+        <div className="bg-[var(--color-bg-primary)] dark:bg-[var(--color-bg-elevated)] p-3 text-center">
+          <div className="text-[13px] font-semibold text-[var(--ink-8)] dark:text-white">{model.recall}%</div>
+          <div className="text-[10px] text-[var(--color-text-secondary)] dark:text-[var(--color-text-tertiary)] uppercase tracking-[0.05em]">Recall</div>
+        </div>
+        <div className="bg-[var(--color-bg-primary)] dark:bg-[var(--color-bg-elevated)] p-3 text-center">
+          <div className="text-[13px] font-semibold text-[var(--ink-8)] dark:text-white">{model.f1Score}%</div>
+          <div className="text-[10px] text-[var(--color-text-secondary)] dark:text-[var(--color-text-tertiary)] uppercase tracking-[0.05em]">F1</div>
         </div>
       </div>
 
-      <div className="flex items-center gap-2 p-2 rounded-md mb-4 border border-[var(--color-border-primary)] bg-[var(--color-bg-secondary)]">
-        <AlertCircle className="w-4 h-4 text-[var(--color-text-secondary)]" />
-        <span className="text-xs text-[var(--color-text-secondary)]">GPU recommended for optimal performance</span>
-      </div>
-
-      {/* Tags */}
-      <div className="flex flex-wrap gap-1 mb-4">
-        {model.tags.slice(0, 3).map((tag: string) => (
-          <span key={tag} className="px-2 py-1 text-xs bg-[var(--color-bg-elevated)] text-[var(--color-fg-muted)] border border-[var(--color-border-default)] rounded-md">
-            {tag}
+      {/* Professional metadata footer */}
+      <div className="pt-3 border-t border-[var(--color-border-primary)] dark:border-[var(--color-border-primary)]">
+        <div className="flex items-center justify-between text-[11px]">
+          <span className="text-[var(--color-text-secondary)] dark:text-[var(--color-text-tertiary)]">
+            Evaluated by <span className="font-medium text-[var(--ink-8)] dark:text-white">{model.evaluator}</span>
           </span>
-        ))}
-      </div>
-
-      {/* Enhanced Actions with evaluation transparency */}
-      <div className="space-y-2">
-        <div className="flex gap-2">
-          <Button size="sm" className="flex-1">View Details</Button>
-          <Button variant="ghost" size="sm">
-            <Github className="w-4 h-4" />
-          </Button>
+          <button
+            onClick={(e) => { e.stopPropagation(); navigate(`/models/${model.id}`); }}
+            className="text-[var(--color-info)] hover:text-[var(--color-primary-hover)] font-medium tracking-[-0.01em] transition-colors"
+          >
+            View Details →
+          </button>
         </div>
-        <a
-          href="/docs/evaluation"
-          onClick={(e)=>{e.preventDefault(); navigate('/docs/evaluation');}}
-          className="text-xs text-[var(--color-fg-primary)] underline underline-offset-[3px] hover:opacity-90 font-medium inline-flex items-center gap-1 transition-opacity"
-        >
-          <Shield className="w-3 h-3" />
-          View evaluation report
-        </a>
       </div>
     </Card>
   );
@@ -545,7 +726,7 @@ const ModelComparison: React.FC = () => {
                   <td key={model.id} className="py-3">
                     <a href="/docs/provenance"
                        onClick={(e)=>{e.preventDefault(); navigate('/docs/provenance');}}
-                       className="underline underline-offset-[3px] text-[var(--color-text-primary)] hover:opacity-90 transition-opacity">
+                       className="underline underline-offset-[3px] text-[var(--color-text-primary)] hover:opacity-90 transition-opacity focus-ring rounded-sm">
                       View source
                     </a>
                   </td>
@@ -571,7 +752,7 @@ const ModelComparison: React.FC = () => {
               <div className="flex gap-2">
                 {selectedModels.map(model => (
                   <span key={model.id} className="px-2 py-1 rounded text-xs
-                    bg-[var(--color-bg-elevated)] text-[var(--color-fg-primary)] border border-[var(--color-border-default)]">
+                    bg-[var(--color-bg-elevated)] text-[var(--color-fg-primary)] border border-[var(--color-border-primary)]">
                     {model.name}
                   </span>
                 ))}
@@ -606,11 +787,18 @@ const ModelComparison: React.FC = () => {
   );
 };
 
-// Navigation Component with Professional Polish
+// Desktop-only Header with Condensing Behavior
 const Navigation = () => {
   const { currentPath, navigate } = useRouter();
-  const { theme, toggleTheme } = useTheme();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { theme, setTheme } = useTheme();
+  const [condensed, setCondensed] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setCondensed(window.scrollY > 24);
+    onScroll();
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   const navItems = [
     { path: '/', label: 'Home' },
@@ -623,121 +811,71 @@ const Navigation = () => {
   ];
 
   return (
-    <>
-    {/* Skip link for keyboard users */}
-    <a
-      href="#main"
-      className="sr-only focus:not-sr-only focus-ring fixed top-2 left-2 z-[100] rounded-md bg-[var(--color-bg-elevated)] px-3 py-2 text-sm"
+    <header
+      className={[
+        'sticky top-0 z-50 w-full border-b border-[var(--line)] backdrop-blur',
+        'transition-all duration-300',
+        condensed ? 'py-3 shadow-sm' : 'py-6'
+      ].join(' ')}
+      style={{ background: 'var(--bg)' }}
     >
-      Skip to main content
-    </a>
-    <nav
-      className="fixed top-0 left-0 right-0 z-50 bg-[var(--color-bg-primary)]/95 backdrop-blur supports-[backdrop-filter]:backdrop-blur border-b border-[var(--color-border-primary)]"
-      role="navigation"
-      aria-label="Primary"
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          <div className="flex items-center">
-            <button
-              onClick={() => navigate('/')}
-              className="flex items-center gap-3 focus-ring rounded-md"
-              aria-label="Go to homepage"
-            >
-              <LemkinLogo className="w-8 h-8" />
-              <span className="text-base font-semibold tracking-tight">Lemkin AI</span>
-            </button>
+      <div className="mx-auto" style={{ maxWidth: 1600, paddingInline: 48 }}>
+        <div className="flex items-center gap-8">
+          {/* Logo */}
+          <button
+            onClick={() => navigate('/')}
+            className="flex items-center gap-2.5 focus-ring rounded-md group"
+            aria-label="Go to homepage"
+          >
+            <LemkinLogo className="w-7 h-7 transition-transform group-hover:scale-105" />
+            <div className="flex flex-col items-start">
+              <span className="text-[15px] font-semibold tracking-[-0.01em] leading-none text-[var(--ink)]">
+                Lemkin AI
+              </span>
+              <span className="text-[10px] font-medium tracking-[0.08em] uppercase text-[var(--subtle)] mt-0.5">
+                Institutional
+              </span>
+            </div>
+          </button>
 
-            <ul className="hidden md:flex items-center ml-10 space-x-1" role="menubar" aria-label="Primary pages">
-              {navItems.map(item => (
-                <li key={item.path} role="none">
-                  <button
-                    onClick={() => navigate(item.path)}
-                    role="menuitem"
-                    aria-current={currentPath === item.path ? 'page' : undefined}
-                    className={[
-                      "relative px-3 py-2 rounded-md text-sm font-medium focus-ring",
-                      currentPath === item.path
-                        ? "text-[var(--color-text-primary)] bg-[var(--color-bg-secondary)]"
-                        : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-secondary)]"
-                    ].join(" ")}
-                  >
-                    {item.label}
-                    {currentPath === item.path && (
-                      <span className="absolute -bottom-[2px] left-2 right-2 h-[2px] bg-[var(--color-border-active)] rounded-full" />
-                    )}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {/* Segmented Navigation */}
+          <nav className="flex gap-2 ml-8">
+            {navItems.map(item => (
+              <button
+                key={item.path}
+                onClick={() => navigate(item.path)}
+                className={[
+                  'px-4 py-2.5 rounded-xl border transition-all duration-200',
+                  'border-[var(--line)] text-[var(--muted)] hover:text-[var(--ink)]',
+                  currentPath === item.path && 'text-[var(--ink)] shadow-sm ring-1 ring-[var(--accent)]/40'
+                ].join(' ')}
+              >
+                {item.label}
+              </button>
+            ))}
+          </nav>
 
-          <div className="flex items-center gap-2">
+          {/* Right Side Controls */}
+          <div className="ml-auto flex items-center gap-3">
             <button
-              onClick={toggleTheme}
-              className="p-2 rounded-md focus-ring hover:bg-[var(--color-bg-secondary)]"
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+              className="btn-outline"
               aria-label="Toggle theme"
-              title="Toggle theme"
             >
-              {theme === 'light' ? <Moon className="w-5 h-5"/> : <Sun className="w-5 h-5" />}
+              {theme === 'dark' ? 'Light' : 'Dark'}
             </button>
             <a
+              className="btn-outline"
               href="https://github.com/lemkin-ai"
-              className="hidden md:inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium border border-[var(--color-border-primary)] hover:bg-[var(--color-bg-secondary)] focus-ring"
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              <Github className="w-4 h-4" />
               GitHub
             </a>
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 rounded-md hover:bg-[var(--color-bg-secondary)] focus-ring"
-              aria-expanded={mobileMenuOpen}
-              aria-controls="primary-mobile"
-              aria-label="Toggle menu"
-            >
-              {mobileMenuOpen ? <X className="w-5 h-5"/> : <Menu className="w-5 h-5" />}
-            </button>
           </div>
         </div>
       </div>
-
-      {mobileMenuOpen && (
-        <div id="primary-mobile" className="md:hidden border-t border-[var(--color-border-primary)] bg-[var(--color-bg-primary)]">
-          <ul className="px-2 py-2" role="menu">
-            {navItems.map(item => (
-              <li key={item.path} role="none">
-                <button
-                  role="menuitem"
-                  onClick={() => { navigate(item.path); setMobileMenuOpen(false); }}
-                  aria-current={currentPath === item.path ? 'page' : undefined}
-                  className={[
-                    "relative w-full text-left px-3 py-2 rounded-md text-sm font-medium focus-ring",
-                    currentPath === item.path
-                      ? "text-[var(--color-text-primary)] bg-[var(--color-bg-secondary)]"
-                      : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-secondary)]"
-                  ].join(" ")}
-                >
-                  {item.label}
-                  {currentPath === item.path && (
-                    <span className="absolute -bottom-[2px] left-2 right-2 h-[2px] bg-[var(--color-border-active)] rounded-full" />
-                  )}
-                </button>
-              </li>
-            ))}
-            <li className="mt-1" role="none">
-              <a
-                role="menuitem"
-                href="https://github.com/lemkin-ai"
-                className="block px-3 py-2 rounded-md text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-secondary)] focus-ring"
-              >
-                GitHub
-              </a>
-            </li>
-          </ul>
-        </div>
-      )}
-    </nav>
-    </>
+    </header>
   );
 };
 
@@ -749,78 +887,93 @@ const Footer = () => {
     <footer className="bg-[var(--color-bg-default)] dark:bg-[var(--color-bg-surface)]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         {/* Trust center highlight */}
-        <div className="text-center mb-12 pb-8 border-b border-[var(--color-border-primary)]">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--color-bg-secondary)] rounded-full mb-4">
-            <Shield className="w-4 h-4 text-green-400" />
-            <span className="text-sm font-medium text-green-400">Trust & Transparency Center</span>
+        <div className="text-center mb-12 pb-8 border-b border-[var(--color-border-primary)] dark:border-[var(--color-border-primary)]">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-[color-mix(in_srgb,var(--color-info),white_85%)] dark:bg-[var(--color-info)]/10 rounded-full mb-4">
+            <Shield className="w-3.5 h-3.5 text-[var(--color-info)]" />
+            <span className="text-[11px] font-semibold tracking-[0.02em] uppercase text-[var(--color-info)] dark:text-[var(--color-info)]">
+              Trust & Transparency Center
+            </span>
           </div>
-          <p className="text-[var(--color-text-tertiary)] max-w-2xl mx-auto">
-            Comprehensive documentation of our security practices, evaluation methodologies,
-            and ethical guidelines for responsible AI development.
+          <p className="text-[13px] leading-[1.6] text-[var(--color-text-secondary)] dark:text-[var(--color-text-tertiary)] max-w-2xl mx-auto">
+            Comprehensive documentation of security practices, evaluation methodologies, and ethical guidelines
+            meeting international compliance standards ISO 27001, SOC 2 Type II.
           </p>
+
+          {/* Add trust badges */}
+          <div className="flex justify-center gap-6 mt-6">
+            <div className="text-[10px] font-medium tracking-[0.08em] uppercase text-[var(--color-text-secondary)] dark:text-[var(--color-text-tertiary)]">
+              GDPR Compliant
+            </div>
+            <div className="text-[10px] font-medium tracking-[0.08em] uppercase text-[var(--color-text-secondary)] dark:text-[var(--color-text-tertiary)]">
+              ISO 27001
+            </div>
+            <div className="text-[10px] font-medium tracking-[0.08em] uppercase text-[var(--color-text-secondary)] dark:text-[var(--color-text-tertiary)]">
+              SOC 2 Type II
+            </div>
+          </div>
         </div>
 
         {/* Enhanced grid with better visual hierarchy */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           {/* Transparency */}
           <div>
-            <h3 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
-              <Eye className="w-4 h-4 text-white" />
+            <h3 className="text-sm font-semibold text-[var(--color-text-primary)] mb-4 flex items-center gap-2">
+              <Eye className="w-4 h-4 text-[var(--color-text-primary)]" />
               Transparency
             </h3>
             <ul className="space-y-3 text-sm">
-              <li><button onClick={() => navigate('/docs/changelog')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block">Changelog</button></li>
-              <li><button onClick={() => navigate('/docs/evaluation')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block">Eval Methodology</button></li>
-              <li><button onClick={() => navigate('/docs/provenance')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block">Data Provenance</button></li>
-              <li><button onClick={() => navigate('/docs/audits')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block">Audit Reports</button></li>
-              <li><button onClick={() => navigate('/docs/performance')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block">Performance Metrics</button></li>
+              <li><button onClick={() => navigate('/docs/changelog')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block focus-ring rounded-sm">Changelog</button></li>
+              <li><button onClick={() => navigate('/docs/evaluation')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block focus-ring rounded-sm">Eval Methodology</button></li>
+              <li><button onClick={() => navigate('/docs/provenance')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block focus-ring rounded-sm">Data Provenance</button></li>
+              <li><button onClick={() => navigate('/docs/audits')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block focus-ring rounded-sm">Audit Reports</button></li>
+              <li><button onClick={() => navigate('/docs/performance')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block focus-ring rounded-sm">Performance Metrics</button></li>
             </ul>
           </div>
 
           {/* Security */}
           <div>
-            <h3 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
-              <Shield className="w-4 h-4 text-white" />
+            <h3 className="text-sm font-semibold text-[var(--color-text-primary)] mb-4 flex items-center gap-2">
+              <Shield className="w-4 h-4 text-[var(--color-text-primary)]" />
               Security
             </h3>
             <ul className="space-y-3 text-sm">
-              <li><button onClick={() => navigate('/legal/responsible-use')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block">Responsible Use</button></li>
-              <li><button onClick={() => navigate('/security/disclosure')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block">Disclosure Policy</button></li>
-              <li><button onClick={() => navigate('/security/sbom')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block">SBOM</button></li>
-              <li><button onClick={() => navigate('/security/compliance')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block">Compliance</button></li>
-              <li><button onClick={() => navigate('/security/incident')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block">Incident Response</button></li>
+              <li><button onClick={() => navigate('/legal/responsible-use')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block focus-ring rounded-sm">Responsible Use</button></li>
+              <li><button onClick={() => navigate('/security/disclosure')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block focus-ring rounded-sm">Disclosure Policy</button></li>
+              <li><button onClick={() => navigate('/security/sbom')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block focus-ring rounded-sm">SBOM</button></li>
+              <li><button onClick={() => navigate('/security/compliance')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block focus-ring rounded-sm">Compliance</button></li>
+              <li><button onClick={() => navigate('/security/incident')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block focus-ring rounded-sm">Incident Response</button></li>
             </ul>
           </div>
 
           {/* Legal */}
           <div>
-            <h3 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
-              <Gavel className="w-4 h-4 text-white" />
+            <h3 className="text-sm font-semibold text-[var(--color-text-primary)] mb-4 flex items-center gap-2">
+              <Gavel className="w-4 h-4 text-[var(--color-text-primary)]" />
               Legal
             </h3>
             <ul className="space-y-3 text-sm">
-              <li><button onClick={() => navigate('/legal/licensing')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block">Licenses</button></li>
-              <li><button onClick={() => navigate('/legal/privacy')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block">Privacy Policy</button></li>
-              <li><button onClick={() => navigate('/legal/terms')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block">Terms of Use</button></li>
-              <li><button onClick={() => navigate('/legal/copyright')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block">Copyright</button></li>
-              <li><button onClick={() => navigate('/legal/dmca')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block">DMCA Policy</button></li>
+              <li><button onClick={() => navigate('/legal/licensing')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block focus-ring rounded-sm">Licenses</button></li>
+              <li><button onClick={() => navigate('/legal/privacy')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block focus-ring rounded-sm">Privacy Policy</button></li>
+              <li><button onClick={() => navigate('/legal/terms')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block focus-ring rounded-sm">Terms of Use</button></li>
+              <li><button onClick={() => navigate('/legal/copyright')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block focus-ring rounded-sm">Copyright</button></li>
+              <li><button onClick={() => navigate('/legal/dmca')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block focus-ring rounded-sm">DMCA Policy</button></li>
             </ul>
           </div>
 
           {/* Community */}
           <div>
-            <h3 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
-              <Users className="w-4 h-4 text-white" />
+            <h3 className="text-sm font-semibold text-[var(--color-text-primary)] mb-4 flex items-center gap-2">
+              <Users className="w-4 h-4 text-[var(--color-text-primary)]" />
               Community
             </h3>
             <ul className="space-y-3 text-sm">
-              <li><button onClick={() => navigate('/contribute')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block">Contribute</button></li>
-              <li><button onClick={() => navigate('/governance')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block">Governance</button></li>
-              <li><a href="https://github.com/lemkin-ai" className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors inline-flex items-center gap-1">
+              <li><button onClick={() => navigate('/contribute')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block focus-ring rounded-sm">Contribute</button></li>
+              <li><button onClick={() => navigate('/governance')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block focus-ring rounded-sm">Governance</button></li>
+              <li><a href="https://github.com/lemkin-ai" className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors inline-flex items-center gap-1 focus-ring rounded-sm">
                 GitHub <ExternalLink className="w-3 h-3" />
               </a></li>
-              <li><a href="https://discord.gg/lemkin-ai" className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors block">Discord</a></li>
-              <li><button onClick={() => navigate('/code-of-conduct')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block">Code of Conduct</button></li>
+              <li><a href="https://discord.gg/lemkin-ai" className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors block focus-ring rounded-sm">Discord</a></li>
+              <li><button onClick={() => navigate('/code-of-conduct')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block focus-ring rounded-sm">Code of Conduct</button></li>
             </ul>
           </div>
         </div>
@@ -832,20 +985,20 @@ const Footer = () => {
             <div className="flex items-center gap-3">
               <LemkinLogo className="w-8 h-8" />
               <div>
-                <span className="font-semibold text-lg text-white">Lemkin AI</span>
+                <span className="font-semibold text-lg text-[var(--color-text-primary)]">Lemkin AI</span>
                 <p className="text-sm text-[var(--color-text-secondary)] mt-1">Evidence-grade AI for international justice</p>
               </div>
             </div>
 
             {/* Social Links */}
             <div className="flex items-center gap-4">
-              <a href="https://github.com/lemkin-ai" className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors">
+              <a href="https://github.com/lemkin-ai" className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors focus-ring rounded-sm">
                 <Github className="w-5 h-5" />
               </a>
-              <a href="https://twitter.com/lemkin-ai" className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors">
+              <a href="https://twitter.com/lemkin-ai" className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors focus-ring rounded-sm">
                 <Twitter className="w-5 h-5" />
               </a>
-              <a href="mailto:contact@lemkin.ai" className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors">
+              <a href="mailto:contact@lemkin.ai" className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors focus-ring rounded-sm">
                 <Mail className="w-5 h-5" />
               </a>
             </div>
@@ -874,112 +1027,120 @@ const HomePage = () => {
 
   return (
     <div className="relative min-h-screen">
-      <section id="main" className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto text-center space-y-8">
-          <h1 className="text-4xl md:text-5xl font-semibold tracking-tight">
-            Evidence-grade AI for International Justice
-          </h1>
-          <p className="text-[var(--color-text-secondary)] max-w-3xl mx-auto">
-            Open-source models and tools for investigations, documentation, and courtroom-ready outputs—built with transparency and legal rigor.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" onClick={() => navigate('/models')}>Explore Models</Button>
-            <Button variant="secondary" size="lg" onClick={() => navigate('/docs')}>View Documentation</Button>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8">
-            {[
-              {k:'Upload', v:'Ingest docs, media, transcripts'},
-              {k:'Analyze', v:'NER, provenance, correlations'},
-              {k:'Export', v:'Chain-of-custody & citations'}
-            ].map(s => (
-              <div key={s.k} className="rounded-xl border p-4">
-                <div className="text-sm font-semibold">{s.k}</div>
-                <div className="text-sm text-[var(--color-text-tertiary)]">{s.v}</div>
-              </div>
-            ))}
-          </div>
+      <section id="main" className="mx-auto" style={{ maxWidth: 1440, paddingInline: 48, paddingBlock: 56 }}>
+        {/* Status Pill */}
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[var(--line)] bg-[var(--surface)] text-sm text-[var(--muted)] mb-6">
+          <span className="inline-block w-2 h-2 rounded-full bg-[var(--accent)]"></span>
+          <span>System operational • 12 active models</span>
+        </div>
+
+        {/* Hero Title */}
+        <h1 className="text-hero mb-4" style={{ fontSize: 48, lineHeight: 1.2, fontWeight: 700, maxWidth: '22ch' }}>
+          Evidence-grade AI for <span style={{ color: 'var(--accent)' }}>International Justice</span>
+        </h1>
+
+        {/* Hero Description */}
+        <p className="text-body-max mb-6 text-[var(--muted)]" style={{ maxWidth: '72ch' }}>
+          Open-source machine learning models rigorously validated for legal proceedings.
+          Trusted by tribunals, NGOs, and investigative teams worldwide.
+        </p>
+
+        {/* Action Buttons */}
+        <div className="flex gap-3">
+          <button
+            className="btn-primary inline-flex items-center gap-2"
+            onClick={() => navigate('/models')}
+          >
+            Explore Models
+          </button>
+          <button
+            className="btn-outline inline-flex items-center gap-2"
+            onClick={() => navigate('/docs')}
+          >
+            Documentation
+          </button>
         </div>
       </section>
 
       {/* Evidence-Grade Trust Slice */}
-      <section className="py-12 px-4 sm:px-6 lg:px-8 bg-neural-900/30 border-y border-[var(--color-border-secondary)]/50">
+      <section className="py-12 px-4 sm:px-6 lg:px-8 bg-[var(--color-bg-tertiary)] border-y border-[var(--color-border-secondary)]">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
             <div className="space-y-2">
-              <h3 className="text-sm font-semibold text-neural-200 uppercase tracking-wide">Who Reviews</h3>
-              <p className="text-neural-400 text-sm leading-relaxed">
+              <h3 className="text-sm font-semibold text-[var(--color-text-secondary)] uppercase tracking-wide">Who Reviews</h3>
+              <p className="text-[var(--color-text-tertiary)] text-sm leading-relaxed">
                 Tribunals, NGOs, Universities
               </p>
-              <a href="/reviewers" className="text-xs text-[var(--color-fg-primary)] underline underline-offset-[3px] hover:opacity-90">View details</a>
+              <a href="/reviewers" className="text-xs text-[var(--color-fg-primary)] underline underline-offset-[3px] hover:opacity-90 focus-ring rounded-sm">View details</a>
             </div>
             <div className="space-y-2">
-              <h3 className="text-sm font-semibold text-neural-200 uppercase tracking-wide">How We Evaluate</h3>
-              <p className="text-neural-400 text-sm leading-relaxed">
+              <h3 className="text-sm font-semibold text-[var(--color-text-secondary)] uppercase tracking-wide">How We Evaluate</h3>
+              <p className="text-[var(--color-text-tertiary)] text-sm leading-relaxed">
                 Bias testing, Legal accuracy, Chain of custody
               </p>
-              <a href="/methodology" className="text-xs text-[var(--color-fg-primary)] underline underline-offset-[3px] hover:opacity-90">View methodology</a>
+              <a href="/methodology" className="text-xs text-[var(--color-fg-primary)] underline underline-offset-[3px] hover:opacity-90 focus-ring rounded-sm">View methodology</a>
             </div>
             <div className="space-y-2">
-              <h3 className="text-sm font-semibold text-neural-200 uppercase tracking-wide">Update Cadence</h3>
-              <p className="text-neural-400 text-sm leading-relaxed">
+              <h3 className="text-sm font-semibold text-[var(--color-text-secondary)] uppercase tracking-wide">Update Cadence</h3>
+              <p className="text-[var(--color-text-tertiary)] text-sm leading-relaxed">
                 Monthly security, Quarterly evaluation
               </p>
-              <a href="/changelog" className="text-xs text-[var(--color-fg-primary)] underline underline-offset-[3px] hover:opacity-90">View changelog</a>
+              <a href="/changelog" className="text-xs text-[var(--color-fg-primary)] underline underline-offset-[3px] hover:opacity-90 focus-ring rounded-sm">View changelog</a>
             </div>
             <div className="space-y-2">
-              <h3 className="text-sm font-semibold text-neural-200 uppercase tracking-wide">Misuse Reporting</h3>
-              <p className="text-neural-400 text-sm leading-relaxed">
+              <h3 className="text-sm font-semibold text-[var(--color-text-secondary)] uppercase tracking-wide">Misuse Reporting</h3>
+              <p className="text-[var(--color-text-tertiary)] text-sm leading-relaxed">
                 24h response, Public disclosure
               </p>
-              <a href="/report" className="text-xs text-[var(--color-fg-primary)] underline underline-offset-[3px] hover:opacity-90">Report issue</a>
+              <a href="/report" className="text-xs text-[var(--color-fg-primary)] underline underline-offset-[3px] hover:opacity-90 focus-ring rounded-sm">Report issue</a>
             </div>
           </div>
         </div>
       </section>
 
       {/* Trust & Credibility Section */}
-      <section className="relative py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-neural-950 to-neural-900">
-        <div className="absolute inset-0 bg-neural-net opacity-20"></div>
+      <section className="relative py-24 px-4 sm:px-6 lg:px-8 bg-[var(--color-bg-secondary)]">
+        <div className="absolute inset-0" style={{ background: "var(--gradient-mesh)" }} />
         <div className="relative max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-4 py-2 backdrop-blur-xl bg-white/5 border border-white/10 rounded-full mb-8">
+            <div className="inline-flex items-center gap-2 px-4 py-2 backdrop-blur-xl bg-[color-mix(in_srgb,var(--color-bg-elevated),transparent_92%)] border border-[var(--color-border-secondary)] rounded-full mb-8">
               <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
-              <span className="text-neural-300 text-sm">Developed with practitioners from international tribunals and NGOs</span>
+              <span className="text-[var(--color-text-secondary)] text-sm">Developed with practitioners from international tribunals and NGOs</span>
             </div>
 
             <div className="flex justify-center items-center gap-8 mb-12 flex-wrap">
-              <div className="flex items-center gap-3 px-6 py-3 backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl group hover:bg-white/10 transition-all duration-300">
-                <CheckCircle className="w-5 h-5 text-white group-hover:text-white transition-colors" />
-                <span className="text-white font-medium">Rigorously Validated</span>
+              <div className="flex items-center gap-3 px-6 py-3 backdrop-blur-xl bg-[color-mix(in_srgb,var(--color-bg-elevated),transparent_92%)] border border-[var(--color-border-secondary)] rounded-2xl group hover:bg-[color-mix(in_srgb,var(--color-bg-elevated),transparent_85%)] transition-all duration-300">
+                <CheckCircle className="w-5 h-5 text-[var(--color-text-primary)] transition-colors" />
+                <span className="text-[var(--color-text-primary)] font-medium">Rigorously Validated</span>
               </div>
-              <div className="flex items-center gap-3 px-6 py-3 backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl group hover:bg-white/10 transition-all duration-300">
-                <Scale className="w-5 h-5 text-white group-hover:text-white transition-colors" />
-                <span className="text-white font-medium">Legally Aware</span>
+              <div className="flex items-center gap-3 px-6 py-3 backdrop-blur-xl bg-[color-mix(in_srgb,var(--color-bg-elevated),transparent_92%)] border border-[var(--color-border-secondary)] rounded-2xl group hover:bg-[color-mix(in_srgb,var(--color-bg-elevated),transparent_85%)] transition-all duration-300">
+                <Scale className="w-5 h-5 text-[var(--color-text-primary)] transition-colors" />
+                <span className="text-[var(--color-text-primary)] font-medium">Legally Aware</span>
               </div>
-              <div className="flex items-center gap-3 px-6 py-3 backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl group hover:bg-white/10 transition-all duration-300">
-                <Users className="w-5 h-5 text-white group-hover:text-white transition-colors" />
-                <span className="text-white font-medium">Community-Driven</span>
+              <div className="flex items-center gap-3 px-6 py-3 backdrop-blur-xl bg-[color-mix(in_srgb,var(--color-bg-elevated),transparent_92%)] border border-[var(--color-border-secondary)] rounded-2xl group hover:bg-[color-mix(in_srgb,var(--color-bg-elevated),transparent_85%)] transition-all duration-300">
+                <Users className="w-5 h-5 text-[var(--color-text-primary)] transition-colors" />
+                <span className="text-[var(--color-text-primary)] font-medium">Community-Driven</span>
               </div>
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="group relative backdrop-blur-xl bg-white/5 border border-white/10 rounded-3xl p-8 shadow-neural hover:shadow-glow transition-all duration-500 hover:scale-105">
-              <div className="absolute inset-0 bg-gradient-to-br from-accent-emerald/10 to-transparent rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div className="group relative backdrop-blur-xl bg-[color-mix(in_srgb,var(--color-bg-elevated),transparent_88%)] border border-[var(--color-border-secondary)] rounded-3xl p-8 shadow-elevation-2 hover:shadow-elevation-3 transition-all duration-500 hover:scale-105">
+              <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-primary)]/5 to-transparent rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               <div className="relative text-center">
                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-6
-                                 bg-[var(--color-bg-elevated)] border border-[var(--color-border-default)]">
-                  <Shield className="w-8 h-8 text-white" />
+                                 bg-[var(--color-bg-elevated)] border border-[var(--color-border-primary)]">
+                  <Shield className="w-8 h-8 text-[var(--color-text-primary)]" />
                 </div>
-                <h3 className="font-display text-xl font-bold text-white mb-4">
+                <h3 className="font-display text-xl font-bold text-[var(--color-text-primary)] mb-4">
                   Vetted & Validated
                 </h3>
-                <p className="text-neural-300 leading-relaxed mb-6">
+                <p className="text-[var(--color-text-secondary)] leading-relaxed mb-6">
                   All models undergo rigorous testing for accuracy, bias, and reliability in legal contexts with transparent evaluation metrics.
                 </p>
                 <button
                   onClick={() => navigate('/docs/evaluation')}
-                  className="inline-flex items-center gap-2 text-white/90 hover:text-white font-medium underline underline-offset-[3px]"
+                  className="inline-flex items-center gap-2 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] font-medium underline underline-offset-[3px]"
                 >
                   View evaluation process
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -987,22 +1148,22 @@ const HomePage = () => {
               </div>
             </div>
 
-            <div className="group relative backdrop-blur-xl bg-white/5 border border-white/10 rounded-3xl p-8 shadow-neural hover:shadow-glow transition-all duration-500 hover:scale-105">
-              <div className="absolute inset-0 bg-gradient-to-br from-accent-cyan/10 to-transparent rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div className="group relative backdrop-blur-xl bg-[color-mix(in_srgb,var(--color-bg-elevated),transparent_88%)] border border-[var(--color-border-secondary)] rounded-3xl p-8 shadow-elevation-2 hover:shadow-elevation-3 transition-all duration-500 hover:scale-105">
+              <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-primary)]/5 to-transparent rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               <div className="relative text-center">
                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-6
-                                 bg-[var(--color-bg-elevated)] border border-[var(--color-border-default)]">
-                  <Gavel className="w-8 h-8 text-white" />
+                                 bg-[var(--color-bg-elevated)] border border-[var(--color-border-primary)]">
+                  <Gavel className="w-8 h-8 text-[var(--color-text-primary)]" />
                 </div>
-                <h3 className="font-display text-xl font-bold text-white mb-4">
+                <h3 className="font-display text-xl font-bold text-[var(--color-text-primary)] mb-4">
                   Legally Aware
                 </h3>
-                <p className="text-neural-300 leading-relaxed mb-6">
+                <p className="text-[var(--color-text-secondary)] leading-relaxed mb-6">
                   Built with deep understanding of legal standards, evidence requirements, and chain of custody protocols.
                 </p>
                 <button
                   onClick={() => navigate('/governance')}
-                  className="inline-flex items-center gap-2 text-white/90 hover:text-white font-medium underline underline-offset-[3px]"
+                  className="inline-flex items-center gap-2 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] font-medium underline underline-offset-[3px]"
                 >
                   See governance
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -1010,22 +1171,22 @@ const HomePage = () => {
               </div>
             </div>
 
-            <div className="group relative backdrop-blur-xl bg-white/5 border border-white/10 rounded-3xl p-8 shadow-neural hover:shadow-glow transition-all duration-500 hover:scale-105">
-              <div className="absolute inset-0 bg-gradient-to-br from-accent-purple/10 to-transparent rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div className="group relative backdrop-blur-xl bg-[color-mix(in_srgb,var(--color-bg-elevated),transparent_88%)] border border-[var(--color-border-secondary)] rounded-3xl p-8 shadow-elevation-2 hover:shadow-elevation-3 transition-all duration-500 hover:scale-105">
+              <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-primary)]/5 to-transparent rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               <div className="relative text-center">
                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-6
-                                 bg-[var(--color-bg-elevated)] border border-[var(--color-border-default)]">
-                  <Eye className="w-8 h-8 text-white" />
+                                 bg-[var(--color-bg-elevated)] border border-[var(--color-border-primary)]">
+                  <Eye className="w-8 h-8 text-[var(--color-text-primary)]" />
                 </div>
-                <h3 className="font-display text-xl font-bold text-white mb-4">
+                <h3 className="font-display text-xl font-bold text-[var(--color-text-primary)] mb-4">
                   Community-Driven
                 </h3>
-                <p className="text-neural-300 leading-relaxed mb-6">
+                <p className="text-[var(--color-text-secondary)] leading-relaxed mb-6">
                   Open development with full transparency, peer review, and collaborative governance from the global community.
                 </p>
                 <button
                   onClick={() => navigate('/contribute')}
-                  className="inline-flex items-center gap-2 text-white/90 hover:text-white font-medium underline underline-offset-[3px]"
+                  className="inline-flex items-center gap-2 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] font-medium underline underline-offset-[3px]"
                 >
                   Join community
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -1057,220 +1218,68 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Enhanced Practitioner Briefs Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:bg-gray-800/30">
-        <div className="max-w-7xl mx-auto">
-          {/* Enhanced Header */}
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-[var(--color-text-primary)]/60 dark:border-gray-700/50 rounded-full shadow-sm mb-6">
-              <CheckCircle className="w-4 h-4 text-emerald-500" />
-              <span className="text-sm font-medium text-[var(--color-border-primary)] dark:text-gray-300">Expert-Reviewed Content</span>
-            </div>
-
-            <h2 className="text-4xl md:text-5xl font-bold text-[var(--color-text-primary)] dark:text-white mb-4">Practitioner Briefs</h2>
-            <p className="text-xl text-[var(--color-text-secondary)] dark:text-gray-400 max-w-3xl mx-auto leading-relaxed">Expert insights and methodologies for international justice professionals</p>
-          </div>
-
-          {/* Enhanced Role-Based Tabs */}
-          <div className="flex justify-center mb-12">
-            <div className="inline-flex items-center p-1.5 bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl border border-[var(--color-text-primary)]/60 dark:border-gray-700/50 rounded-2xl shadow-lg">
-              {['Investigators', 'Prosecutors', 'Researchers'].map((role) => {
-                const roleIcons = {
-                  Investigators: <Search className="w-4 h-4" />,
-                  Prosecutors: <Scale className="w-4 h-4" />,
-                  Researchers: <Users className="w-4 h-4" />
-                };
-                return (
-                  <button
-                    key={role}
-                    onClick={() => setActiveBriefTab(role)}
-                    className={`
-                      relative px-6 py-3 text-sm font-semibold rounded-xl transition-all duration-300
-                      inline-flex items-center gap-2
-                      ${activeBriefTab === role
-                        ? 'bg-[var(--color-accent-cta)] text-[var(--color-fg-inverse)] shadow-lg'
-                        : 'text-[var(--color-fg-muted)] hover:text-[var(--color-fg-primary)]'
-                      }
-                    `}
-                  >
-                    {roleIcons[role as keyof typeof roleIcons]}
-                    Briefs for {role}
-                    {activeBriefTab === role && (
-                      <div className="absolute inset-0 bg-[var(--color-accent-cta)] rounded-xl shadow-lg -z-10"></div>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Enhanced Brief Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {getFilteredBriefs().map((brief, index) => (
-              <div
-                key={brief.id}
-                style={{ animationDelay: `${index * 75}ms` }}
-                className="group bg-white dark:bg-gray-800 border border-[var(--color-text-primary)] dark:border-gray-700 rounded-2xl p-6 shadow-lg hover:shadow-xl hover:border-[var(--color-text-tertiary)] dark:hover:border-gray-600 transition-all duration-300 cursor-pointer animate-fade-in-up opacity-0"
-              >
-                {/* Card Header */}
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <div className="px-3 py-1 bg-slate-100 dark:bg-gray-700 text-[var(--color-border-primary)] dark:text-gray-300 rounded-lg text-xs font-medium">
-                      {brief.category}
-                    </div>
-                    {brief.peerReviewed && (
-                      <div className="flex items-center gap-1 px-2 py-1 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 rounded-md text-xs font-medium">
-                        <CheckCircle className="w-3 h-3" />
-                        Peer-Reviewed
-                      </div>
-                    )}
-                  </div>
-                  <span className="text-xs text-[var(--color-text-tertiary)] dark:text-gray-400 font-medium">
-                    {brief.readTime}
-                  </span>
-                </div>
-
-                {/* Title */}
-                <h3 className="text-xl font-bold text-[var(--color-text-primary)] dark:text-white mb-3 leading-tight group-hover:text-[var(--color-fg-primary)] transition-colors">
-                  {brief.title}
-                </h3>
-
-                {/* Excerpt */}
-                <p className="text-[var(--color-text-secondary)] dark:text-gray-400 leading-relaxed mb-4 line-clamp-3">
-                  {brief.excerpt}
-                </p>
-
-                {/* Tags */}
-                <div className="flex flex-wrap gap-1.5 mb-4">
-                  {brief.tags.map(tag => (
-                    <span
-                      key={tag}
-                      className="px-2 py-1 text-xs bg-slate-100 dark:bg-gray-700 text-[var(--color-text-secondary)] dark:text-gray-400 rounded-md"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-
-                {/* Footer */}
-                <div className="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-gray-700">
-                  <div>
-                    <div className="font-semibold text-[var(--color-text-primary)] dark:text-white text-sm">
-                      {brief.author}
-                    </div>
-                    <div className="text-xs text-[var(--color-text-tertiary)] dark:text-gray-500 mt-0.5">
-                      Last reviewed: {brief.lastReviewed}
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-1 text-xs text-[var(--color-text-tertiary)] dark:text-gray-500">
-                    <Calendar className="w-3 h-3" />
-                    {new Date(brief.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                  </div>
-                </div>
-
-                {/* Hover Arrow */}
-                <div className="flex items-center justify-center mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <ArrowRight className="w-4 h-4 text-[var(--color-fg-primary)] group-hover:translate-x-1 transition-transform" />
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Enhanced CTA */}
-          <div className="text-center mt-12">
-            <Button
-              variant="secondary"
-              size="lg"
-              onClick={() => navigate('/articles')}
-              className="inline-flex items-center gap-2"
-            >
-              View All Practitioner Briefs
-              <ArrowRight className="w-5 h-5" />
-            </Button>
-          </div>
-        </div>
-      </section>
+      {/* Practitioners' Brief */}
+      <PractitionersBrief
+        state={getFilteredBriefs().length > 0 ? 'ready' : 'empty'}
+        data={getFilteredBriefs().length > 0 ? {
+          title: getFilteredBriefs()[0]?.title || '',
+          content: getFilteredBriefs()[0]?.excerpt || '',
+          author: getFilteredBriefs()[0]?.author || '',
+          date: getFilteredBriefs()[0]?.date || ''
+        } : undefined}
+      />
 
       {/* Join the Mission */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-[var(--color-text-primary)] to-[var(--color-bg-secondary)] dark:from-[var(--color-bg-secondary)] dark:to-[var(--color-text-primary)]">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="font-serif text-display-lg font-bold text-white mb-6">Join the Mission</h2>
-            <p className="text-xl text-white/80 mb-10 leading-relaxed max-w-4xl mx-auto">
-              Help build the future of ethical AI for international justice.
-              Contribute models, share expertise, or join our governance community.
-            </p>
-          </div>
-
-          {/* Actionable First-Contribution Tasks */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 text-white">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
-                  <CheckCircle className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="font-serif text-lg font-semibold">Improve Model Evaluation</h3>
-                  <span className="text-white/70 text-sm">10–15 min</span>
-                </div>
+      <section className="mx-auto" style={{ maxWidth: 1440, paddingInline: 48, paddingBlock: 56 }}>
+        <h2 className="mb-6" style={{ fontSize: 32, fontWeight: 700 }}>Join the Mission</h2>
+        <div className="grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', gap: 24 }}>
+          <article className="card h-full p-6">
+            <div className="flex items-start gap-3">
+              <div className="p-2.5 rounded-xl border border-[var(--line)]">
+                <CheckCircle className="w-5 h-5 text-[var(--accent)]" />
               </div>
-              <p className="text-white/75 text-sm mb-4">Help expand our evaluation datasets with legal domain expertise and bias testing protocols.</p>
-              <button className="text-white hover:opacity-85 text-sm font-medium inline-flex items-center gap-1 underline underline-offset-[3px]">
-                Get started <ArrowRight className="w-3 h-3" />
-              </button>
-            </div>
-
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 text-white">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
-                  <FileText className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="font-serif text-lg font-semibold">Write Dataset Cards</h3>
-                  <span className="text-white/70 text-sm">20–30 min</span>
-                </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold text-[var(--ink)]">Improve Model Evaluation</h3>
+                <p className="text-sm text-[var(--subtle)] mt-1">10–15 min</p>
+                <p className="text-sm text-[var(--muted)] mt-2.5">Help expand our evaluation datasets with legal domain expertise and bias testing protocols.</p>
+                <button className="link inline-flex items-center mt-3.5 text-sm">
+                  Get started<span className="ml-1.5">→</span>
+                </button>
               </div>
-              <p className="text-white/75 text-sm mb-4">Document training data sources, ethical considerations, and usage guidelines for transparency.</p>
-              <button className="text-white hover:opacity-85 text-sm font-medium inline-flex items-center gap-1 underline underline-offset-[3px]">
-                Get started <ArrowRight className="w-3 h-3" />
-              </button>
             </div>
+          </article>
 
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 text-white">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
-                  <Code className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="font-serif text-lg font-semibold">Add Unit Tests</h3>
-                  <span className="text-white/70 text-sm">15–25 min</span>
-                </div>
+          <article className="card h-full p-6">
+            <div className="flex items-start gap-3">
+              <div className="p-2.5 rounded-xl border border-[var(--line)]">
+                <FileText className="w-5 h-5 text-[var(--accent)]" />
               </div>
-              <p className="text-white/75 text-sm mb-4">Enhance model reliability with edge case testing and performance validation scripts.</p>
-              <button className="text-white hover:opacity-85 text-sm font-medium inline-flex items-center gap-1 underline underline-offset-[3px]">
-                Get started <ArrowRight className="w-3 h-3" />
-              </button>
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold text-[var(--ink)]">Write Dataset Cards</h3>
+                <p className="text-sm text-[var(--subtle)] mt-1">20–30 min</p>
+                <p className="text-sm text-[var(--muted)] mt-2.5">Document training data sources, ethical considerations, and usage guidelines for transparency.</p>
+                <button className="link inline-flex items-center mt-3.5 text-sm">
+                  Get started<span className="ml-1.5">→</span>
+                </button>
+              </div>
             </div>
-          </div>
+          </article>
 
-          <div className="text-center">
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button
-                onClick={() => navigate('/contribute')}
-                className="bg-white text-[var(--color-fg-primary)] hover:bg-slate-50 shadow-lift"
-              >
-                <Users className="w-5 h-5" />
-                Start Contributing
-              </Button>
-              <Button
-                variant="secondary"
-                onClick={() => navigate('/governance')}
-                className="bg-[var(--color-accent-cta)] hover:bg-[var(--color-border-primary)] text-[var(--color-fg-inverse)] border-[var(--color-text-tertiary)]"
-              >
-                Learn About Governance
-              </Button>
+          <article className="card h-full p-6">
+            <div className="flex items-start gap-3">
+              <div className="p-2.5 rounded-xl border border-[var(--line)]">
+                <Code className="w-5 h-5 text-[var(--accent)]" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold text-[var(--ink)]">Add Unit Tests</h3>
+                <p className="text-sm text-[var(--subtle)] mt-1">15–25 min</p>
+                <p className="text-sm text-[var(--muted)] mt-2.5">Enhance model reliability with edge case testing and performance validation scripts.</p>
+                <button className="link inline-flex items-center mt-3.5 text-sm">
+                  Get started<span className="ml-1.5">→</span>
+                </button>
+              </div>
             </div>
-          </div>
+          </article>
         </div>
       </section>
     </div>
@@ -1334,7 +1343,7 @@ const ModelsPage = () => {
                   placeholder="Search models…"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[var(--color-border-focus)]"
+                  className="w-full pl-10 pr-4 py-2 border border-[var(--color-border-primary)] rounded-lg bg-[var(--color-bg-elevated)] text-[var(--color-text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-border-active)]"
                 />
               </div>
             </div>
@@ -1342,7 +1351,7 @@ const ModelsPage = () => {
             <select
               value={selectedStatus}
               onChange={(e) => setSelectedStatus(e.target.value)}
-              className="px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[var(--color-border-focus)]"
+              className="px-4 py-2 border border-[var(--color-border-primary)] rounded-lg bg-[var(--color-bg-elevated)] text-[var(--color-text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-border-active)]"
             >
               <option value="all">All Status</option>
               <option value="stable">Stable</option>
@@ -1360,8 +1369,8 @@ const ModelsPage = () => {
                 )}
                 className={`px-3 py-1 rounded-full text-sm transition-colors ${
                   selectedTags.includes(tag)
-                    ? 'bg-[var(--color-bg-elevated)] text-[var(--color-fg-primary)] border border-[var(--color-border-default)]'
-                    : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
+                    ? 'bg-[var(--color-bg-elevated)] text-[var(--color-fg-primary)] border border-[var(--color-border-primary)]'
+                    : 'bg-[var(--color-bg-tertiary)] text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-secondary)]'
                 }`}
               >
                 {tag}
@@ -1402,76 +1411,45 @@ const ModelsPage = () => {
           </div>
         </div>
 
-        {/* Models Display */}
+        {/* Enterprise Models Table */}
         {filteredModels.length > 0 ? (
           viewMode === 'table' ? (
-            // Enterprise Table View
-            <div className="bg-[var(--color-bg-primary)] border border-[var(--color-border-primary)] rounded-xl overflow-hidden">
-              <table className="w-full">
-                <thead className="bg-[var(--color-bg-secondary)] border-b border-[var(--color-border-primary)]">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-[var(--color-text-secondary)] uppercase tracking-wider">
-                      Model
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-[var(--color-text-secondary)] uppercase tracking-wider">
-                      Status
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-[var(--color-text-secondary)] uppercase tracking-wider">
-                      Version
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-[var(--color-text-secondary)] uppercase tracking-wider">
-                      Accuracy
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-[var(--color-text-secondary)] uppercase tracking-wider">
-                      Downloads
-                    </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-[var(--color-text-secondary)] uppercase tracking-wider">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[var(--color-border-secondary)]">
-                  {filteredModels.map(model => (
-                    <tr
-                      key={model.id}
-                      className="hover:bg-[var(--color-bg-secondary)] transition-colors cursor-pointer"
-                      onClick={() => handleModelSelect(model)}
-                    >
-                      <td className="px-6 py-4">
-                        <div>
-                          <div className="text-sm font-medium text-[var(--color-text-primary)]">{model.name}</div>
-                          <div className="text-sm text-[var(--color-text-tertiary)]">{model.description.substring(0, 60)}...</div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <Badge variant={model.status}>{model.status}</Badge>
-                      </td>
-                      <td className="px-6 py-4 text-sm text-[var(--color-text-secondary)]">
-                        {model.version}
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="text-sm font-medium text-[var(--color-text-primary)]">{model.accuracy}%</div>
-                        <div className="text-xs text-[var(--color-text-tertiary)]">{model.precision}% precision</div>
-                      </td>
-                      <td className="px-6 py-4 text-sm text-[var(--color-text-secondary)]">
-                        {model.downloads.toLocaleString()}
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleModelSelect(model);
-                          }}
-                        >
-                          View
-                        </Button>
-                      </td>
+            <div className="mx-auto" style={{ maxWidth: 1600, paddingInline: 48 }}>
+              <div className="card p-0 overflow-auto" style={{ maxHeight: '70vh' }}>
+                <table className="min-w-full">
+                  <thead className="bg-[var(--surface)] text-[var(--muted)] sticky top-0 z-10">
+                    <tr>
+                      <Th sticky="left">Model</Th>
+                      <Th align="right">Performance</Th>
+                      <Th align="center">Status</Th>
+                      <Th align="center">Version</Th>
+                      <Th align="right">Downloads</Th>
+                      <Th sticky="right" align="center">Actions</Th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {filteredModels.map((model) => (
+                      <tr
+                        key={model.id}
+                        className="border-t border-[var(--line-soft)] hover:bg-[var(--elevated)]/40 transition-colors"
+                      >
+                        <Td sticky="left">
+                          <ModelCell model={model} />
+                        </Td>
+                        <Td align="right">{model.accuracy.toFixed(1)}%</Td>
+                        <Td align="center">
+                          <StatusTag status={model.status} />
+                        </Td>
+                        <Td align="center">v{model.version}</Td>
+                        <Td align="right">{model.downloads.toLocaleString()}</Td>
+                        <Td sticky="right" align="center">
+                          <ViewButton onClick={() => handleModelSelect(model)} />
+                        </Td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           ) : (
             // Grid View
@@ -1480,7 +1458,7 @@ const ModelsPage = () => {
                 <div
                   key={model.id}
                   style={{ animationDelay: `${index * 75}ms` }}
-                  className="animate-fade-in-up opacity-0"
+                  className="animate-fade-up"
                   onClick={() => handleModelSelect(model)}
                 >
                   <ModelCard model={model} />
@@ -2007,8 +1985,8 @@ const ArticlesPage = () => {
                 )}
                 className={`px-3 py-1 rounded-full text-sm transition-colors ${
                   selectedTags.includes(tag)
-                    ? 'bg-[var(--color-bg-elevated)] text-[var(--color-fg-primary)] border border-[var(--color-border-default)]'
-                    : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
+                    ? 'bg-[var(--color-bg-elevated)] text-[var(--color-fg-primary)] border border-[var(--color-border-primary)]'
+                    : 'bg-[var(--color-bg-tertiary)] text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-secondary)]'
                 }`}
               >
                 {tag}
@@ -2515,7 +2493,7 @@ const ContactPage = () => {
             <p className="text-gray-600 dark:text-gray-400 mb-4">
               For general questions about the project
             </p>
-            <a href="mailto:info@lemkin.ai" className="text-[var(--color-fg-primary)] hover:underline">
+            <a href="mailto:info@lemkin.ai" className="text-[var(--color-fg-primary)] hover:underline focus-ring rounded-sm">
               info@lemkin.ai
             </a>
           </Card>
@@ -2526,7 +2504,7 @@ const ContactPage = () => {
             <p className="text-gray-600 dark:text-gray-400 mb-4">
               For bug reports and technical issues
             </p>
-            <a href="https://github.com/lemkin-ai/issues" className="text-[var(--color-fg-primary)] hover:underline">
+            <a href="https://github.com/lemkin-ai/issues" className="text-[var(--color-fg-primary)] hover:underline focus-ring rounded-sm">
               GitHub Issues
             </a>
           </Card>
@@ -2537,7 +2515,7 @@ const ContactPage = () => {
             <p className="text-gray-600 dark:text-gray-400 mb-4">
               For collaboration and partnership inquiries
             </p>
-            <a href="mailto:partnerships@lemkin.ai" className="text-[var(--color-fg-primary)] hover:underline">
+            <a href="mailto:partnerships@lemkin.ai" className="text-[var(--color-fg-primary)] hover:underline focus-ring rounded-sm">
               partnerships@lemkin.ai
             </a>
           </Card>
@@ -2548,7 +2526,7 @@ const ContactPage = () => {
             <p className="text-gray-600 dark:text-gray-400 mb-4">
               For reporting security vulnerabilities
             </p>
-            <a href="mailto:security@lemkin.ai" className="text-[var(--color-fg-primary)] hover:underline">
+            <a href="mailto:security@lemkin.ai" className="text-[var(--color-fg-primary)] hover:underline focus-ring rounded-sm">
               security@lemkin.ai
             </a>
           </Card>
