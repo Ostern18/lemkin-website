@@ -33,7 +33,7 @@ npm run eject
 
 ### Application Structure
 
-The entire application is contained in a single file (`src/LemkinAIWebsite.tsx`) with approximately 14 page components and a sophisticated component hierarchy:
+The entire application is contained in a single file (`src/LemkinAIWebsite.tsx` - ~3000 lines) with 14 page components and a sophisticated component hierarchy:
 
 1. **Context Providers** (Root level)
    - `ThemeProvider`: Manages dark/light mode with DOM class manipulation
@@ -57,13 +57,21 @@ The entire application is contained in a single file (`src/LemkinAIWebsite.tsx`)
 
 ### Custom Design System
 
-The project includes an extensive custom design system in `tailwind.config.js`:
+The project includes an extensive custom design system spanning both `tailwind.config.js` and `src/index.css`:
 
-- **Custom Colors**: Primary (blue), accent (purple/pink/cyan/emerald/orange), neural (grays), authority (navy/charcoal/steel)
-- **Typography Scale**: Display sizes (4xl-lg) with optimized line heights and letter spacing
-- **Shadow System**: Neural shadows (neural, neural-md, neural-lg, neural-xl) for depth hierarchy
-- **Animations**: 12 custom animations including gradient effects, glow pulse, and float
-- **Background Patterns**: Neural-net and mesh-gradient patterns for visual depth
+**Tailwind Config (`tailwind.config.js`):**
+- **Custom Colors**: Primary (blue), neutral (grays), accent (purple/pink/cyan/emerald/orange)
+- **Typography Scale**: Professional scale with display sizes (2xl-sm) with optimized line heights and letter spacing
+- **Shadow System**: Sophisticated elevation system (elevation-1 through elevation-5, plus glow and soft variants)
+- **Animations**: 14 custom animations including gradient effects, glow pulse, shimmer, and float
+- **Background Patterns**: Advanced gradients (mesh, grid, dot, noise patterns)
+
+**CSS Variables System (`src/index.css`):**
+- Professional Palantir/OpenAI-inspired design tokens with CSS custom properties
+- Complete dark/light mode support with semantic color naming (--ink, --muted, --subtle, --surface, --elevated)
+- Enhanced shadow and focus ring systems
+- Professional button components with ripple effects
+- Comprehensive hover states and micro-interactions
 
 ### Data Architecture
 
@@ -106,16 +114,40 @@ Mock data is structured for:
 - Ensure mobile menu includes new routes
 
 ### Design System Usage
-- Use custom shadow classes (neural, neural-md, neural-lg, neural-xl) instead of default Tailwind shadows
-- Follow the established color hierarchy: slate for backgrounds, blue for primary actions
-- Maintain consistency with the button hierarchy (primary/secondary/tertiary/ghost)
+- Use custom elevation shadow classes (elevation-1 through elevation-5, plus soft and glow variants) instead of default Tailwind shadows
+- Follow the CSS custom property system: `var(--ink)` for primary text, `var(--muted)` for body text, `var(--surface)` for backgrounds
+- Use the professional button classes: `.btn-primary`, `.btn-outline` with built-in hover states and ripple effects
+- Maintain consistency with the button hierarchy and professional color palette
 
 ### Component Styling
-- Dark mode variants are required for all new components
-- Use the established animation classes for consistency
+- Dark mode variants are required for all new components - the system uses CSS custom properties that automatically adapt
+- Use the established animation classes from Tailwind config (fade-in, fade-up, slide-in, etc.)
 - Follow the responsive breakpoint strategy: mobile-first with sm/md/lg/xl
+- Leverage CSS utility classes like `.card`, `.skeleton`, `.glass`, `.hover-lift` for consistent styling
 
 ### Logo Assets
 The project references specific logo files that should be placed in the public directory:
 - `Lemkin Logo Black_Shape_clear.png`: Black version for light mode
 - `Lemkin Logo (shape only).png`: White version for dark mode
+
+## Testing and Quality
+
+The project uses Create React App's default testing setup:
+- Test runner: Jest with React Testing Library
+- No additional linting setup beyond React App's ESLint configuration
+- No separate prettier or formatting configuration
+
+## Important Development Notes
+
+### Single File Architecture
+- The entire UI is in `src/LemkinAIWebsite.tsx` (~3000 lines) - this is intentional for this project
+- When adding new components, add them within this file following the established patterns
+- Mock data is defined at the top of the file and used throughout pages
+
+### Component Location Reference
+Key components are located at these approximate line numbers in `LemkinAIWebsite.tsx`:
+- Theme/Router contexts: lines 1-100
+- UI components (Button, Badge, Card, etc.): lines 400-700
+- Navigation component: line ~830
+- Page components: lines 1050+ (HomePage, ModelsPage, ArticlesPage, etc.)
+- Main App routing logic: line ~2910

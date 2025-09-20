@@ -15,19 +15,23 @@
     --muted: #3F4752;   /* body on surface */
     --subtle: #6B7280;   /* captions */
 
-    /* Accent */
-    --accent: #2563EB;   /* AA on white */
+    /* Accent - More Institutional */
+    --accent: #2952CC;   /* Deeper blue, less saturated */
     --accent-ink: #0B3C9C;
 
     /* Lines */
     --line: #D9DFEA;   /* hard rule */
     --line-soft: #E8EDF5;   /* inner separators */
 
-    /* States */
-    --success: #16A34A;
-    --warning: #D97706;
+    /* States - More Subdued */
+    --success: #0F7938;   /* More subdued green */
+    --warning: #B45309;   /* Earthier warning tone */
     --danger: #DC2626;
     --info: #0EA5E9;
+
+    /* Metallic Accents */
+    --metal-light: #F4F4F5;
+    --metal-dark: #18181B;
 
     /* Focus & Shadows */
     --focus: 0 0 0 4px rgba(37, 99, 235, .20);
@@ -125,27 +129,37 @@
   }
 }
 
-/* Desktop Typography Scale */
+/* Desktop Typography Scale - Professional & Refined */
 @layer base {
-  /* Typography scale: 12, 14, 16, 18, 20, 24, 32, 48 */
+  /* Typography scale: 12, 14, 16, 18, 20, 24, 32, 42 */
   h1 {
-    font-size: 48px;
-    line-height: 1.2;
-    font-weight: 700;
-    letter-spacing: -0.02em; /* Tighter for desktop */
+    font-size: 42px;  /* Down from 48px */
+    line-height: 1.1;  /* Tighter */
+    font-weight: 600;  /* Lighter weight for elegance */
+    letter-spacing: -0.03em;  /* Tighter tracking */
+    font-feature-settings: "ss01" 1, "ss02" 1, "kern" 1;
   }
 
   h2 {
     font-size: 32px;
     line-height: 1.25;
-    font-weight: 700;
-    letter-spacing: -0.01em;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    font-feature-settings: "ss01" 1, "ss02" 1, "kern" 1;
   }
 
   h3 {
     font-size: 24px;
     line-height: 1.3;
     font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  /* Add monospace accents for data */
+  .metric-value {
+    font-family: 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
   }
 
   h4 {
@@ -254,6 +268,43 @@
   .input:focus-visible {
     box-shadow: var(--focus);
     outline: none;
+  }
+}
+
+/* Enhanced Button Interactions and Animations */
+@layer components {
+  .btn-primary {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-primary::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+  }
+
+  .btn-primary:active::after {
+    width: 300px;
+    height: 300px;
+    transition: width 0s, height 0s;
+  }
+
+  /* Shimmer animation for loading states */
+  @keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+
+  .animate-shimmer {
+    animation: shimmer 2s infinite;
   }
 }
 

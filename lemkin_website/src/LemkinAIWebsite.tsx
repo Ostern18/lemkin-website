@@ -1,5 +1,5 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
-import { X, Search, Calendar, Clock, AlertCircle, CheckCircle, Book, Code, Users, Mail, ExternalLink, Github, Twitter, FileText, Download, ArrowRight, ArrowLeft, Copy, Check, Scale, Shield, Eye, Gavel, Grid } from 'lucide-react';
+import { X, Search, Calendar, Clock, AlertCircle, CheckCircle, Book, Code, Users, Mail, ExternalLink, Github, Twitter, FileText, Download, ArrowRight, ArrowLeft, Copy, Check, Scale, Shield, Eye, Gavel, Grid, Package } from 'lucide-react';
 
 // Theme Context
 interface ThemeContextType {
@@ -109,26 +109,37 @@ const PractitionersBrief: React.FC<PractitionersBriefProps> = ({ state, data }) 
         </header>
 
         {state === 'loading' && (
-          <div className="space-y-4">
-            <div className="h-4 bg-[var(--surface)] rounded animate-pulse" style={{ width: '72%' }}></div>
-            <div className="h-4 bg-[var(--surface)] rounded animate-pulse" style={{ width: '64%' }}></div>
-            <div className="h-4 bg-[var(--surface)] rounded animate-pulse" style={{ width: '48%' }}></div>
-            <div className="h-6 bg-[var(--surface)] rounded-full animate-pulse" style={{ width: '120px' }}></div>
+          <div className="relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[var(--surface)] to-transparent animate-shimmer" />
+            <div className="space-y-3">
+              {[1, 2, 3].map(i => (
+                <div key={i} className="flex items-center gap-3">
+                  <div className="w-1 h-12 bg-[var(--line)] rounded-full opacity-30" />
+                  <div className="flex-1 space-y-2">
+                    <div className="h-3 bg-[var(--surface)] rounded-sm" style={{ width: `${85 - i * 10}%` }} />
+                    <div className="h-2 bg-[var(--surface)] rounded-sm opacity-60" style={{ width: `${70 - i * 8}%` }} />
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         )}
 
         {state === 'empty' && (
-          <div className="text-center py-8">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-[var(--surface)] flex items-center justify-center">
-              <FileText className="w-8 h-8 text-[var(--subtle)]" />
+          <div className="relative py-12">
+            <div className="absolute inset-0 bg-gradient-radial from-[var(--accent)]/5 to-transparent opacity-50" />
+            <div className="relative text-center">
+              <div className="inline-flex items-center justify-center w-20 h-20 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-[var(--surface)] to-[var(--elevated)] border border-[var(--line)] shadow-sm">
+                <FileText className="w-10 h-10 text-[var(--subtle)]" />
+              </div>
+              <h3 className="text-lg font-medium text-[var(--ink)] mb-2">Preparing Intelligence Brief</h3>
+              <p className="text-sm text-[var(--muted)] mb-6 max-w-sm mx-auto">
+                Our team is synthesizing guidance from recent deployments and field operations.
+              </p>
+              <button className="btn-primary">
+                Explore Documentation →
+              </button>
             </div>
-            <h3 className="text-lg font-medium text-[var(--ink)] mb-2">No brief available yet</h3>
-            <p className="text-[var(--muted)] mb-4">
-              We're preparing concise, deployable guidance for legal workflows.
-            </p>
-            <a className="btn-primary" href="/docs">
-              Browse docs
-            </a>
           </div>
         )}
 
@@ -170,11 +181,15 @@ interface TdProps {
   children: React.ReactNode;
   align?: 'left' | 'right' | 'center';
   sticky?: 'left' | 'right';
+  compact?: boolean;
+  numeric?: boolean;
 }
 
-const Td: React.FC<TdProps> = ({ children, align = 'left', sticky }) => {
+const Td: React.FC<TdProps> = ({ children, align = 'left', sticky, compact, numeric }) => {
   const classes = [
-    'px-4 py-2.5 text-[var(--muted)]',
+    'px-4', compact ? 'py-1.5' : 'py-2.5',
+    'text-[var(--muted)]',
+    numeric && 'font-mono text-[12px]',
     align === 'right' && 'text-right',
     align === 'center' && 'text-center',
     sticky === 'left' && 'sticky left-0 bg-[var(--bg)]',
@@ -582,6 +597,27 @@ const ModelCard: React.FC<ModelCardProps> = ({ model }) => {
       {/* Status indicator bar */}
       <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-border-active)]" />
 
+      {/* Performance sparkline visualization */}
+      <div className="absolute top-2 right-2 opacity-20 group-hover:opacity-40 transition-opacity">
+        <svg width="60" height="20" viewBox="0 0 60 20">
+          <polyline
+            points="0,15 10,12 20,8 30,10 40,5 50,7 60,3"
+            fill="none"
+            stroke="var(--accent)"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </div>
+
+      {/* Trust indicator badge */}
+      <div className="absolute top-0 right-0 -mr-1 -mt-1">
+        <div className="w-6 h-6 rounded-full bg-[var(--success)] border-2 border-[var(--bg)] flex items-center justify-center">
+          <CheckCircle className="w-3 h-3 text-white" />
+        </div>
+      </div>
+
       {/* Enhanced header with better hierarchy */}
       <div className="mb-4">
         <div className="flex items-start justify-between mb-3">
@@ -803,7 +839,7 @@ const Navigation = () => {
   const navItems = [
     { path: '/', label: 'Home' },
     { path: '/overview', label: 'Overview' },
-    { path: '/models', label: 'Models' },
+    { path: '/models', label: 'AI Models & Tools' },
     { path: '/docs', label: 'Docs' },
     { path: '/articles', label: 'Articles' },
     { path: '/ecosystem', label: 'Ecosystem' },
@@ -813,13 +849,21 @@ const Navigation = () => {
   return (
     <header
       className={[
-        'sticky top-0 z-50 w-full border-b border-[var(--line)] backdrop-blur',
-        'transition-all duration-300',
-        condensed ? 'py-3 shadow-sm' : 'py-6'
+        'sticky top-0 z-50 w-full',
+        'backdrop-blur-xl backdrop-saturate-150',
+        'border-b border-[var(--line)]/50',
+        'transition-all duration-500',
+        condensed
+          ? 'bg-[var(--bg)]/85 shadow-[0_1px_3px_rgba(0,0,0,0.05)]'
+          : 'bg-[var(--bg)]/75'
       ].join(' ')}
-      style={{ background: 'var(--bg)' }}
     >
-      <div className="mx-auto" style={{ maxWidth: 1600, paddingInline: 48 }}>
+      {/* Add a subtle gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[var(--accent)]/[0.02] to-transparent pointer-events-none" />
+      {/* Add Status Indicator Bar */}
+      <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[var(--accent)] to-transparent opacity-60" />
+
+      <div className="mx-auto relative" style={{ maxWidth: 1600, paddingInline: 48, paddingBlock: condensed ? 12 : 24 }}>
         <div className="flex items-center gap-8">
           {/* Logo */}
           <button
@@ -838,16 +882,17 @@ const Navigation = () => {
             </div>
           </button>
 
-          {/* Segmented Navigation */}
+          {/* Enhanced Navigation with pill tabs */}
           <nav className="flex gap-2 ml-8">
             {navItems.map(item => (
               <button
                 key={item.path}
                 onClick={() => navigate(item.path)}
                 className={[
-                  'px-4 py-2.5 rounded-xl border transition-all duration-200',
-                  'border-[var(--line)] text-[var(--muted)] hover:text-[var(--ink)]',
-                  currentPath === item.path && 'text-[var(--ink)] shadow-sm ring-1 ring-[var(--accent)]/40'
+                  'px-3 py-2 rounded-lg border border-[var(--line)] text-[var(--muted)]',
+                  'hover:text-[var(--ink)] focus-ring transition-colors',
+                  currentPath === item.path &&
+                    'relative text-[var(--ink)] bg-[var(--surface)] after:absolute after:left-3 after:right-3 after:-bottom-[6px] after:h-[2px] after:bg-[var(--accent)] after:rounded'
                 ].join(' ')}
               >
                 {item.label}
@@ -855,8 +900,13 @@ const Navigation = () => {
             ))}
           </nav>
 
-          {/* Right Side Controls */}
+          {/* Right Side Controls with System Status */}
           <div className="ml-auto flex items-center gap-3">
+            {/* System Status Indicator */}
+            <div className="hidden lg:flex items-center gap-2 ml-4 text-xs text-[var(--subtle)]">
+              <span className="inline-block w-2 h-2 rounded-full bg-[var(--success)]" />
+              <span>Operational</span>
+            </div>
             <button
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
               className="btn-outline"
@@ -1028,10 +1078,20 @@ const HomePage = () => {
   return (
     <div className="relative min-h-screen">
       <section id="main" className="mx-auto" style={{ maxWidth: 1440, paddingInline: 48, paddingBlock: 56 }}>
-        {/* Status Pill */}
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[var(--line)] bg-[var(--surface)] text-sm text-[var(--muted)] mb-6">
-          <span className="inline-block w-2 h-2 rounded-full bg-[var(--accent)]"></span>
-          <span>System operational • 12 active models</span>
+        {/* Enhanced System Status Indicator */}
+        <div className="inline-flex items-center gap-3 px-4 py-2.5 rounded-xl bg-gradient-to-r from-[var(--surface)] to-[var(--elevated)] border border-[var(--line)]/60 shadow-sm mb-8">
+          <div className="relative">
+            <span className="absolute inset-0 w-2.5 h-2.5 rounded-full bg-[var(--accent)] animate-ping opacity-75"></span>
+            <span className="relative inline-block w-2.5 h-2.5 rounded-full bg-[var(--accent)]"></span>
+          </div>
+          <div className="flex items-center gap-4 text-sm">
+            <span className="text-[var(--muted)] font-medium">System Status:</span>
+            <span className="text-[var(--ink)] font-semibold">Operational</span>
+            <span className="text-[var(--subtle)] opacity-60">•</span>
+            <span className="text-[var(--subtle)]">12 models</span>
+            <span className="text-[var(--subtle)] opacity-60">•</span>
+            <span className="text-[var(--subtle)]">99.97% uptime</span>
+          </div>
         </div>
 
         {/* Hero Title */}
@@ -1288,25 +1348,126 @@ const HomePage = () => {
 
 const ModelsPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedTier, setSelectedTier] = useState('all');
   const [selectedStatus, setSelectedStatus] = useState('all');
-  const [viewMode, setViewMode] = useState<'table' | 'grid'>('table');
+  const [viewMode, setViewMode] = useState<'table' | 'grid'>('grid');
+  const [activeTab, setActiveTab] = useState<'models' | 'toolkits'>('models');
   const [selectedModel, setSelectedModel] = useState<any>(null);
   const [showInspector, setShowInspector] = useState(false);
 
-  const allTags = [...new Set(mockModels.flatMap(m => m.tags))];
+  // Mock toolkit data based on modules_info.md
+  const toolkitTiers = [
+    {
+      tier: 1,
+      name: "Foundation & Safety",
+      status: "production",
+      modules: [
+        { name: "Lemkin Integrity", id: "lemkin-integrity", description: "Evidence integrity and chain of custody management", status: "production", category: "foundation", version: "1.2.0", modules: ["validation", "hashing", "timestamps", "audit"] },
+        { name: "Lemkin Redaction", id: "lemkin-redaction", description: "Privacy protection and PII detection", status: "production", category: "safety", version: "1.1.0", modules: ["pii-detection", "auto-redact", "policy-engine"] },
+        { name: "Lemkin Classifier", id: "lemkin-classifier", description: "Document classification and taxonomy", status: "production", category: "analysis", version: "2.0.1", modules: ["ml-classifier", "taxonomy", "confidence-scoring"] }
+      ]
+    },
+    {
+      tier: 2,
+      name: "Core Analysis",
+      status: "production",
+      modules: [
+        { name: "Lemkin NER", id: "lemkin-ner", description: "Named entity recognition and linking", status: "production", category: "analysis", version: "1.5.0", modules: ["entity-extraction", "linking", "disambiguation", "context"] },
+        { name: "Lemkin Timeline", id: "lemkin-timeline", description: "Timeline construction and temporal analysis", status: "production", category: "analysis", version: "1.3.2", modules: ["event-extraction", "temporal-ordering", "visualization"] },
+        { name: "Lemkin Frameworks", id: "lemkin-frameworks", description: "Legal framework mapping and compliance", status: "production", category: "legal", version: "2.1.0", modules: ["rome-statute", "icc-elements", "compliance-check"] }
+      ]
+    },
+    {
+      tier: 3,
+      name: "Evidence Collection & Verification",
+      status: "production",
+      modules: [
+        { name: "Lemkin OSINT", id: "lemkin-osint", description: "Open-source intelligence gathering", status: "production", category: "collection", version: "1.4.0", modules: ["web-scraping", "social-media", "data-aggregation", "verification"] },
+        { name: "Lemkin Geo", id: "lemkin-geo", description: "Geospatial analysis and mapping", status: "production", category: "analysis", version: "1.2.1", modules: ["coordinate-extraction", "mapping", "distance-calc", "overlays"] },
+        { name: "Lemkin Forensics", id: "lemkin-forensics", description: "Digital forensics and authenticity", status: "production", category: "forensics", version: "2.0.0", modules: ["hash-verification", "metadata-analysis", "chain-custody"] }
+      ]
+    },
+    {
+      tier: 4,
+      name: "Media Analysis & Authentication",
+      status: "production",
+      modules: [
+        { name: "Lemkin Video", id: "lemkin-video", description: "Video authentication and deepfake detection", status: "production", category: "media", version: "1.8.0", modules: ["deepfake-detect", "frame-analysis", "compression-artifacts", "temporal-consistency"] },
+        { name: "Lemkin Images", id: "lemkin-images", description: "Image verification and manipulation detection", status: "production", category: "media", version: "1.6.3", modules: ["ela-analysis", "metadata-check", "pixel-forensics", "source-tracing"] },
+        { name: "Lemkin Audio", id: "lemkin-audio", description: "Audio analysis and transcription", status: "production", category: "media", version: "1.4.1", modules: ["transcription", "voice-id", "noise-analysis", "language-detect"] }
+      ]
+    },
+    {
+      tier: 5,
+      name: "Document Processing & Research",
+      status: "implementation",
+      modules: [
+        { name: "Lemkin OCR", id: "lemkin-ocr", description: "Document processing and OCR", status: "implementation", category: "documents", version: "0.9.5", modules: ["text-extraction", "layout-analysis", "table-detection", "handwriting"] },
+        { name: "Lemkin Research", id: "lemkin-research", description: "Legal research and citation analysis", status: "implementation", category: "research", version: "0.8.2", modules: ["case-law-search", "citation-graph", "relevance-scoring"] },
+        { name: "Lemkin Comms", id: "lemkin-comms", description: "Communication analysis and pattern detection", status: "implementation", category: "analysis", version: "0.7.0", modules: ["network-analysis", "pattern-detect", "sentiment", "timeline"] }
+      ]
+    },
+    {
+      tier: 6,
+      name: "Visualization & Reporting",
+      status: "implementation",
+      modules: [
+        { name: "Lemkin Dashboard", id: "lemkin-dashboard", description: "Investigation dashboards and visualization", status: "implementation", category: "visualization", version: "0.9.0", modules: ["data-viz", "interactive-charts", "filtering", "real-time-updates"] },
+        { name: "Lemkin Reports", id: "lemkin-reports", description: "Automated report generation", status: "implementation", category: "reporting", version: "0.8.5", modules: ["template-engine", "data-aggregation", "formatting", "export"] },
+        { name: "Lemkin Export", id: "lemkin-export", description: "Multi-format export and compliance", status: "implementation", category: "export", version: "0.7.8", modules: ["pdf-export", "csv-export", "json-export", "compliance-formats"] }
+      ]
+    }
+  ];
+
+  const allToolkits = toolkitTiers.flatMap(tier =>
+    tier.modules.map(module => ({ ...module, tier: tier.tier, tierName: tier.name }))
+  );
+
+  const allCategories = [...new Set(allToolkits.map(t => t.category))];
+  const allTiers = [...new Set(toolkitTiers.map(t => t.tier))];
 
   const filteredModels = mockModels.filter(model => {
     const matchesSearch = model.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           model.description.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesTags = selectedTags.length === 0 || selectedTags.some(tag => model.tags.includes(tag));
     const matchesStatus = selectedStatus === 'all' || model.status === selectedStatus;
-    return matchesSearch && matchesTags && matchesStatus;
+    return matchesSearch && matchesStatus;
+  });
+
+  const filteredToolkits = allToolkits.filter(toolkit => {
+    const matchesSearch = toolkit.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                          toolkit.description.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = selectedCategory === 'all' || toolkit.category === selectedCategory;
+    const matchesTier = selectedTier === 'all' || toolkit.tier.toString() === selectedTier;
+    const matchesStatus = selectedStatus === 'all' || toolkit.status === selectedStatus;
+    return matchesSearch && matchesCategory && matchesTier && matchesStatus;
   });
 
   const handleModelSelect = (model: any) => {
     setSelectedModel(model);
     setShowInspector(true);
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'production': return 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200';
+      case 'implementation': return 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200';
+      case 'beta': return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200';
+      case 'stable': return 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200';
+      default: return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200';
+    }
+  };
+
+  const getTierBadgeColor = (tier: number) => {
+    const colors = [
+      'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
+      'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
+      'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
+      'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200',
+      'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200',
+      'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+    ];
+    return colors[tier - 1] || colors[0];
   };
 
   // Keyboard handling for inspector
@@ -1323,11 +1484,39 @@ const ModelsPage = () => {
     <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">Models</h1>
-          <p className="text-lg text-gray-600 dark:text-gray-400">
-            Open-source models vetted for use in international criminal justice and human rights investigation.
-            All models undergo rigorous evaluation for accuracy, bias, and ethical considerations.
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">AI Models & Technical Resources</h1>
+          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-4xl">
+            Comprehensive suite of AI models and technical toolkits for international criminal justice and human rights investigation.
+            All resources undergo rigorous evaluation for accuracy, bias, and ethical considerations.
           </p>
+        </div>
+
+        {/* Tab Navigation */}
+        <div className="mb-8">
+          <div className="border-b border-gray-200 dark:border-gray-700">
+            <nav className="-mb-px flex space-x-8">
+              <button
+                onClick={() => setActiveTab('models')}
+                className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
+                  activeTab === 'models'
+                    ? 'border-blue-500 text-blue-600 dark:text-blue-400'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
+                }`}
+              >
+                AI Models ({filteredModels.length})
+              </button>
+              <button
+                onClick={() => setActiveTab('toolkits')}
+                className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
+                  activeTab === 'toolkits'
+                    ? 'border-blue-500 text-blue-600 dark:text-blue-400'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
+                }`}
+              >
+                Technical Toolkits ({allToolkits.length})
+              </button>
+            </nav>
+          </div>
         </div>
 
         {/* Filters */}
@@ -1335,145 +1524,264 @@ const ModelsPage = () => {
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-1">
               <div className="relative">
-                <label htmlFor="model-search" className="sr-only">Search models</label>
+                <label htmlFor="search" className="sr-only">Search {activeTab}</label>
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
-                  id="model-search"
+                  id="search"
                   type="search"
-                  placeholder="Search models…"
+                  placeholder={`Search ${activeTab}...`}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full pl-10 pr-4 py-2 border border-[var(--color-border-primary)] rounded-lg bg-[var(--color-bg-elevated)] text-[var(--color-text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-border-active)]"
                 />
               </div>
             </div>
-            
+
+            {activeTab === 'toolkits' && (
+              <>
+                <select
+                  value={selectedTier}
+                  onChange={(e) => setSelectedTier(e.target.value)}
+                  className="px-4 py-2 border border-[var(--color-border-primary)] rounded-lg bg-[var(--color-bg-elevated)] text-[var(--color-text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-border-active)]"
+                >
+                  <option value="all">All Tiers</option>
+                  {allTiers.map(tier => (
+                    <option key={tier} value={tier.toString()}>Tier {tier}</option>
+                  ))}
+                </select>
+
+                <select
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  className="px-4 py-2 border border-[var(--color-border-primary)] rounded-lg bg-[var(--color-bg-elevated)] text-[var(--color-text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-border-active)]"
+                >
+                  <option value="all">All Categories</option>
+                  {allCategories.map(category => (
+                    <option key={category} value={category}>
+                      {category.charAt(0).toUpperCase() + category.slice(1)}
+                    </option>
+                  ))}
+                </select>
+              </>
+            )}
+
             <select
               value={selectedStatus}
               onChange={(e) => setSelectedStatus(e.target.value)}
               className="px-4 py-2 border border-[var(--color-border-primary)] rounded-lg bg-[var(--color-bg-elevated)] text-[var(--color-text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-border-active)]"
             >
               <option value="all">All Status</option>
+              <option value="production">Production</option>
+              <option value="implementation">Implementation Ready</option>
               <option value="stable">Stable</option>
               <option value="beta">Beta</option>
               <option value="deprecated">Deprecated</option>
             </select>
           </div>
+        </div>
 
-          <div className="flex flex-wrap gap-2">
-            {allTags.map(tag => (
+        {/* View Mode Toggle - Only for models */}
+        {activeTab === 'models' && (
+          <div className="flex justify-end mb-4">
+            <div className="inline-flex rounded-lg border border-[var(--color-border-primary)] p-0.5">
               <button
-                key={tag}
-                onClick={() => setSelectedTags(prev => 
-                  prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]
-                )}
-                className={`px-3 py-1 rounded-full text-sm transition-colors ${
-                  selectedTags.includes(tag)
-                    ? 'bg-[var(--color-bg-elevated)] text-[var(--color-fg-primary)] border border-[var(--color-border-primary)]'
-                    : 'bg-[var(--color-bg-tertiary)] text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-secondary)]'
+                onClick={() => setViewMode('table')}
+                className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+                  viewMode === 'table'
+                    ? 'bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)]'
+                    : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
                 }`}
               >
-                {tag}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* View Mode Toggle */}
-        <div className="flex justify-end mb-4">
-          <div className="inline-flex rounded-lg border border-[var(--color-border-primary)] p-0.5">
-            <button
-              onClick={() => setViewMode('table')}
-              className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
-                viewMode === 'table'
-                  ? 'bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)]'
-                  : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
-              }`}
-            >
-              <div className="flex items-center gap-2">
-                <FileText className="w-4 h-4" />
-                Table
-              </div>
-            </button>
-            <button
-              onClick={() => setViewMode('grid')}
-              className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
-                viewMode === 'grid'
-                  ? 'bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)]'
-                  : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
-              }`}
-            >
-              <div className="flex items-center gap-2">
-                <Grid className="w-4 h-4" />
-                Grid
-              </div>
-            </button>
-          </div>
-        </div>
-
-        {/* Enterprise Models Table */}
-        {filteredModels.length > 0 ? (
-          viewMode === 'table' ? (
-            <div className="mx-auto" style={{ maxWidth: 1600, paddingInline: 48 }}>
-              <div className="card p-0 overflow-auto" style={{ maxHeight: '70vh' }}>
-                <table className="min-w-full">
-                  <thead className="bg-[var(--surface)] text-[var(--muted)] sticky top-0 z-10">
-                    <tr>
-                      <Th sticky="left">Model</Th>
-                      <Th align="right">Performance</Th>
-                      <Th align="center">Status</Th>
-                      <Th align="center">Version</Th>
-                      <Th align="right">Downloads</Th>
-                      <Th sticky="right" align="center">Actions</Th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredModels.map((model) => (
-                      <tr
-                        key={model.id}
-                        className="border-t border-[var(--line-soft)] hover:bg-[var(--elevated)]/40 transition-colors"
-                      >
-                        <Td sticky="left">
-                          <ModelCell model={model} />
-                        </Td>
-                        <Td align="right">{model.accuracy.toFixed(1)}%</Td>
-                        <Td align="center">
-                          <StatusTag status={model.status} />
-                        </Td>
-                        <Td align="center">v{model.version}</Td>
-                        <Td align="right">{model.downloads.toLocaleString()}</Td>
-                        <Td sticky="right" align="center">
-                          <ViewButton onClick={() => handleModelSelect(model)} />
-                        </Td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          ) : (
-            // Grid View
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredModels.map((model, index) => (
-                <div
-                  key={model.id}
-                  style={{ animationDelay: `${index * 75}ms` }}
-                  className="animate-fade-up"
-                  onClick={() => handleModelSelect(model)}
-                >
-                  <ModelCard model={model} />
+                <div className="flex items-center gap-2">
+                  <FileText className="w-4 h-4" />
+                  Table
                 </div>
-              ))}
+              </button>
+              <button
+                onClick={() => setViewMode('grid')}
+                className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+                  viewMode === 'grid'
+                    ? 'bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)]'
+                    : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <Grid className="w-4 h-4" />
+                  Grid
+                </div>
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Content Area */}
+        {activeTab === 'models' ? (
+          // AI Models Section
+          filteredModels.length > 0 ? (
+            viewMode === 'table' ? (
+              <div className="mx-auto" style={{ maxWidth: 1600, paddingInline: 48 }}>
+                <div className="card p-0 overflow-auto" style={{ maxHeight: '70vh' }}>
+                  <table className="min-w-full">
+                    <thead className="bg-[var(--surface)] text-[var(--muted)] sticky top-0 z-10">
+                      <tr>
+                        <Th sticky="left">Model</Th>
+                        <Th align="right">Performance</Th>
+                        <Th align="center">Status</Th>
+                        <Th align="center">Version</Th>
+                        <Th align="right">Downloads</Th>
+                        <Th sticky="right" align="center">Actions</Th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredModels.map((model) => (
+                        <tr
+                          key={model.id}
+                          className="border-t border-[var(--line-soft)] hover:bg-[var(--elevated)]/40 transition-colors"
+                        >
+                          <Td sticky="left">
+                            <ModelCell model={model} />
+                          </Td>
+                          <Td align="right">{model.accuracy.toFixed(1)}%</Td>
+                          <Td align="center">
+                            <StatusTag status={model.status} />
+                          </Td>
+                          <Td align="center">v{model.version}</Td>
+                          <Td align="right">{model.downloads.toLocaleString()}</Td>
+                          <Td sticky="right" align="center">
+                            <ViewButton onClick={() => handleModelSelect(model)} />
+                          </Td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            ) : (
+              // Grid View for Models
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredModels.map((model, index) => (
+                  <div
+                    key={model.id}
+                    style={{ animationDelay: `${index * 75}ms` }}
+                    className="animate-fade-up"
+                    onClick={() => handleModelSelect(model)}
+                  >
+                    <ModelCard model={model} />
+                  </div>
+                ))}
+              </div>
+            )
+          ) : (
+            <div className="text-center py-12">
+              <AlertCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No models found</h3>
+              <p className="text-gray-600 dark:text-gray-400">
+                Try adjusting your search or filters
+              </p>
             </div>
           )
         ) : (
-          <div className="text-center py-12">
-            <AlertCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No models found</h3>
-            <p className="text-gray-600 dark:text-gray-400">
-              Try adjusting your search or filters
-            </p>
-          </div>
+          // Technical Toolkits Section - Matching AI Models UI/UX
+          filteredToolkits.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredToolkits.map((toolkit, index) => (
+                <div
+                  key={toolkit.id}
+                  style={{ animationDelay: `${index * 75}ms` }}
+                  className="animate-fade-up"
+                >
+                  <Card hover className="group relative overflow-hidden border-[var(--color-border-primary)] hover:border-[var(--color-border-active)]/50 transition-all duration-300">
+                    {/* Status indicator bar */}
+                    <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-border-active)]" />
+
+                    {/* Performance sparkline visualization */}
+                    <div className="absolute top-2 right-2 opacity-20 group-hover:opacity-40 transition-opacity">
+                      <svg width="60" height="20" viewBox="0 0 60 20">
+                        <polyline
+                          points="0,15 10,12 20,8 30,10 40,5 50,7 60,3"
+                          fill="none"
+                          stroke="var(--accent)"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </div>
+
+                    {/* Trust indicator badge */}
+                    {toolkit.status === 'production' && (
+                      <div className="absolute top-0 right-0 -mr-1 -mt-1">
+                        <div className="w-6 h-6 rounded-full bg-[var(--success)] border-2 border-[var(--bg)] flex items-center justify-center">
+                          <CheckCircle className="w-3 h-3 text-white" />
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Enhanced header with better hierarchy */}
+                    <div className="mb-4">
+                      <div className="flex items-start justify-between mb-3">
+                        <div>
+                          <h3 className="text-[15px] font-semibold text-[var(--ink-8)] dark:text-white tracking-[-0.01em] mb-1">
+                            {toolkit.name}
+                          </h3>
+                          <div className="flex items-center gap-2">
+                            <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium tracking-[0.02em] uppercase
+                                           bg-[color-mix(in_srgb,var(--color-info),white_85%)] text-[var(--color-info)] dark:bg-[var(--color-info)]/10 dark:text-[var(--color-info)]">
+                              {toolkit.status}
+                            </span>
+                            <span className="text-[11px] text-[var(--color-text-tertiary)]">
+                              {toolkit.category.charAt(0).toUpperCase() + toolkit.category.slice(1)}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Description with consistent styling */}
+                      <p className="text-[13px] text-[var(--muted)] dark:text-gray-400 leading-[1.6] mb-4 line-clamp-2">
+                        {toolkit.description}
+                      </p>
+
+                      {/* Metrics section */}
+                      <div className="grid grid-cols-2 gap-3 py-3 border-t border-[var(--color-border-soft)]">
+                        <div className="flex items-center gap-2">
+                          <Code className="w-3.5 h-3.5 text-[var(--color-text-tertiary)]" />
+                          <span className="text-[11px] text-[var(--color-text-secondary)]">
+                            {toolkit.modules?.length || 0} modules
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Package className="w-3.5 h-3.5 text-[var(--color-text-tertiary)]" />
+                          <span className="text-[11px] text-[var(--color-text-secondary)]">
+                            v{toolkit.version || '1.0.0'}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Action buttons */}
+                      <div className="flex items-center justify-between pt-3">
+                        <button className="text-[12px] text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] font-medium transition-colors">
+                          View Documentation
+                        </button>
+                        <button className="inline-flex items-center gap-1 px-3 py-1.5 bg-[var(--color-bg-secondary)] hover:bg-[var(--color-bg-tertiary)]
+                                         text-[var(--color-text-primary)] text-[12px] font-medium rounded-md transition-colors">
+                          <Download className="w-3 h-3" />
+                          Install
+                        </button>
+                      </div>
+                    </div>
+                  </Card>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <AlertCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No toolkits found</h3>
+              <p className="text-gray-600 dark:text-gray-400">
+                Try adjusting your search or filters
+              </p>
+            </div>
+          )
         )}
       </div>
 
