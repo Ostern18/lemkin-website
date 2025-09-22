@@ -1,0 +1,96 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lemkin-frameworks"
+version = "0.1.0"
+description = "Legal framework mapping and geospatial analysis for international law violation assessment"
+readme = "README.md"
+license = {text = "Apache-2.0"}
+authors = [
+    {name = "Lemkin AI Contributors", email = "contributors@lemkin.org"}
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Legal Industry",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Topic :: Text Processing :: Linguistic",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: GIS",
+    "Topic :: Scientific/Engineering :: Image Processing",
+]
+requires-python = ">=3.10"
+dependencies = [
+    "pydantic>=2.0.0",
+    "pandas>=2.0.0",
+    "numpy>=1.24.0",
+    "spacy>=3.6.0",
+    "transformers>=4.30.0",
+    "scikit-learn>=1.3.0",
+    "networkx>=3.1.0",
+    "xmltodict>=0.13.0",
+    "typer>=0.9.0",
+    "rich>=13.0.0",
+    "loguru>=0.7.0",
+    "jinja2>=3.1.0",
+    "plotly>=5.15.0",
+    "pyyaml>=6.0.0",
+    # Geospatial analysis dependencies
+    "folium>=0.14.0",
+    "requests>=2.31.0",
+    "Pillow>=9.5.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "black>=23.0.0",
+    "ruff>=0.1.0",
+    "mypy>=1.0.0",
+    "pre-commit>=3.0.0",
+    "jupyter>=1.0.0",
+]
+geo = [
+    # Advanced geospatial dependencies (optional)
+    "pyproj>=3.5.0",
+    "geopandas>=0.13.0",
+    "rasterio>=1.3.0",
+    "shapely>=2.0.0",
+    "fiona>=1.9.0",
+    "cartopy>=0.21.0",
+    "contextily>=1.3.0",
+]
+
+[project.scripts]
+lemkin-frameworks = "lemkin_frameworks.cli:app"
+lemkin-geo = "lemkin_geo.cli:app"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.black]
+line-length = 88
+target-version = ['py310']
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+select = ["E", "F", "W", "C", "N"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "--cov=src/lemkin_frameworks --cov-report=html --cov-report=term-missing"

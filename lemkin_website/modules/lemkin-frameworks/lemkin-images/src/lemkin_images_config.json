@@ -1,0 +1,62 @@
+{
+  "_description": "Lemkin Images Configuration File",
+  "_version": "1.0.0",
+  "_documentation": {
+    "reverse_search": {
+      "enable_reverse_search": "Enable/disable reverse image search",
+      "search_engines": "List of search engines to use: google, tineye, bing, yandex, baidu",
+      "max_search_results": "Maximum results to collect per engine (1-500)",
+      "search_timeout_seconds": "Timeout for each search engine (5-300 seconds)"
+    },
+    "manipulation_detection": {
+      "enable_manipulation_detection": "Enable/disable manipulation detection",
+      "manipulation_threshold": "Threshold for manipulation detection (0.0-1.0)",
+      "detailed_analysis": "Enable detailed analysis (slower but more thorough)",
+      "enable_compression_analysis": "Enable JPEG compression analysis"
+    },
+    "geolocation": {
+      "enable_geolocation": "Enable/disable geolocation extraction",
+      "enable_visual_geolocation": "Enable visual landmark recognition",
+      "geolocation_confidence_threshold": "Minimum confidence for location verification (0.0-1.0)"
+    },
+    "metadata_forensics": {
+      "enable_metadata_forensics": "Enable/disable metadata forensics",
+      "extract_hidden_metadata": "Extract hidden and manufacturer-specific metadata",
+      "verify_metadata_integrity": "Verify EXIF data integrity"
+    },
+    "processing": {
+      "max_image_size_mb": "Maximum image size to process (1-1000 MB)",
+      "analysis_timeout_minutes": "Overall analysis timeout (1-120 minutes)",
+      "preserve_original": "Whether to preserve original file integrity"
+    },
+    "output": {
+      "generate_visual_reports": "Generate visual analysis reports",
+      "include_technical_details": "Include technical details in reports",
+      "confidence_scoring": "Enable confidence scoring for all analyses"
+    }
+  },
+  "enable_reverse_search": true,
+  "search_engines": [
+    "google",
+    "tineye",
+    "bing"
+  ],
+  "max_search_results": 50,
+  "search_timeout_seconds": 30,
+  "enable_manipulation_detection": true,
+  "manipulation_threshold": 0.7,
+  "detailed_analysis": true,
+  "enable_compression_analysis": true,
+  "enable_geolocation": true,
+  "enable_visual_geolocation": false,
+  "geolocation_confidence_threshold": 0.6,
+  "enable_metadata_forensics": true,
+  "extract_hidden_metadata": true,
+  "verify_metadata_integrity": true,
+  "max_image_size_mb": 100,
+  "analysis_timeout_minutes": 15,
+  "preserve_original": true,
+  "generate_visual_reports": true,
+  "include_technical_details": true,
+  "confidence_scoring": true
+}

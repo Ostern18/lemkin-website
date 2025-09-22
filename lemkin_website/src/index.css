@@ -39,6 +39,16 @@
     --shadow-md: 0 2px 8px rgba(14,17,22,.10);
     --shadow-lg: 0 8px 24px rgba(14,17,22,.12);
 
+    /* Canonical palette mappings */
+    --fg: var(--ink);
+    --fg-muted: var(--muted);
+    --fg-subtle: var(--subtle);
+    --bd: var(--line);
+    --bd-soft: var(--line-soft);
+    --surface-0: var(--bg);
+    --surface-1: var(--surface);
+    --surface-2: var(--elevated);
+
     /* Legacy aliases for existing code compatibility */
     --color-text-primary: var(--ink);
     --color-text-secondary: var(--muted);
@@ -77,6 +87,16 @@
     --shadow-sm: 0 1px 2px rgba(0,0,0,.35);
     --shadow-md: 0 2px 8px rgba(0,0,0,.45);
     --shadow-lg: 0 8px 24px rgba(0,0,0,.55);
+
+    /* Canonical palette mappings */
+    --fg: var(--ink);
+    --fg-muted: var(--muted);
+    --fg-subtle: var(--subtle);
+    --bd: var(--line);
+    --bd-soft: var(--line-soft);
+    --surface-0: var(--bg);
+    --surface-1: var(--surface);
+    --surface-2: var(--elevated);
 
     /* Legacy aliases for existing code compatibility */
     --color-text-primary: var(--ink);
@@ -197,12 +217,31 @@
 
 /* Desktop Component Styles */
 @layer components {
+  /* Button sizing scale */
+  .btn {
+    --btn-h: 40px;
+    --btn-r: 12px;
+    height: var(--btn-h);
+    border-radius: var(--btn-r);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 16px;
+    transition: all 0.2s ease;
+  }
+
+  .btn--lg {
+    --btn-h: 48px;
+    --btn-r: 14px;
+  }
+
   .btn-primary {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 10px 16px;
-    border-radius: 12px;
+    padding: 0 16px;
+    height: var(--btn-h, 40px);
+    border-radius: var(--btn-r, 12px);
     background: var(--accent);
     color: #fff;
     border: 1px solid transparent;
@@ -212,6 +251,11 @@
 
   .btn-primary:hover {
     filter: brightness(.98);
+    transform: scale(0.99);
+  }
+
+  .btn-primary:active {
+    transform: scale(0.98);
   }
 
   .btn-primary:focus-visible {
@@ -268,33 +312,6 @@
   .input:focus-visible {
     box-shadow: var(--focus);
     outline: none;
-  }
-}
-
-/* Enhanced Button Interactions and Animations */
-@layer components {
-  .btn-primary {
-    position: relative;
-    overflow: hidden;
-  }
-
-  .btn-primary::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 0;
-    height: 0;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.2);
-    transform: translate(-50%, -50%);
-    transition: width 0.6s, height 0.6s;
-  }
-
-  .btn-primary:active::after {
-    width: 300px;
-    height: 300px;
-    transition: width 0s, height 0s;
   }
 
   /* Shimmer animation for loading states */
@@ -355,6 +372,21 @@
     animation: none !important;
     filter: none !important;
     background: none !important;
+  }
+}
+
+/* Site container */
+@layer utilities {
+  .container-desktop {
+    max-width: 1440px;
+    padding: 0 48px;
+    margin: 0 auto;
+  }
+
+  /* Performance: content-visibility for below-the-fold sections */
+  .section-btf {
+    content-visibility: auto;
+    contain-intrinsic-size: 1000px;
   }
 }
 
@@ -462,16 +494,48 @@
   html { scroll-behavior: auto; }
 }
 
-/* Selection Styles */
-@layer base {
-  ::selection {
-    @apply bg-primary-200 dark:bg-primary-900 text-primary-900 dark:text-primary-100;
-  }
-
-  ::-moz-selection {
-    @apply bg-primary-200 dark:bg-primary-900 text-primary-900 dark:text-primary-100;
+/* Desktop-only guardrails */
+@media (max-width: 1199px) {
+  body::before {
+    content: "Optimized for desktop widths ≥ 1200px";
+    position: fixed;
+    inset: 0 auto auto 0;
+    background: var(--surface);
+    border: 1px solid var(--bd);
+    padding: 6px 10px;
+    font-size: 12px;
+    z-index: 60;
   }
 }
+
+/* Skip link for accessibility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.sr-only.focus\:not-sr-only:focus {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: 8px 16px;
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 8px;
+  z-index: 100;
+}
+
 
 /* Advanced Gradient Animations */
 @layer utilities {
@@ -498,12 +562,12 @@
   }
 }
 
-/* Shadow Elevation System */
+/* Shadow Elevation System - Simplified to 2 tiers */
 @layer utilities {
-  .shadow-elevation-1 { box-shadow: 0 1px 2px rgba(var(--shadow-rgb), .06); }
-  .shadow-elevation-2 { box-shadow: 0 4px 12px rgba(var(--shadow-rgb), .08); }
-  .shadow-elevation-3 { box-shadow: 0 8px 24px rgba(var(--shadow-rgb), .10); }
-  .shadow-elevation-4 { box-shadow: 0 14px 40px rgba(var(--shadow-rgb), .12); }
+  .shadow-1 { box-shadow: 0 1px 2px rgba(14,17,22,.06); }
+  .shadow-2 { box-shadow: 0 8px 24px rgba(14,17,22,.12); }
+  .dark .shadow-1 { box-shadow: 0 1px 2px rgba(0,0,0,.35); }
+  .dark .shadow-2 { box-shadow: 0 8px 24px rgba(0,0,0,.55); }
 
   /* Standardized surface combinations */
   .surface-default {
@@ -579,4 +643,50 @@
   .card-hover:hover::before {
     left: 100%;
   }
+
+  /* OpenAI-style professional capability card transitions */
+  .capability-cards-container {
+    position: relative;
+    width: 100%;
+    height: auto;
+  }
+
+  .capability-cards-set {
+    transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .capability-cards-set.entering {
+    opacity: 0;
+  }
+
+  .capability-cards-set.entered {
+    opacity: 1;
+  }
+
+  .capability-cards-set.exiting {
+    opacity: 0;
+  }
+
+  /* Individual card animations with staggered entrance */
+  .capability-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  .capability-card.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .capability-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+  }
+
+  /* Staggered entrance animation */
+  .capability-card:nth-child(1) { transition-delay: 0ms; }
+  .capability-card:nth-child(2) { transition-delay: 80ms; }
+  .capability-card:nth-child(3) { transition-delay: 160ms; }
+  .capability-card:nth-child(4) { transition-delay: 240ms; }
 }

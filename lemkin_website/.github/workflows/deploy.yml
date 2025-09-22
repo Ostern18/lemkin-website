@@ -1,0 +1,257 @@
+name: Lemkin AI Website Deploy
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'staging')
+    environment:
+      name: staging
+      url: https://staging.lemkin.ai
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Log in to Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Deploy to staging
+      run: |
+        echo "🚀 Deploying to staging environment..."
+        # Add actual deployment commands here
+        # This could be kubectl, docker-compose, or cloud-specific deployment
+
+    - name: Run deployment health checks
+      run: |
+        echo "🔍 Running health checks..."
+        sleep 30
+        curl -f https://staging.lemkin.ai/health || exit 1
+
+    - name: Run smoke tests
+      run: |
+        echo "🧪 Running smoke tests..."
+        # Add smoke test commands here
+
+    - name: Notify deployment success
+      run: |
+        echo "✅ Staging deployment completed successfully!"
+
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v') || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production')
+    environment:
+      name: production
+      url: https://lemkin.ai
+    needs: [security-scan, performance-test]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Verify production readiness
+      run: |
+        echo "🔍 Verifying production readiness..."
+        # Add production readiness checks
+
+    - name: Create deployment backup
+      run: |
+        echo "💾 Creating deployment backup..."
+        # Add backup commands
+
+    - name: Deploy to production
+      run: |
+        echo "🚀 Deploying to production environment..."
+        # Add actual production deployment commands
+
+    - name: Run production health checks
+      run: |
+        echo "🔍 Running production health checks..."
+        sleep 60
+        curl -f https://lemkin.ai/health || exit 1
+
+    - name: Run production smoke tests
+      run: |
+        echo "🧪 Running production smoke tests..."
+        # Add production smoke test commands
+
+    - name: Update monitoring dashboards
+      run: |
+        echo "📊 Updating monitoring dashboards..."
+        # Add monitoring update commands
+
+    - name: Notify stakeholders
+      run: |
+        echo "📢 Notifying stakeholders of deployment..."
+        # Add notification commands
+
+    - name: Notify deployment success
+      run: |
+        echo "✅ Production deployment completed successfully!"
+
+  security-scan:
+    name: Pre-deployment Security Scan
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v') || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production')
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Build image for scanning
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        load: true
+        tags: lemkin-website:scan
+
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: 'lemkin-website:scan'
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+
+    - name: Upload Trivy scan results
+      uses: github/codeql-action/upload-sarif@v2
+      with:
+        sarif_file: 'trivy-results.sarif'
+
+    - name: Run container security checks
+      run: |
+        echo "🔒 Running container security checks..."
+        docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+          -v $PWD:/tmp aquasec/trivy config /tmp
+
+  performance-test:
+    name: Pre-deployment Performance Test
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v') || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production')
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Build application
+      run: npm run build
+
+    - name: Install serve
+      run: npm install -g serve
+
+    - name: Start application
+      run: serve -s build -l 3000 &
+
+    - name: Wait for app to start
+      run: sleep 10
+
+    - name: Run performance tests
+      uses: treosh/lighthouse-ci-action@v10
+      with:
+        configPath: '.lighthouserc.json'
+        uploadArtifacts: true
+        temporaryPublicStorage: true
+
+    - name: Run load testing
+      run: |
+        echo "⚡ Running load tests..."
+        npx artillery quick --count 50 --num 5 http://localhost:3000
+
+  rollback:
+    name: Rollback Deployment
+    runs-on: ubuntu-latest
+    if: failure() && (startsWith(github.ref, 'refs/tags/v') || github.event.inputs.environment == 'production')
+    needs: [deploy-production]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Rollback to previous version
+      run: |
+        echo "⏪ Rolling back to previous version..."
+        # Add rollback commands here
+
+    - name: Verify rollback
+      run: |
+        echo "🔍 Verifying rollback..."
+        curl -f https://lemkin.ai/health || exit 1
+
+    - name: Notify rollback
+      run: |
+        echo "🚨 Deployment rolled back due to failure!"
+
+  cleanup:
+    name: Cleanup Old Images
+    runs-on: ubuntu-latest
+    if: always()
+    needs: [deploy-staging, deploy-production]
+
+    steps:
+    - name: Cleanup old container images
+      run: |
+        echo "🧹 Cleaning up old images..."
+        # Add cleanup commands to remove old images from registry
+
+  notify-deployment:
+    name: Notify Deployment Status
+    runs-on: ubuntu-latest
+    needs: [deploy-staging, deploy-production]
+    if: always()
+
+    steps:
+    - name: Determine deployment outcome
+      id: outcome
+      run: |
+        if [[ "${{ needs.deploy-staging.result }}" == "success" ]] || [[ "${{ needs.deploy-production.result }}" == "success" ]]; then
+          echo "status=success" >> $GITHUB_OUTPUT
+        else
+          echo "status=failure" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Send notification
+      run: |
+        if [[ "${{ steps.outcome.outputs.status }}" == "success" ]]; then
+          echo "✅ Deployment notification: SUCCESS"
+        else
+          echo "❌ Deployment notification: FAILURE"
+        fi
+        # Add actual notification logic (Slack, email, etc.)

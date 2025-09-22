@@ -1,0 +1,121 @@
+version: '3.8'
+
+services:
+  # Main Lemkin AI website
+  lemkin-website:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    ports:
+      - "3000:80"
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - ./nginx-logs:/var/log/nginx:rw
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - lemkin-network
+
+  # Development mode service
+  lemkin-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: builder
+    ports:
+      - "3001:3000"
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+    volumes:
+      - .:/app:rw
+      - /app/node_modules
+      - /app/build
+    command: npm start
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
+    networks:
+      - lemkin-network
+    profiles:
+      - dev
+
+  # Nginx reverse proxy for development
+  nginx-proxy:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/dev.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - lemkin-website
+    restart: unless-stopped
+    networks:
+      - lemkin-network
+    profiles:
+      - proxy
+
+  # Documentation server for development
+  docs-server:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./resources:/usr/share/nginx/html/resources:ro
+      - ./SECURITY.md:/usr/share/nginx/html/security.html:ro
+      - ./CONTRIBUTING.md:/usr/share/nginx/html/contributing.html:ro
+      - ./CODE_OF_CONDUCT.md:/usr/share/nginx/html/code-of-conduct.html:ro
+    restart: unless-stopped
+    networks:
+      - lemkin-network
+    profiles:
+      - docs
+
+  # Security scanning service
+  security-scanner:
+    image: owasp/zap2docker-stable
+    volumes:
+      - ./security-reports:/zap/wrk:rw
+    command: zap-baseline.py -t http://lemkin-website -r security-report.html
+    depends_on:
+      - lemkin-website
+    networks:
+      - lemkin-network
+    profiles:
+      - security
+
+  # Log aggregation for monitoring
+  log-aggregator:
+    image: fluent/fluent-bit:latest
+    volumes:
+      - ./nginx-logs:/var/log/nginx:ro
+      - ./fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf:ro
+    depends_on:
+      - lemkin-website
+    restart: unless-stopped
+    networks:
+      - lemkin-network
+    profiles:
+      - monitoring
+
+networks:
+  lemkin-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+volumes:
+  nginx-logs:
+    driver: local

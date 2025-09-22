@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  lemkin-integrity:
+    build: .
+    container_name: lemkin-integrity
+    volumes:
+      - ./data:/app/data
+      - ./evidence:/app/evidence:ro
+    environment:
+      - LEMKIN_DB_PATH=/app/data/evidence_integrity.db
+    command: tail -f /dev/null  # Keep container running
+    
+  # Optional: Add a web interface service
+  integrity-web:
+    build: .
+    container_name: lemkin-integrity-web
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./data:/app/data:ro
+    environment:
+      - LEMKIN_DB_PATH=/app/data/evidence_integrity.db
+    command: python -m http.server 8080
+    depends_on:
+      - lemkin-integrity
