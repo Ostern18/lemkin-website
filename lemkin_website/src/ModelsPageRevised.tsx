@@ -4,7 +4,9 @@ import {
   Eye, Brain, FileText, Shield, Target, Scale,
   ChevronRight, Play, ArrowLeft,
   CheckCircle, AlertCircle, Database,
-  Settings, Activity, TrendingUp, Users
+  Settings, Activity, TrendingUp, Users, Grid,
+  Clock, MapPin, HardDrive, Video, Image, Headphones,
+  Scan, BookOpen, MessageSquare, BarChart3, FileText as FileReport, Download
 } from 'lucide-react';
 import { models, Model, modelCategories, getFeaturedModels } from './modelsData';
 
@@ -48,7 +50,7 @@ const ModelsPageRevised: React.FC = () => {
       title: "Infrastructure Protection",
       description: "Identify hospitals, schools, and civilian facilities",
       icon: Shield,
-      color: "text-blue-500"
+      color: "text-[var(--accent)]"
     },
     {
       title: "Damage Assessment",
@@ -60,7 +62,7 @@ const ModelsPageRevised: React.FC = () => {
       title: "Rights Monitoring",
       description: "Detect violations of international humanitarian law",
       icon: Scale,
-      color: "text-purple-500"
+      color: "text-[var(--accent)]"
     },
     {
       title: "Legal Analysis",
@@ -159,16 +161,65 @@ const ModelsPageRevised: React.FC = () => {
     }
   };
 
-  const getTypeIcon = (type: string) => {
+  const getSpecificToolIcon = (name: string) => {
+    switch (name) {
+      case 'Evidence Integrity Toolkit':
+        return <Shield className="w-5 h-5 text-[var(--accent)]" />;
+      case 'Automated Redaction Suite':
+        return <Eye className="w-5 h-5 text-[var(--accent)]" />;
+      case 'Document Classification Engine':
+        return <FileText className="w-5 h-5 text-[var(--accent)]" />;
+      case 'Named Entity Recognition Toolkit':
+        return <Target className="w-5 h-5 text-[var(--accent)]" />;
+      case 'Timeline Reconstruction Tool':
+        return <Clock className="w-5 h-5 text-[var(--accent)]" />;
+      case 'Legal Framework Analysis Tool':
+        return <Scale className="w-5 h-5 text-[var(--accent)]" />;
+      case 'Open Source Intelligence Collector':
+        return <Search className="w-5 h-5 text-[var(--accent)]" />;
+      case 'Geospatial Evidence Analyzer':
+        return <MapPin className="w-5 h-5 text-[var(--accent)]" />;
+      case 'Digital Forensics Toolkit':
+        return <HardDrive className="w-5 h-5 text-[var(--accent)]" />;
+      case 'Video Evidence Processor':
+        return <Video className="w-5 h-5 text-[var(--accent)]" />;
+      case 'Image Analysis Suite':
+        return <Image className="w-5 h-5 text-[var(--accent)]" />;
+      case 'Audio Processing Toolkit':
+        return <Headphones className="w-5 h-5 text-[var(--accent)]" />;
+      case 'Optical Character Recognition Engine':
+        return <Scan className="w-5 h-5 text-[var(--accent)]" />;
+      case 'Research Document Analyzer':
+        return <BookOpen className="w-5 h-5 text-[var(--accent)]" />;
+      case 'Communication Analysis Tool':
+        return <MessageSquare className="w-5 h-5 text-[var(--accent)]" />;
+      case 'Investigation Dashboard':
+        return <BarChart3 className="w-5 h-5 text-[var(--accent)]" />;
+      case 'Report Generation Suite':
+        return <FileReport className="w-5 h-5 text-[var(--accent)]" />;
+      case 'Evidence Export Manager':
+        return <Download className="w-5 h-5 text-[var(--accent)]" />;
+      default:
+        return <Settings className="w-5 h-5 text-[var(--accent)]" />;
+    }
+  };
+
+  const getTypeIcon = (type: string, moduleType?: string, modelName?: string) => {
+    if (moduleType === 'module' && modelName) {
+      return getSpecificToolIcon(modelName);
+    }
+
     switch (type) {
       case 'computer-vision':
-        return <Eye className="w-5 h-5" />;
+        return <Eye className="w-5 h-5 text-[var(--color-primary)]" />;
       case 'nlp':
-        return <FileText className="w-5 h-5" />;
+        return <FileText className="w-5 h-5 text-[var(--color-primary)]" />;
       case 'hybrid':
-        return <Brain className="w-5 h-5" />;
+        return <Grid className="w-5 h-5 text-[var(--color-primary)]" />;
+      case 'multimodal':
+        return <Brain className="w-5 h-5 text-[var(--color-primary)]" />;
       default:
-        return <Brain className="w-5 h-5" />;
+        return <Brain className="w-5 h-5 text-[var(--color-primary)]" />;
     }
   };
 
@@ -184,8 +235,64 @@ const ModelsPageRevised: React.FC = () => {
         return <FileText className="w-5 h-5" />;
       case 'Narrative Generation':
         return <Brain className="w-5 h-5" />;
+      case 'Foundation & Safety':
+        return <Shield className="w-5 h-5" />;
+      case 'Core Analysis':
+        return <Activity className="w-5 h-5" />;
+      case 'Evidence Collection':
+        return <Search className="w-5 h-5" />;
+      case 'Media Analysis':
+        return <Eye className="w-5 h-5" />;
+      case 'Document Processing':
+        return <FileText className="w-5 h-5" />;
+      case 'Visualization & Reporting':
+        return <TrendingUp className="w-5 h-5" />;
       default:
-        return <Brain className="w-5 h-5" />;
+        return <Settings className="w-5 h-5" />;
+    }
+  };
+
+  const getToolTypeDescription = (name: string, category: string) => {
+    // Specific descriptions for each tool based on its name and function
+    switch (name) {
+      case 'Evidence Integrity Toolkit':
+        return 'Cryptographic tool';
+      case 'Automated Redaction Suite':
+        return 'Privacy protection';
+      case 'Document Classification Engine':
+        return 'Classification system';
+      case 'Named Entity Recognition Toolkit':
+        return 'Entity extraction';
+      case 'Timeline Reconstruction Tool':
+        return 'Temporal analysis';
+      case 'Legal Framework Analysis Tool':
+        return 'Legal framework';
+      case 'Open Source Intelligence Collector':
+        return 'OSINT collection';
+      case 'Geospatial Evidence Analyzer':
+        return 'Geographic analysis';
+      case 'Digital Forensics Toolkit':
+        return 'Forensic analysis';
+      case 'Video Evidence Processor':
+        return 'Video processing';
+      case 'Image Analysis Suite':
+        return 'Image processing';
+      case 'Audio Processing Toolkit':
+        return 'Audio analysis';
+      case 'Optical Character Recognition Engine':
+        return 'Text extraction';
+      case 'Research Document Analyzer':
+        return 'Document research';
+      case 'Communication Analysis Tool':
+        return 'Communication data';
+      case 'Investigation Dashboard':
+        return 'Data visualization';
+      case 'Report Generation Suite':
+        return 'Report automation';
+      case 'Evidence Export Manager':
+        return 'Export utility';
+      default:
+        return 'Specialized tool';
     }
   };
 
@@ -206,7 +313,7 @@ const ModelsPageRevised: React.FC = () => {
             {/* Model Header - Enhanced Professional Style */}
             <div className="flex items-start gap-6">
               <div className="flex-shrink-0 p-4 bg-gradient-to-br from-[var(--color-primary)]/10 to-[var(--color-primary)]/5 rounded-2xl border border-[var(--color-primary)]/20 shadow-sm">
-                {getTypeIcon(selectedModel.type)}
+                {getTypeIcon(selectedModel.type, selectedModel.moduleType, selectedModel.name)}
               </div>
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-2">
@@ -218,14 +325,8 @@ const ModelsPageRevised: React.FC = () => {
                   {selectedModel.publicSummary}
                 </p>
                 <div className="flex flex-wrap items-center gap-3">
-                  <span className={`px-4 py-2 rounded-xl text-sm font-semibold ${getStatusColor(selectedModel.status)}`}>
-                    {selectedModel.status.charAt(0).toUpperCase() + selectedModel.status.slice(1)}
-                  </span>
-                  <span className="px-4 py-2 bg-[var(--color-bg-secondary)] text-[var(--color-text-secondary)] rounded-xl text-sm border border-[var(--color-border-primary)] font-medium">
+                  <span className="px-4 py-2 bg-[var(--surface)] text-[var(--muted)] rounded-xl text-sm border border-[var(--line)] font-medium">
                     {selectedModel.category}
-                  </span>
-                  <span className="px-4 py-2 bg-[var(--color-bg-secondary)] text-[var(--color-text-secondary)] rounded-xl text-sm border border-[var(--color-border-primary)] font-medium">
-                    {selectedModel.type.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
                   </span>
                 </div>
               </div>
@@ -239,13 +340,11 @@ const ModelsPageRevised: React.FC = () => {
                     Try Model
                   </a>
                 )}
-                {selectedModel.githubRepo && (
-                  <a href={selectedModel.githubRepo} target="_blank" rel="noopener noreferrer"
-                     className="inline-flex items-center gap-2 px-6 py-3 border border-[var(--color-border-primary)] text-[var(--color-text-primary)] rounded-xl hover:bg-[var(--color-bg-secondary)] hover:shadow-sm transition-all font-semibold group">
-                    <Github className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                    View Source
-                  </a>
-                )}
+                <a href={selectedModel.githubRepo || `https://github.com/Lemkin-AI/${selectedModel.name.toLowerCase().replace(/\s+/g, '-')}`} target="_blank" rel="noopener noreferrer"
+                   className="inline-flex items-center gap-2 px-6 py-3 border border-[var(--color-border-primary)] text-[var(--color-text-primary)] rounded-xl hover:bg-[var(--color-bg-secondary)] hover:shadow-sm transition-all font-semibold group">
+                  <Github className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                  View Source
+                </a>
               </div>
             </div>
           </div>
@@ -300,51 +399,168 @@ const ModelsPageRevised: React.FC = () => {
         <div className="max-w-6xl mx-auto px-6 py-12">
           {activeSection === 'overview' && (
             <div className="space-y-12">
-              {/* Performance Dashboard */}
-              <div className="bg-gradient-to-br from-[var(--color-bg-surface)] to-[var(--color-bg-elevated)] border border-[var(--color-border-primary)] rounded-3xl p-8 shadow-elevation-1">
-                <div className="flex items-center gap-3 mb-8">
-                  <Activity className="w-6 h-6 text-[var(--color-primary)]" />
-                  <h2 className="text-2xl font-bold text-[var(--color-text-primary)]">Performance Metrics</h2>
+              {/* Purpose & Description - Primary Focus */}
+              <div className="max-w-4xl">
+                <div className="mb-8">
+                  <h2 className="text-3xl font-bold text-[var(--ink)] mb-6">
+                    {selectedModel.moduleType === 'module' ? 'What this tool does' : 'What this model does'}
+                  </h2>
+                  <p className="text-xl text-[var(--muted)] leading-relaxed mb-6">
+                    {selectedModel.description}
+                  </p>
+                  <p className="text-lg text-[var(--subtle)] leading-relaxed">
+                    {selectedModel.publicSummary}
+                  </p>
                 </div>
-                <div className="grid md:grid-cols-4 gap-6">
-                  {selectedModel.metrics.accuracy && (
-                    <div className="relative overflow-hidden bg-[var(--color-bg-primary)] border border-[var(--color-border-primary)] rounded-2xl p-6 hover:shadow-elevation-2 transition-all group">
-                      <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-[var(--color-primary)]/10 to-transparent rounded-bl-full"></div>
-                      <div className="relative">
-                        <div className="text-3xl font-bold text-[var(--color-primary)] mb-2 group-hover:scale-105 transition-transform">{selectedModel.metrics.accuracy}</div>
-                        <div className="text-sm font-medium text-[var(--color-text-secondary)]">Accuracy</div>
-                        <div className="text-xs text-[var(--color-text-tertiary)] mt-1">Production validated</div>
+              </div>
+
+              {/* Core Capabilities - Secondary Focus */}
+              <div className="bg-gradient-to-br from-[var(--surface)] to-[var(--elevated)] border border-[var(--line)] rounded-3xl p-8 shadow-elevation-1">
+                <div className="flex items-center gap-3 mb-8">
+                  <Target className="w-6 h-6 text-[var(--accent)]" />
+                  <h2 className="text-2xl font-bold text-[var(--ink)]">Core Capabilities</h2>
+                </div>
+                <div className="grid md:grid-cols-2 gap-6">
+                  {selectedModel.capabilities.map((capability, capIndex) => (
+                    <div key={capIndex} className="bg-[var(--bg)] border border-[var(--line)] rounded-2xl p-6">
+                      <h3 className="text-lg font-semibold text-[var(--ink)] mb-4">{capability.category}</h3>
+                      <div className="space-y-3">
+                        {capability.items.map((item, index) => (
+                          <div key={index} className="flex items-start gap-3">
+                            <div className="w-2 h-2 bg-[var(--accent)] rounded-full mt-2 flex-shrink-0"></div>
+                            <span className="text-[var(--muted)] leading-relaxed">{item}</span>
+                          </div>
+                        ))}
                       </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Real-World Impact */}
+              {selectedModel.realWorldImpact && selectedModel.realWorldImpact.length > 0 && (
+                <div className="bg-gradient-to-br from-[var(--surface)] to-[var(--elevated)] border border-[var(--line)] rounded-3xl p-8 shadow-elevation-1">
+                  <div className="flex items-center gap-3 mb-8">
+                    <Scale className="w-6 h-6 text-[var(--accent)]" />
+                    <h2 className="text-2xl font-bold text-[var(--ink)]">Real-World Impact</h2>
+                  </div>
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {selectedModel.realWorldImpact.map((impact, index) => (
+                      <div key={index} className="bg-[var(--bg)] border border-[var(--line)] rounded-2xl p-6">
+                        <h3 className="text-lg font-semibold text-[var(--ink)] mb-4">{impact.domain}</h3>
+                        <div className="space-y-3">
+                          {impact.examples.map((example, exIndex) => (
+                            <div key={exIndex} className="flex items-start gap-3">
+                              <CheckCircle className="w-4 h-4 text-[var(--success)] mt-1 flex-shrink-0" />
+                              <span className="text-[var(--muted)] text-sm leading-relaxed">{example}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Performance Metrics - Tertiary Focus */}
+              <div className="bg-gradient-to-br from-[var(--surface)] to-[var(--elevated)] border border-[var(--line)] rounded-3xl p-8 shadow-elevation-1">
+                <div className="flex items-center gap-3 mb-8">
+                  <Activity className="w-6 h-6 text-[var(--accent)]" />
+                  <h2 className="text-2xl font-bold text-[var(--ink)]">
+                    {selectedModel.moduleType === 'module' ? 'Tool Performance' : 'Model Performance'}
+                  </h2>
+                </div>
+                <div className="grid md:grid-cols-3 gap-6">
+                  {selectedModel.metrics.accuracy && (
+                    <div className="bg-[var(--bg)] border border-[var(--line)] rounded-2xl p-6 hover:shadow-elevation-1 transition-all">
+                      <div className="text-2xl font-bold text-[var(--accent)] mb-2">{selectedModel.metrics.accuracy}</div>
+                      <div className="text-sm font-medium text-[var(--ink)]">Accuracy</div>
+                      <div className="text-xs text-[var(--subtle)] mt-1">Production validated</div>
                     </div>
                   )}
                   {selectedModel.metrics.f1Score && (
-                    <div className="relative overflow-hidden bg-[var(--color-bg-primary)] border border-[var(--color-border-primary)] rounded-2xl p-6 hover:shadow-elevation-2 transition-all group">
-                      <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-[var(--color-primary)]/10 to-transparent rounded-bl-full"></div>
-                      <div className="relative">
-                        <div className="text-3xl font-bold text-[var(--color-primary)] mb-2 group-hover:scale-105 transition-transform">{selectedModel.metrics.f1Score.split(',')[0]}</div>
-                        <div className="text-sm font-medium text-[var(--color-text-secondary)]">F1 Score</div>
-                        <div className="text-xs text-[var(--color-text-tertiary)] mt-1">Precision & Recall</div>
-                      </div>
+                    <div className="bg-[var(--bg)] border border-[var(--line)] rounded-2xl p-6 hover:shadow-elevation-1 transition-all">
+                      <div className="text-2xl font-bold text-[var(--accent)] mb-2">{selectedModel.metrics.f1Score.split(',')[0]}</div>
+                      <div className="text-sm font-medium text-[var(--ink)]">F1 Score</div>
+                      <div className="text-xs text-[var(--subtle)] mt-1">Precision & Recall</div>
                     </div>
                   )}
-                  <div className="relative overflow-hidden bg-[var(--color-bg-primary)] border border-[var(--color-border-primary)] rounded-2xl p-6 hover:shadow-elevation-2 transition-all group">
-                    <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-[var(--color-primary)]/10 to-transparent rounded-bl-full"></div>
-                    <div className="relative">
-                      <div className="text-3xl font-bold text-[var(--color-primary)] mb-2 group-hover:scale-105 transition-transform">{selectedModel.metrics.modelSize}</div>
-                      <div className="text-sm font-medium text-[var(--color-text-secondary)]">Model Size</div>
-                      <div className="text-xs text-[var(--color-text-tertiary)] mt-1">Optimized for deployment</div>
+                  {selectedModel.metrics.inferenceSpeed && (
+                    <div className="bg-[var(--bg)] border border-[var(--line)] rounded-2xl p-6 hover:shadow-elevation-1 transition-all">
+                      <div className="text-2xl font-bold text-[var(--accent)] mb-2">{selectedModel.metrics.inferenceSpeed}</div>
+                      <div className="text-sm font-medium text-[var(--ink)]">Processing Speed</div>
+                      <div className="text-xs text-[var(--subtle)] mt-1">Optimized performance</div>
                     </div>
-                  </div>
-                  <div className="relative overflow-hidden bg-[var(--color-bg-primary)] border border-[var(--color-border-primary)] rounded-2xl p-6 hover:shadow-elevation-2 transition-all group">
-                    <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-[var(--color-primary)]/10 to-transparent rounded-bl-full"></div>
-                    <div className="relative">
-                      <div className="text-3xl font-bold text-[var(--color-primary)] mb-2 group-hover:scale-105 transition-transform">
-                        {selectedModel.status === 'production' ? 'Ready' : 'Dev'}
-                      </div>
-                      <div className="text-sm font-medium text-[var(--color-text-secondary)]">Status</div>
-                      <div className="text-xs text-[var(--color-text-tertiary)] mt-1">Real-time inference</div>
+                  )}
+                  {/* Only show model size for actual AI models, not tools */}
+                  {selectedModel.moduleType === 'model' && selectedModel.metrics.modelSize && (
+                    <div className="bg-[var(--bg)] border border-[var(--line)] rounded-2xl p-6 hover:shadow-elevation-1 transition-all">
+                      <div className="text-2xl font-bold text-[var(--accent)] mb-2">{selectedModel.metrics.modelSize}</div>
+                      <div className="text-sm font-medium text-[var(--ink)]">Model Size</div>
+                      <div className="text-xs text-[var(--subtle)] mt-1">Optimized for deployment</div>
                     </div>
-                  </div>
+                  )}
+                  {/* Show additional relevant metrics for tools */}
+                  {selectedModel.moduleType === 'module' && (
+                    <>
+                      {selectedModel.metrics.coverage && (
+                        <div className="bg-[var(--bg)] border border-[var(--line)] rounded-2xl p-6 hover:shadow-elevation-1 transition-all">
+                          <div className="text-2xl font-bold text-[var(--accent)] mb-2">{selectedModel.metrics.coverage}</div>
+                          <div className="text-sm font-medium text-[var(--ink)]">Coverage</div>
+                          <div className="text-xs text-[var(--subtle)] mt-1">Comprehensive support</div>
+                        </div>
+                      )}
+                      {selectedModel.metrics.languages && (
+                        <div className="bg-[var(--bg)] border border-[var(--line)] rounded-2xl p-6 hover:shadow-elevation-1 transition-all">
+                          <div className="text-2xl font-bold text-[var(--accent)] mb-2">{selectedModel.metrics.languages}</div>
+                          <div className="text-sm font-medium text-[var(--ink)]">Languages</div>
+                          <div className="text-xs text-[var(--subtle)] mt-1">Multilingual support</div>
+                        </div>
+                      )}
+                      {selectedModel.metrics.formats && (
+                        <div className="bg-[var(--bg)] border border-[var(--line)] rounded-2xl p-6 hover:shadow-elevation-1 transition-all">
+                          <div className="text-2xl font-bold text-[var(--accent)] mb-2">{selectedModel.metrics.formats}</div>
+                          <div className="text-sm font-medium text-[var(--ink)]">Formats</div>
+                          <div className="text-xs text-[var(--subtle)] mt-1">Universal compatibility</div>
+                        </div>
+                      )}
+                      {selectedModel.metrics.sources && (
+                        <div className="bg-[var(--bg)] border border-[var(--line)] rounded-2xl p-6 hover:shadow-elevation-1 transition-all">
+                          <div className="text-2xl font-bold text-[var(--accent)] mb-2">{selectedModel.metrics.sources}</div>
+                          <div className="text-sm font-medium text-[var(--ink)]">Sources</div>
+                          <div className="text-xs text-[var(--subtle)] mt-1">Comprehensive reach</div>
+                        </div>
+                      )}
+                      {selectedModel.metrics.entities && (
+                        <div className="bg-[var(--bg)] border border-[var(--line)] rounded-2xl p-6 hover:shadow-elevation-1 transition-all">
+                          <div className="text-2xl font-bold text-[var(--accent)] mb-2">{selectedModel.metrics.entities}</div>
+                          <div className="text-sm font-medium text-[var(--ink)]">Entity Types</div>
+                          <div className="text-xs text-[var(--subtle)] mt-1">Specialized recognition</div>
+                        </div>
+                      )}
+                      {selectedModel.metrics.precision && (
+                        <div className="bg-[var(--bg)] border border-[var(--line)] rounded-2xl p-6 hover:shadow-elevation-1 transition-all">
+                          <div className="text-2xl font-bold text-[var(--accent)] mb-2">{selectedModel.metrics.precision}</div>
+                          <div className="text-sm font-medium text-[var(--ink)]">Precision</div>
+                          <div className="text-xs text-[var(--subtle)] mt-1">High accuracy timing</div>
+                        </div>
+                      )}
+                      {selectedModel.metrics.compatibility && (
+                        <div className="bg-[var(--bg)] border border-[var(--line)] rounded-2xl p-6 hover:shadow-elevation-1 transition-all">
+                          <div className="text-2xl font-bold text-[var(--accent)] mb-2">{selectedModel.metrics.compatibility}</div>
+                          <div className="text-sm font-medium text-[var(--ink)]">Compatibility</div>
+                          <div className="text-xs text-[var(--subtle)] mt-1">Broad system support</div>
+                        </div>
+                      )}
+                      {selectedModel.metrics.protection && (
+                        <div className="bg-[var(--bg)] border border-[var(--line)] rounded-2xl p-6 hover:shadow-elevation-1 transition-all">
+                          <div className="text-2xl font-bold text-[var(--accent)] mb-2">{selectedModel.metrics.protection}</div>
+                          <div className="text-sm font-medium text-[var(--ink)]">Privacy Protection</div>
+                          <div className="text-xs text-[var(--subtle)] mt-1">Compliance standards</div>
+                        </div>
+                      )}
+                    </>
+                  )}
                 </div>
               </div>
 
@@ -354,11 +570,38 @@ const ModelsPageRevised: React.FC = () => {
                   <div className="bg-[var(--color-bg-surface)] border border-[var(--color-border-primary)] rounded-2xl p-8">
                     <div className="flex items-center gap-3 mb-6">
                       <Brain className="w-6 h-6 text-[var(--color-primary)]" />
-                      <h2 className="text-2xl font-bold text-[var(--color-text-primary)]">Model Overview</h2>
+                      <h2 className="text-2xl font-bold text-[var(--color-text-primary)]">
+                        Overview
+                      </h2>
                     </div>
                     <p className="text-[var(--color-text-secondary)] leading-relaxed text-lg mb-8">
                       {selectedModel.description}
                     </p>
+
+                    {/* Real World Impact */}
+                    {selectedModel.realWorldImpact && selectedModel.realWorldImpact.length > 0 && (
+                      <div className="mb-8">
+                        <h3 className="text-lg font-semibold text-[var(--color-text-primary)] mb-4 flex items-center gap-2">
+                          <Scale className="w-5 h-5 text-[var(--color-primary)]" />
+                          Real-World Impact
+                        </h3>
+                        <div className="grid gap-4">
+                          {selectedModel.realWorldImpact.map((impact, index) => (
+                            <div key={index} className="p-4 bg-[var(--color-bg-elevated)] border border-[var(--color-border-primary)] rounded-xl">
+                              <h4 className="font-semibold text-[var(--color-text-primary)] mb-2">{impact.domain}</h4>
+                              <ul className="text-sm text-[var(--color-text-secondary)] space-y-1">
+                                {impact.examples.map((example, exIndex) => (
+                                  <li key={exIndex} className="flex items-start gap-2">
+                                    <span className="text-[var(--color-primary)] mt-1">•</span>
+                                    {example}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
 
                     {/* Key Capabilities - Enhanced Grid */}
                     <h3 className="text-lg font-semibold text-[var(--color-text-primary)] mb-6 flex items-center gap-2">
@@ -386,12 +629,6 @@ const ModelsPageRevised: React.FC = () => {
                     </h3>
                     <div className="space-y-4">
                       <div className="flex justify-between items-center pb-3 border-b border-[var(--color-border-primary)]">
-                        <span className="text-sm text-[var(--color-text-secondary)]">Model Type</span>
-                        <span className="text-sm font-medium text-[var(--color-text-primary)]">
-                          {selectedModel.type.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center pb-3 border-b border-[var(--color-border-primary)]">
                         <span className="text-sm text-[var(--color-text-secondary)]">Category</span>
                         <span className="text-sm font-medium text-[var(--color-text-primary)]">{selectedModel.category}</span>
                       </div>
@@ -399,10 +636,16 @@ const ModelsPageRevised: React.FC = () => {
                         <span className="text-sm text-[var(--color-text-secondary)]">Framework</span>
                         <span className="text-sm font-medium text-[var(--color-text-primary)] font-mono">{selectedModel.technicalSpecs.framework.split(' ')[0]}</span>
                       </div>
-                      <div className="flex justify-between items-center">
+                      <div className="flex justify-between items-center pb-3 border-b border-[var(--color-border-primary)]">
                         <span className="text-sm text-[var(--color-text-secondary)]">Use Cases</span>
                         <span className="text-sm font-medium text-[var(--color-primary)]">{selectedModel.useCases.length}</span>
                       </div>
+                      {selectedModel.tier && (
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-[var(--color-text-secondary)]">Tier Level</span>
+                          <span className="text-sm font-medium text-[var(--color-primary)]">{selectedModel.tier}</span>
+                        </div>
+                      )}
                     </div>
                   </div>
 
@@ -417,13 +660,15 @@ const ModelsPageRevised: React.FC = () => {
                           Try Model
                         </a>
                       )}
-                      {selectedModel.githubRepo && (
-                        <a href={selectedModel.githubRepo} target="_blank" rel="noopener noreferrer"
-                           className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 border border-[var(--color-border-primary)] text-[var(--color-text-primary)] rounded-xl hover:bg-[var(--color-bg-secondary)] transition-all font-medium group">
-                          <Github className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                          View Source
-                        </a>
-                      )}
+                      <a href={selectedModel.githubRepo || `https://github.com/Lemkin-AI/${selectedModel.name.toLowerCase().replace(/\s+/g, '-')}`} target="_blank" rel="noopener noreferrer"
+                         className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 border border-[var(--color-border-primary)] text-[var(--color-text-primary)] rounded-xl hover:bg-[var(--color-bg-secondary)] transition-all font-medium group">
+                        <Github className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                        View Source
+                      </a>
+                      <a href="/docs" className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 border border-[var(--color-border-primary)] text-[var(--color-text-primary)] rounded-xl hover:bg-[var(--color-bg-secondary)] transition-all font-medium group">
+                        <FileText className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                        Documentation
+                      </a>
                     </div>
                   </div>
                 </div>
@@ -622,23 +867,54 @@ const ModelsPageRevised: React.FC = () => {
                 </div>
               )}
 
-              {/* Deployment Information - Enhanced */}
+              {/* Installation & Deployment - Enhanced */}
               <div className="bg-gradient-to-br from-[var(--color-bg-surface)] to-[var(--color-bg-elevated)] border border-[var(--color-border-primary)] rounded-3xl p-8 shadow-elevation-1">
                 <div className="flex items-center gap-3 mb-8">
                   <Code2 className="w-6 h-6 text-[var(--color-primary)]" />
-                  <h3 className="text-2xl font-bold text-[var(--color-text-primary)]">Deployment Requirements</h3>
+                  <h3 className="text-2xl font-bold text-[var(--color-text-primary)]">Installation & Deployment</h3>
                 </div>
-                <div className="max-w-4xl mx-auto">
+                <div className="grid lg:grid-cols-2 gap-8">
+                  {/* Installation */}
+                  <div className="bg-[var(--color-bg-primary)] border border-[var(--color-border-primary)] rounded-2xl p-6">
+                    <h4 className="font-bold text-[var(--color-text-primary)] mb-4 flex items-center gap-2">
+                      <Github className="w-5 h-5 text-[var(--color-primary)]" />
+                      Quick Start
+                    </h4>
+                    <div className="space-y-3 mb-4">
+                      <div className="bg-[var(--color-bg-secondary)] border border-[var(--color-border-primary)] rounded-lg p-4">
+                        <code className="text-sm text-[var(--color-text-secondary)]">
+                          git clone {selectedModel.githubRepo || `https://github.com/Lemkin-AI/${selectedModel.name.toLowerCase().replace(/\s+/g, '-')}`}
+                        </code>
+                      </div>
+                      <div className="bg-[var(--color-bg-secondary)] border border-[var(--color-border-primary)] rounded-lg p-4">
+                        <code className="text-sm text-[var(--color-text-secondary)]">
+                          cd {selectedModel.name.toLowerCase().replace(/\s+/g, '-')}
+                        </code>
+                      </div>
+                      <div className="bg-[var(--color-bg-secondary)] border border-[var(--color-border-primary)] rounded-lg p-4">
+                        <code className="text-sm text-[var(--color-text-secondary)]">
+                          pip install -r requirements.txt
+                        </code>
+                      </div>
+                    </div>
+                    <a href={selectedModel.githubRepo || `https://github.com/Lemkin-AI/${selectedModel.name.toLowerCase().replace(/\s+/g, '-')}`} target="_blank" rel="noopener noreferrer"
+                       className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--color-primary)] text-white rounded-lg hover:bg-[var(--color-primary)]/90 transition-all font-medium text-sm">
+                      <Github className="w-4 h-4" />
+                      View Full Setup Guide
+                    </a>
+                  </div>
+
+                  {/* Requirements */}
                   <div className="bg-[var(--color-bg-primary)] border border-[var(--color-border-primary)] rounded-2xl p-6">
                     <h4 className="font-bold text-[var(--color-text-primary)] mb-4 flex items-center gap-2">
                       <Settings className="w-5 h-5 text-[var(--color-primary)]" />
-                      Requirements
+                      System Requirements
                     </h4>
                     <div className="space-y-3">
                       {selectedModel.deployment.requirements.map((req, index) => (
                         <div key={index} className="flex items-center gap-3 p-3 bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-border-primary)] hover:shadow-sm transition-all">
                           <CheckCircle className="w-4 h-4 text-[var(--color-success)]" />
-                          <span className="text-[var(--color-text-secondary)] font-mono text-sm">{req}</span>
+                          <span className="text-[var(--color-text-secondary)] text-sm">{req}</span>
                         </div>
                       ))}
                     </div>
@@ -659,10 +935,10 @@ const ModelsPageRevised: React.FC = () => {
         <div className="max-w-6xl mx-auto px-6 py-20">
           <div className="text-center max-w-4xl mx-auto">
             <h1 className="text-6xl font-bold text-[var(--color-text-primary)] mb-6 leading-[1.1] tracking-tight">
-              AI Models for Justice
+              AI Models & Tools for Justice
             </h1>
             <p className="text-xl text-[var(--color-text-secondary)] leading-relaxed max-w-3xl mx-auto mb-8">
-              Production-ready AI models specifically designed for human rights monitoring, legal analysis,
+              Production-ready AI models and technical tools specifically designed for human rights monitoring, legal analysis,
               and humanitarian applications. Built with transparency, accuracy, and ethical deployment in mind.
             </p>
 
@@ -712,69 +988,9 @@ const ModelsPageRevised: React.FC = () => {
         </div>
       </section>
 
-      {/* Featured Models - Enhanced */}
-      {searchQuery === '' && selectedCategory === 'All Models' && (
-        <section className="py-16 bg-[var(--color-bg-surface)]">
-          <div className="max-w-6xl mx-auto px-6">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-[var(--color-text-primary)] mb-4">Featured Models</h2>
-              <p className="text-[var(--color-text-secondary)] max-w-2xl mx-auto">
-                Our flagship AI models powering the next generation of human rights monitoring and legal technology.
-              </p>
-            </div>
-            <div className="grid md:grid-cols-3 gap-8">
-              {featuredModels.map((model) => (
-                <div
-                  key={model.id}
-                  className="group cursor-pointer bg-[var(--color-bg-primary)] border border-[var(--color-border-primary)] rounded-2xl overflow-hidden hover:shadow-elevation-3 hover:border-[var(--color-border-secondary)] transition-all duration-300 hover:scale-[1.02]"
-                  onClick={() => setSelectedModel(model)}
-                >
-                  <div className="p-8">
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="p-3 bg-gradient-to-br from-[var(--color-primary)]/10 to-[var(--color-primary)]/5 rounded-xl border border-[var(--color-primary)]/20">
-                        {getTypeIcon(model.type)}
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="text-lg font-semibold text-[var(--color-text-primary)] group-hover:text-[var(--color-primary)] transition-colors">
-                          {model.name}
-                        </h3>
-                        <span className="text-xs text-[var(--color-text-tertiary)] mt-1 block">{model.category}</span>
-                      </div>
-                    </div>
-
-                    <p className="text-[var(--color-text-secondary)] mb-6 leading-relaxed text-center">
-                      {model.cardSummary}
-                    </p>
-
-                    <div className="grid grid-cols-2 gap-4 mb-6">
-                      <div className="text-center p-3 bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-border-primary)]">
-                        <div className="text-lg font-bold text-[var(--color-primary)]">
-                          {model.metrics.accuracy || model.metrics.f1Score?.split(',')[0] || '95%'}
-                        </div>
-                        <div className="text-xs text-[var(--color-text-tertiary)]">
-                          {model.metrics.accuracy ? 'Accuracy' : 'F1 Score'}
-                        </div>
-                      </div>
-                      <div className="text-center p-3 bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-border-primary)]">
-                        <div className="text-lg font-bold text-[var(--color-primary)]">{model.metrics.modelSize}</div>
-                        <div className="text-xs text-[var(--color-text-tertiary)]">Size</div>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-[var(--color-text-tertiary)]">{model.category}</span>
-                      <ChevronRight className="w-4 h-4 text-[var(--color-text-tertiary)] group-hover:text-[var(--color-primary)] transition-colors" />
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* Filters */}
-      <section className="bg-[var(--color-bg-surface)] border-b border-[var(--color-border-primary)] sticky top-0 z-10">
+      <section className="bg-[var(--color-bg-surface)] border-b border-[var(--color-border-primary)]">
         <div className="max-w-6xl mx-auto px-6 py-4">
           <div className="flex flex-wrap items-center gap-4">
             <div className="flex items-center gap-2">
@@ -798,7 +1014,7 @@ const ModelsPageRevised: React.FC = () => {
           </div>
 
           <div className="mt-4 text-sm text-[var(--color-text-secondary)]">
-            <span className="font-medium text-[var(--color-text-primary)]">{filteredModels.length}</span> models found
+            <span className="font-medium text-[var(--color-text-primary)]">{filteredModels.length}</span> models & tools found
           </div>
         </div>
       </section>
@@ -816,58 +1032,34 @@ const ModelsPageRevised: React.FC = () => {
                 <div className="p-8">
                   {/* Header */}
                   <div className="flex items-start gap-4 mb-6">
-                    <div className="flex-shrink-0 p-3 bg-gradient-to-br from-[var(--color-primary)]/10 to-[var(--color-primary)]/5 rounded-xl border border-[var(--color-primary)]/20">
-                      {getTypeIcon(model.type)}
+                    <div className="flex-shrink-0 p-3 rounded-xl border bg-gradient-to-br from-[var(--accent)]/8 to-[var(--accent)]/3 border-[var(--accent)]/15">
+                      {getTypeIcon(model.type, model.moduleType, model.name)}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="mb-3">
-                        <h3 className="text-xl font-semibold text-[var(--color-text-primary)] group-hover:text-[var(--color-primary)] transition-colors">
-                          {model.name}
-                        </h3>
-                        <span className="text-xs text-[var(--color-text-tertiary)] mt-1 block">{model.category}</span>
-                      </div>
+                      <h3 className="text-xl font-semibold text-[var(--ink)] group-hover:text-[var(--accent)] transition-colors line-clamp-2 mb-2">
+                        {model.name}
+                      </h3>
+                      <span className="text-sm text-[var(--subtle)] block">{model.category}</span>
                     </div>
                   </div>
 
                   {/* Description */}
-                  <p className="text-[var(--color-text-secondary)] mb-6 leading-relaxed text-center">
+                  <p className="text-[var(--muted)] mb-6 leading-relaxed line-clamp-3">
                     {model.cardSummary}
                   </p>
-
-                  {/* Metrics */}
-                  <div className="grid grid-cols-3 gap-4 mb-6">
-                    {model.metrics.accuracy && (
-                      <div className="text-center p-3 bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-border-primary)]">
-                        <div className="text-lg font-bold text-[var(--color-primary)]">{model.metrics.accuracy}</div>
-                        <div className="text-xs text-[var(--color-text-tertiary)]">Accuracy</div>
-                      </div>
-                    )}
-                    {model.metrics.f1Score && !model.metrics.accuracy && (
-                      <div className="text-center p-3 bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-border-primary)]">
-                        <div className="text-lg font-bold text-[var(--color-primary)]">{model.metrics.f1Score.split(',')[0]}</div>
-                        <div className="text-xs text-[var(--color-text-tertiary)]">F1 Score</div>
-                      </div>
-                    )}
-                    <div className="text-center p-3 bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-border-primary)]">
-                      <div className="text-lg font-bold text-[var(--color-primary)]">{model.metrics.modelSize}</div>
-                      <div className="text-xs text-[var(--color-text-tertiary)]">Size</div>
-                    </div>
-                    <div className="text-center p-3 bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-border-primary)]">
-                      <div className="text-lg font-bold text-[var(--color-primary)]">
-                        {model.type.replace('-', ' ').split(' ').map(w => w[0].toUpperCase() + w.slice(1)).join(' ')}
-                      </div>
-                      <div className="text-xs text-[var(--color-text-tertiary)]">Type</div>
-                    </div>
-                  </div>
 
                   {/* Footer */}
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       {getCategoryIcon(model.category)}
-                      <span className="text-sm text-[var(--color-text-tertiary)]">{model.type.replace('-', ' ')}</span>
+                      <span className="text-sm text-[var(--subtle)]">
+                        {getToolTypeDescription(model.name, model.category)}
+                      </span>
                     </div>
-                    <div className="flex items-center gap-2 text-[var(--color-primary)] group-hover:gap-3 transition-all">
-                      <span className="text-sm font-medium">Learn more</span>
+                    <div className="flex items-center gap-2 text-[var(--accent)] group-hover:gap-3 transition-all">
+                      <span className="text-sm font-medium">
+                        {model.moduleType === 'module' ? 'Explore tool' : 'Learn more'}
+                      </span>
                       <ChevronRight className="w-4 h-4" />
                     </div>
                   </div>
@@ -880,7 +1072,7 @@ const ModelsPageRevised: React.FC = () => {
           {filteredModels.length === 0 && (
             <div className="text-center py-16">
               <Database className="w-16 h-16 text-[var(--color-text-tertiary)] mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-[var(--color-text-primary)] mb-2">No models found</h3>
+              <h3 className="text-xl font-semibold text-[var(--color-text-primary)] mb-2">No models or tools found</h3>
               <p className="text-[var(--color-text-secondary)] mb-6">
                 Try adjusting your search query or category filters
               </p>
@@ -903,7 +1095,7 @@ const ModelsPageRevised: React.FC = () => {
         <div className="max-w-4xl mx-auto px-6 text-center">
           <h2 className="text-3xl font-bold text-[var(--color-text-primary)] mb-4">Ready to Deploy?</h2>
           <p className="text-[var(--color-text-secondary)] text-lg mb-8">
-            All models are production-ready with comprehensive documentation, API endpoints, and deployment guides.
+            All models and tools are production-ready with comprehensive documentation, API endpoints, and deployment guides.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a
@@ -913,7 +1105,7 @@ const ModelsPageRevised: React.FC = () => {
               className="inline-flex items-center gap-2 px-6 py-3 bg-[var(--color-primary)] text-white rounded-lg hover:bg-[var(--color-primary)]/90 transition-colors font-medium"
             >
               <Github className="w-5 h-5" />
-              View on GitHub
+              Lemkin AI on GitHub
             </a>
             <a
               href="/docs"

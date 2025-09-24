@@ -1,5 +1,5 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
-import { X, Search, Calendar, Clock, AlertCircle, CheckCircle, Book, Code, Users, Mail, ExternalLink, Github, Twitter, FileText, Download, ArrowRight, ArrowLeft, Copy, Check, Scale, Shield, Eye, Gavel, Grid, Package, Sun, Moon, User, Share, Folder } from 'lucide-react';
+import { X, Search, Calendar, Clock, AlertCircle, CheckCircle, Book, Code, Users, Mail, ExternalLink, Github, Twitter, FileText, Download, ArrowRight, ArrowLeft, Copy, Check, Scale, Shield, Eye, Gavel, Grid, Package, Sun, Moon, User, Share, Folder, BarChart, Database, AlertTriangle, Zap } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { RouteProgressBar, Pressable, MotionCard } from './motion';
 import { ArticlesPage } from './ArticlesPage';
@@ -1770,19 +1770,19 @@ const Footer = () => {
       <div className="container-desktop py-16">
         {/* Trust center highlight - simplified */}
         <div className="text-center mb-12 pb-8 border-b border-[var(--bd)]">
-          <h2 className="text-lg font-semibold text-[var(--ink)] mb-3">Trust & Transparency</h2>
+          <h2 className="text-lg font-semibold text-[var(--ink)] mb-3">Transparency First</h2>
           <dl className="grid grid-cols-3 gap-6 text-sm max-w-2xl mx-auto">
             <div>
-              <dt className="font-medium text-[var(--ink)]">Compliance</dt>
-              <dd><a href="/security/compliance" className="text-[var(--muted)] hover:text-[var(--accent)] transition-colors">ISO 27001, SOC 2 Type II</a></dd>
+              <dt className="font-medium text-[var(--ink)]">Open Source</dt>
+              <dd><a href="/github" className="text-[var(--muted)] hover:text-[var(--accent)] transition-colors">All code on GitHub</a></dd>
             </div>
             <div>
-              <dt className="font-medium text-[var(--ink)]">Evaluation</dt>
-              <dd><a href="/docs/evaluation" className="text-[var(--muted)] hover:text-[var(--accent)] transition-colors">Methodology & Audit</a></dd>
+              <dt className="font-medium text-[var(--ink)]">Validated</dt>
+              <dd><a href="/docs/evaluation" className="text-[var(--muted)] hover:text-[var(--accent)] transition-colors">Testing & metrics</a></dd>
             </div>
             <div>
-              <dt className="font-medium text-[var(--ink)]">Provenance</dt>
-              <dd><a href="/docs/provenance" className="text-[var(--muted)] hover:text-[var(--accent)] transition-colors">Datasets & Sources</a></dd>
+              <dt className="font-medium text-[var(--ink)]">Documented</dt>
+              <dd><a href="/docs" className="text-[var(--muted)] hover:text-[var(--accent)] transition-colors">Full documentation</a></dd>
             </div>
           </dl>
         </div>
@@ -1919,7 +1919,7 @@ const HomePage = () => {
           className="text-hero mb-4"
           style={{ fontSize: 'clamp(36px, 4vw, 48px)', lineHeight: 1.2, fontWeight: 700 }}
         >
-          Evidence-grade AI for International Justice
+          AI Tools for Human Rights Documentation
         </motion.h1>
 
         {/* Hero Description */}
@@ -1930,8 +1930,8 @@ const HomePage = () => {
           className="text-body-max mb-6 text-[var(--muted)]"
           style={{ maxWidth: '72ch' }}
         >
-          Open-source machine learning models rigorously validated for legal proceedings.
-          Trusted by tribunals, NGOs, and investigative teams worldwide.
+          Open-source technology supporting investigators documenting war crimes, human rights violations, and mass atrocities.
+          Built with legal standards in mind. Validated by practitioners.
         </motion.p>
 
         {/* Action Buttons with hierarchy */}
@@ -1957,30 +1957,30 @@ const HomePage = () => {
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
             <div className="space-y-2">
-              <h3 className="text-sm font-semibold text-[var(--color-text-secondary)] uppercase tracking-wide">Who Reviews</h3>
+              <h3 className="text-sm font-semibold text-[var(--color-text-secondary)] uppercase tracking-wide">Validated By</h3>
               <p className="text-[var(--color-text-tertiary)] text-sm leading-relaxed">
-                Tribunals, NGOs, Universities
+                Legal practitioners, investigators, researchers
               </p>
               <a href="/reviewers" className="text-xs text-[var(--color-fg-primary)] underline underline-offset-[3px] hover:opacity-90 focus-ring rounded-sm">View details</a>
             </div>
             <div className="space-y-2">
-              <h3 className="text-sm font-semibold text-[var(--color-text-secondary)] uppercase tracking-wide">How We Evaluate</h3>
+              <h3 className="text-sm font-semibold text-[var(--color-text-secondary)] uppercase tracking-wide">Quality Standards</h3>
               <p className="text-[var(--color-text-tertiary)] text-sm leading-relaxed">
-                Bias testing, Legal accuracy, Chain of custody
+                Accuracy testing, bias detection, evidence handling
               </p>
               <a href="/methodology" className="text-xs text-[var(--color-fg-primary)] underline underline-offset-[3px] hover:opacity-90 focus-ring rounded-sm">View methodology</a>
             </div>
             <div className="space-y-2">
-              <h3 className="text-sm font-semibold text-[var(--color-text-secondary)] uppercase tracking-wide">Update Cadence</h3>
+              <h3 className="text-sm font-semibold text-[var(--color-text-secondary)] uppercase tracking-wide">Continuous Improvement</h3>
               <p className="text-[var(--color-text-tertiary)] text-sm leading-relaxed">
-                Monthly security, Quarterly evaluation
+                Regular updates, security patches, performance reviews
               </p>
               <a href="/changelog" className="text-xs text-[var(--color-fg-primary)] underline underline-offset-[3px] hover:opacity-90 focus-ring rounded-sm">View changelog</a>
             </div>
             <div className="space-y-2">
-              <h3 className="text-sm font-semibold text-[var(--color-text-secondary)] uppercase tracking-wide">Misuse Reporting</h3>
+              <h3 className="text-sm font-semibold text-[var(--color-text-secondary)] uppercase tracking-wide">Responsible Use</h3>
               <p className="text-[var(--color-text-tertiary)] text-sm leading-relaxed">
-                24h response, Public disclosure
+                Ethics guidelines, usage monitoring, incident response
               </p>
               <a href="/report" className="text-xs text-[var(--color-fg-primary)] underline underline-offset-[3px] hover:opacity-90 focus-ring rounded-sm">Report issue</a>
             </div>
@@ -1995,7 +1995,7 @@ const HomePage = () => {
           <div className="text-center mb-16">
             <div className="inline-flex items-center gap-2 px-4 py-2 backdrop-blur-xl bg-[color-mix(in_srgb,var(--color-bg-elevated),transparent_92%)] border border-[var(--color-border-secondary)] rounded-full mb-8">
               <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
-              <span className="text-[var(--color-text-secondary)] text-sm">Developed with practitioners from international tribunals and NGOs</span>
+              <span className="text-[var(--color-text-secondary)] text-sm">Developed in collaboration with human rights investigators and legal experts</span>
             </div>
 
             <div className="flex justify-center items-center gap-8 mb-12 flex-wrap">
@@ -2023,10 +2023,10 @@ const HomePage = () => {
                   <Shield className="w-8 h-8 text-[var(--color-text-primary)]" />
                 </div>
                 <h3 className="font-display text-xl font-bold text-[var(--color-text-primary)] mb-4">
-                  Vetted & Validated
+                  Rigorous Validation
                 </h3>
                 <p className="text-[var(--color-text-secondary)] leading-relaxed mb-6">
-                  All models undergo rigorous testing for accuracy, bias, and reliability in legal contexts with transparent evaluation metrics.
+                  Every tool undergoes comprehensive testing for accuracy and bias. We publish all evaluation metrics and limitations transparently.
                 </p>
                 <button
                   onClick={() => navigate('/docs/evaluation')}
@@ -2046,10 +2046,10 @@ const HomePage = () => {
                   <Gavel className="w-8 h-8 text-[var(--color-text-primary)]" />
                 </div>
                 <h3 className="font-display text-xl font-bold text-[var(--color-text-primary)] mb-4">
-                  Legally Aware
+                  Built for Legal Work
                 </h3>
                 <p className="text-[var(--color-text-secondary)] leading-relaxed mb-6">
-                  Built with deep understanding of legal standards, evidence requirements, and chain of custody protocols.
+                  Designed with evidence standards, chain of custody, and court admissibility requirements at the core of every feature.
                 </p>
                 <button
                   onClick={() => navigate('/governance')}
@@ -2069,10 +2069,10 @@ const HomePage = () => {
                   <Eye className="w-8 h-8 text-[var(--color-text-primary)]" />
                 </div>
                 <h3 className="font-display text-xl font-bold text-[var(--color-text-primary)] mb-4">
-                  Community-Driven
+                  Open Development
                 </h3>
                 <p className="text-[var(--color-text-secondary)] leading-relaxed mb-6">
-                  Open development with full transparency, peer review, and collaborative governance from the global community.
+                  Transparent, collaborative development with contributions from investigators, lawyers, and technologists worldwide.
                 </p>
                 <button
                   onClick={() => navigate('/contribute')}
@@ -2092,8 +2092,8 @@ const HomePage = () => {
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-between mb-12">
             <div>
-              <h2 className="text-heading-lg font-semibold text-[var(--color-fg-primary)] mb-2">Featured Models</h2>
-              <p className="text-[var(--color-fg-muted)]">Production-ready AI models with full evaluation transparency</p>
+              <h2 className="text-heading-lg font-semibold text-[var(--color-fg-primary)] mb-2">Featured Tools</h2>
+              <p className="text-[var(--color-fg-muted)]">Production-ready models and modules for human rights documentation</p>
             </div>
             <button
               onClick={() => navigate('/models')}
@@ -2121,7 +2121,7 @@ const HomePage = () => {
 
       {/* Join the Mission */}
       <section className="mx-auto" style={{ maxWidth: 1440, paddingInline: 48, paddingBlock: 56 }}>
-        <h2 className="mb-6" style={{ fontSize: 32, fontWeight: 700 }}>Join the Mission</h2>
+        <h2 className="mb-6" style={{ fontSize: 32, fontWeight: 700 }}>Get Involved</h2>
         <div className="grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', gap: 24 }}>
           <article className="card h-full p-6">
             <div className="flex items-start gap-3">
@@ -2129,9 +2129,9 @@ const HomePage = () => {
                 <CheckCircle className="w-5 h-5 text-[var(--accent)]" />
               </div>
               <div className="flex-1">
-                <h3 className="text-lg font-semibold text-[var(--ink)]">Improve Model Evaluation</h3>
+                <h3 className="text-lg font-semibold text-[var(--ink)]">Validate Models</h3>
                 <p className="text-sm text-[var(--subtle)] mt-1">10–15 min</p>
-                <p className="text-sm text-[var(--muted)] mt-2.5">Help expand our evaluation datasets with legal domain expertise and bias testing protocols.</p>
+                <p className="text-sm text-[var(--muted)] mt-2.5">Test models against real-world scenarios and help identify biases or limitations.</p>
                 <button className="link inline-flex items-center mt-3.5 text-sm">
                   Get started<span className="ml-1.5">→</span>
                 </button>
@@ -2145,9 +2145,9 @@ const HomePage = () => {
                 <FileText className="w-5 h-5 text-[var(--accent)]" />
               </div>
               <div className="flex-1">
-                <h3 className="text-lg font-semibold text-[var(--ink)]">Write Dataset Cards</h3>
+                <h3 className="text-lg font-semibold text-[var(--ink)]">Document Use Cases</h3>
                 <p className="text-sm text-[var(--subtle)] mt-1">20–30 min</p>
-                <p className="text-sm text-[var(--muted)] mt-2.5">Document training data sources, ethical considerations, and usage guidelines for transparency.</p>
+                <p className="text-sm text-[var(--muted)] mt-2.5">Share how you're using these tools in the field and help others learn from your experience.</p>
                 <button className="link inline-flex items-center mt-3.5 text-sm">
                   Get started<span className="ml-1.5">→</span>
                 </button>
@@ -2161,9 +2161,9 @@ const HomePage = () => {
                 <Code className="w-5 h-5 text-[var(--accent)]" />
               </div>
               <div className="flex-1">
-                <h3 className="text-lg font-semibold text-[var(--ink)]">Add Unit Tests</h3>
+                <h3 className="text-lg font-semibold text-[var(--ink)]">Improve Code</h3>
                 <p className="text-sm text-[var(--subtle)] mt-1">15–25 min</p>
-                <p className="text-sm text-[var(--muted)] mt-2.5">Enhance model reliability with edge case testing and performance validation scripts.</p>
+                <p className="text-sm text-[var(--muted)] mt-2.5">Contribute code improvements, bug fixes, or new features to enhance tool reliability.</p>
                 <button className="link inline-flex items-center mt-3.5 text-sm">
                   Get started<span className="ml-1.5">→</span>
                 </button>
@@ -2257,11 +2257,10 @@ const ModelsPage = () => {
     <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">AI Models & Technical Resources</h1>
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">Models & Tools</h1>
           <p className="text-lg text-gray-600 dark:text-gray-400 max-w-4xl">
-            Comprehensive suite of 18 specialized modules organized in 6 tiers, providing AI-augmented tools for legal investigations
-            while maintaining the highest standards of evidence integrity and legal ethics. Browse our production-ready toolkits
-            and explore detailed documentation for each module.
+            A comprehensive collection of AI models and technical modules designed for human rights documentation and legal investigation.
+            Each tool is validated for accuracy, tested for bias, and documented transparently.
           </p>
         </div>
 
@@ -3376,7 +3375,7 @@ const ResourcesPage = () => {
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">Resources</h1>
           <p className="text-lg text-gray-600 dark:text-gray-400">
-            Tools, workflows, and documentation to help you get started with Lemkin AI.
+            Documentation, guides, and reference materials for using Lemkin AI tools effectively.
           </p>
         </div>
 
@@ -3570,48 +3569,46 @@ const AboutPage = () => {
   return (
     <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-8">About Lemkin AI</h1>
-        
+        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-8">About</h1>
+
         <div className="prose prose-gray dark:prose-invert max-w-none">
           <p className="text-lg text-gray-600 dark:text-gray-400 mb-6">
-            Lemkin AI is an open-source initiative dedicated to developing and maintaining machine learning 
-            models and tools specifically designed for international criminal justice, human rights 
-            investigation, and legal technology applications.
+            Lemkin AI provides open-source technology for documenting war crimes, human rights violations,
+            and mass atrocities. We build tools that help investigators, lawyers, and human rights defenders
+            work more effectively while maintaining the highest standards of evidence integrity.
           </p>
 
-          <h2 className="text-2xl font-bold mt-8 mb-4">Our Mission</h2>
+          <h2 className="text-2xl font-bold mt-8 mb-4">Mission</h2>
           <p className="text-gray-600 dark:text-gray-400 mb-6">
-            We believe that advanced AI capabilities should be accessible to organizations working to 
-            document war crimes, investigate human rights violations, and pursue international justice. 
-            Our mission is to provide reliable, ethical, and transparent AI tools that enhance the 
-            capacity of investigators, prosecutors, and human rights defenders worldwide.
+            We democratize access to advanced technology for human rights work. By providing open-source,
+            validated, and transparent tools, we enable organizations of all sizes to document violations,
+            analyze evidence, and pursue accountability more effectively.
           </p>
 
-          <h2 className="text-2xl font-bold mt-8 mb-4">Named After Raphael Lemkin</h2>
+          <h2 className="text-2xl font-bold mt-8 mb-4">Why Lemkin</h2>
           <p className="text-gray-600 dark:text-gray-400 mb-6">
-            Our project is named in honor of Raphael Lemkin, the Polish lawyer who coined the term 
-            "genocide" and drafted the initial version of the Genocide Convention. His tireless work 
-            to establish international legal frameworks for preventing mass atrocities inspires our 
-            commitment to leveraging technology for justice.
+            Named after Raphael Lemkin, who coined the term "genocide" and drafted the Genocide Convention,
+            our project continues his legacy of creating frameworks for preventing and prosecuting mass atrocities.
+            We believe technology can play a crucial role in this mission.
           </p>
 
-          <h2 className="text-2xl font-bold mt-8 mb-4">Core Principles</h2>
+          <h2 className="text-2xl font-bold mt-8 mb-4">Principles</h2>
           <ul className="space-y-3 text-gray-600 dark:text-gray-400 mb-6">
             <li>
-              <strong className="text-gray-900 dark:text-white">Transparency:</strong> All our models 
-              are open-source with published training data sources and evaluation metrics.
+              <strong className="text-gray-900 dark:text-white">Transparency:</strong> Open-source code,
+              published methodologies, and clear documentation of limitations.
             </li>
             <li>
-              <strong className="text-gray-900 dark:text-white">Accountability:</strong> We maintain 
-              detailed documentation of model limitations and potential biases.
+              <strong className="text-gray-900 dark:text-white">Rigor:</strong> Systematic testing,
+              bias detection, and validation by practitioners.
             </li>
             <li>
-              <strong className="text-gray-900 dark:text-white">Privacy:</strong> Our tools are designed 
-              with privacy-by-design principles to protect sensitive information.
+              <strong className="text-gray-900 dark:text-white">Privacy:</strong> Built-in protections
+              for witnesses, victims, and sensitive information.
             </li>
             <li>
-              <strong className="text-gray-900 dark:text-white">Accessibility:</strong> We ensure our 
-              tools can be deployed in resource-constrained environments.
+              <strong className="text-gray-900 dark:text-white">Accessibility:</strong> Tools that work
+              in low-resource settings and don't require advanced technical expertise.
             </li>
           </ul>
 
@@ -3643,8 +3640,8 @@ const ContributePage = () => {
         
         <div className="prose prose-gray dark:prose-invert max-w-none">
           <p className="text-lg text-gray-600 dark:text-gray-400 mb-6">
-            Lemkin AI is a community-driven project. We welcome contributions from developers, 
-            researchers, legal professionals, and human rights practitioners worldwide.
+            Join a global community working to advance human rights through technology.
+            Every contribution—whether code, documentation, or feedback—helps make these tools more effective.
           </p>
 
           <h2 className="text-2xl font-bold mt-8 mb-4">Ways to Contribute</h2>
@@ -3652,9 +3649,9 @@ const ContributePage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             <Card>
               <Code className="w-8 h-8 text-[var(--color-fg-primary)] mb-3" />
-              <h3 className="font-semibold text-lg mb-2">Code Contributions</h3>
+              <h3 className="font-semibold text-lg mb-2">Development</h3>
               <p className="text-gray-600 dark:text-gray-400 text-sm">
-                Submit pull requests for bug fixes, new features, or model improvements.
+                Improve existing tools, fix bugs, or build new features.
               </p>
             </Card>
             
@@ -3662,7 +3659,7 @@ const ContributePage = () => {
               <FileText className="w-8 h-8 text-[var(--color-fg-primary)] mb-3" />
               <h3 className="font-semibold text-lg mb-2">Documentation</h3>
               <p className="text-gray-600 dark:text-gray-400 text-sm">
-                Help improve our guides, API documentation, and tutorials.
+                Create guides, improve documentation, or translate content.
               </p>
             </Card>
             
@@ -3730,31 +3727,28 @@ const GovernancePage = () => {
         
         <div className="prose prose-gray dark:prose-invert max-w-none">
           <p className="text-lg text-gray-600 dark:text-gray-400 mb-6">
-            Lemkin AI operates under a transparent governance model designed to ensure the project 
-            remains aligned with its mission while incorporating diverse perspectives from the 
-            international justice community.
+            Lemkin AI maintains transparent governance to ensure our tools serve the needs of human rights
+            practitioners while meeting the highest standards of technical excellence and ethical responsibility.
           </p>
 
           <h2 className="text-2xl font-bold mt-8 mb-4">Governance Structure</h2>
           
           <h3 className="text-xl font-semibold mt-6 mb-3">Steering Committee</h3>
           <p className="text-gray-600 dark:text-gray-400 mb-6">
-            The Steering Committee provides strategic direction and ensures the project adheres to 
-            its ethical principles. Members include representatives from international tribunals, 
-            human rights organizations, and technical experts.
+            Sets strategic direction and ensures alignment with human rights objectives. Comprised of
+            practitioners from international courts, NGOs, and civil society organizations.
           </p>
 
           <h3 className="text-xl font-semibold mt-6 mb-3">Technical Advisory Board</h3>
           <p className="text-gray-600 dark:text-gray-400 mb-6">
-            The Technical Advisory Board reviews model architectures, evaluation metrics, and 
-            deployment guidelines to ensure technical excellence and responsible AI practices.
+            Reviews technical implementations, validates models, and ensures tools meet requirements
+            for legal admissibility and investigative standards.
           </p>
 
-          <h3 className="text-xl font-semibold mt-6 mb-3">Core Maintainers</h3>
+          <h3 className="text-xl font-semibold mt-6 mb-3">Core Contributors</h3>
           <p className="text-gray-600 dark:text-gray-400 mb-6">
-            Core maintainers are responsible for day-to-day project management, code review, 
-            and release coordination. They are selected based on sustained contributions and 
-            technical expertise.
+            Manage day-to-day development, review contributions, and coordinate releases.
+            Selected based on technical expertise and commitment to the mission.
           </p>
 
           <h2 className="text-2xl font-bold mt-8 mb-4">Decision Making Process</h2>
@@ -3805,9 +3799,9 @@ const ContactPage = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
           <Card>
             <Mail className="w-8 h-8 text-[var(--color-fg-primary)] mb-3" />
-            <h3 className="font-semibold text-lg mb-2">General Inquiries</h3>
+            <h3 className="font-semibold text-lg mb-2">General</h3>
             <p className="text-gray-600 dark:text-gray-400 mb-4">
-              For general questions about the project
+              Questions about the project and collaboration
             </p>
             <a href="mailto:info@lemkin.ai" className="text-[var(--color-fg-primary)] hover:underline focus-ring rounded-sm">
               info@lemkin.ai
@@ -3816,9 +3810,9 @@ const ContactPage = () => {
           
           <Card>
             <Github className="w-8 h-8 text-[var(--color-fg-primary)] mb-3" />
-            <h3 className="font-semibold text-lg mb-2">Technical Support</h3>
+            <h3 className="font-semibold text-lg mb-2">Technical</h3>
             <p className="text-gray-600 dark:text-gray-400 mb-4">
-              For bug reports and technical issues
+              Bug reports, feature requests, and technical questions
             </p>
             <a href="https://github.com/lemkin-ai/issues" className="text-[var(--color-fg-primary)] hover:underline focus-ring rounded-sm">
               GitHub Issues
@@ -3991,135 +3985,273 @@ const OverviewPage = () => {
   return (
     <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-8">Project Overview</h1>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+        >
+          <h1 className="text-5xl font-bold text-[var(--ink)] mb-4 tracking-tight">Project Overview</h1>
+          <p className="text-xl text-[var(--muted)] mb-12 max-w-3xl">
+            Building the technological infrastructure for international justice through open-source AI
+          </p>
+        </motion.div>
         
+        {/* What is Lemkin AI - Introduction */}
+        <MotionCard
+          className="hover-lift p-8 mb-12"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+        >
+          <h2 className="text-2xl font-bold mb-6 text-[var(--ink)]">What is Lemkin AI?</h2>
+          <p className="text-[var(--muted)] mb-6 leading-relaxed text-lg">
+            Lemkin AI is a comprehensive open-source initiative providing machine learning models
+            and tools specifically designed for international criminal justice applications. Our
+            platform enables investigators, prosecutors, and human rights organizations to leverage
+            AI technology in their pursuit of justice.
+          </p>
+          <p className="text-[var(--muted)] leading-relaxed text-lg">
+            From transcribing witness testimonies to analyzing vast archives of evidence, our models
+            are rigorously tested and ethically developed to meet the unique requirements of
+            international legal proceedings.
+          </p>
+        </MotionCard>
+
+        <motion.div
+          className="prose prose-gray dark:prose-invert max-w-none mb-16"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
+
+          <h2 className="text-3xl font-bold mb-6 text-[var(--ink)]">Our Vision & Founding</h2>
+          <p className="text-[var(--muted)] mb-6 text-lg leading-relaxed">
+            Lemkin AI is named after Raphael Lemkin, the Polish-Jewish lawyer who coined the term "genocide"
+            and championed the UN Genocide Convention. Just as Lemkin pioneered legal frameworks to prevent
+            and prosecute mass atrocities, we are building technological frameworks to ensure evidence of
+            such crimes can be effectively processed, verified, and presented in court.
+          </p>
+
+          <motion.div
+            className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 p-8 rounded-xl mb-8 border border-[var(--line-soft)] hover:shadow-elevation-2 transition-shadow"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.7 }}
+          >
+            <blockquote className="text-xl italic text-[var(--ink)] font-medium">
+              "Sovereignty cannot be conceived as the right to kill millions of innocent people."
+            </blockquote>
+            <p className="text-sm text-[var(--muted)] mt-3 font-semibold">— Raphael Lemkin</p>
+          </motion.div>
+
+          <h2 className="text-3xl font-bold mb-6 text-[var(--ink)]">The Scale of the Challenge</h2>
+          <p className="text-[var(--muted)] mb-8 text-lg leading-relaxed">
+            International human rights investigations face an unprecedented evidence processing crisis.
+            Modern conflicts generate massive digital documentation that overwhelms traditional investigative capacity:
+          </p>
+
+          <div className="space-y-6">
+            <motion.div
+              className="border-l-4 border-red-500 pl-6 py-2 hover:bg-red-50/50 dark:hover:bg-red-900/10 transition-colors rounded-r-lg"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.8 }}
+            >
+              <h4 className="font-semibold text-xl mb-3 text-[var(--ink)] flex items-center gap-2">
+                <AlertCircle className="w-5 h-5 text-red-500" />
+                Syria: 500,000+ Hours of Video Evidence
+              </h4>
+              <p className="text-[var(--muted)] mb-3 leading-relaxed">
+                The Syrian conflict has produced over half a million hours of video documentation.
+                At traditional processing speeds, it would take a single investigator over 57 years
+                working full-time to review this material—by which time witnesses may be deceased
+                and perpetrators beyond reach.
+              </p>
+              <p className="text-sm text-[var(--subtle)] italic border-l-2 border-[var(--line-soft)] pl-4 ml-2">
+                "When you're talking about a government, a state apparatus, who for 14 years used every aspect of that apparatus to commit crimes, you will have a massive amount of documentation left behind." — Robert Petit, Head of IIIM for Syria
+              </p>
+            </motion.div>
+
+            <motion.div
+              className="border-l-4 border-orange-500 pl-6 py-2 hover:bg-orange-50/50 dark:hover:bg-orange-900/10 transition-colors rounded-r-lg"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.9 }}
+            >
+              <h4 className="font-semibold text-xl mb-3 text-[var(--ink)] flex items-center gap-2">
+                <AlertTriangle className="w-5 h-5 text-orange-500" />
+                Ukraine: 1+ Million Potential War Crime Incidents
+              </h4>
+              <p className="text-[var(--muted)] mb-3 leading-relaxed">
+                Ukrainian prosecutors have registered over 100,000 war crime cases, with evidence
+                scattered across millions of social media posts, satellite images, and witness testimonies.
+                Each day of delay means potential evidence degradation and memory loss.
+              </p>
+              <p className="text-sm text-[var(--subtle)] italic border-l-2 border-[var(--line-soft)] pl-4 ml-2">
+                "Every additional minute of inaction heightens the risk that a family may never discover the fate of their missing loved one, and an official responsible for horrific crimes may never be brought to justice." — Shadi Haroun, ADMSP / Amnesty & Human Rights Watch
+              </p>
+            </motion.div>
+
+            <motion.div
+              className="border-l-4 border-amber-500 pl-6 py-2 hover:bg-amber-50/50 dark:hover:bg-amber-900/10 transition-colors rounded-r-lg"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 1.0 }}
+            >
+              <h4 className="font-semibold text-xl mb-3 text-[var(--ink)] flex items-center gap-2">
+                <Clock className="w-5 h-5 text-amber-500" />
+                The Human Cost of Delayed Justice
+              </h4>
+              <p className="text-[var(--muted)] mb-3 leading-relaxed">
+                Traditional evidence processing methods mean that by the time cases reach trial,
+                an average of 7-10 years have passed. During this time, witnesses relocate or pass away,
+                evidence degrades, and perpetrators may commit additional crimes. The International
+                Criminal Court has a case backlog measured in decades, not years.
+              </p>
+              <p className="text-sm text-[var(--subtle)] italic border-l-2 border-[var(--line-soft)] pl-4 ml-2">
+                "Without justice for past atrocities, the inescapable truth is that we condemn the current generation." — Karim A.A. Khan
+              </p>
+            </motion.div>
+          </div>
+
+          <motion.div
+            className="bg-gradient-to-br from-[var(--surface)] to-[var(--elevated)] p-8 rounded-xl mt-12 border border-[var(--line)] shadow-elevation-2 hover:shadow-elevation-3 transition-shadow"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 1.1 }}
+          >
+            <h3 className="font-bold text-2xl mb-4 text-[var(--ink)] flex items-center gap-2">
+              <Zap className="w-6 h-6 text-[var(--accent)]" />
+              Our Response
+            </h3>
+            <p className="text-[var(--muted)] text-lg leading-relaxed">
+              Lemkin AI provides open-source AI tools that can process evidence at machine speed while
+              maintaining the evidentiary standards required for court. Our models can transcribe 500,000
+              hours of video in weeks, not decades. They can identify patterns across millions of documents,
+              verify authenticity at scale, and preserve chain of custody automatically. By democratizing
+              access to these tools, we ensure that justice is not limited by resources but enabled by technology.
+            </p>
+          </motion.div>
+
+          {/* Current Focus Areas */}
+          <h2 className="text-3xl font-bold mb-8 text-[var(--ink)] mt-16">Current Focus Areas</h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+            <div className="card p-8 hover-lift">
+              <h3 className="text-xl font-semibold mb-6 text-[var(--ink)] flex items-center gap-3">
+                <Database className="w-5 h-5 text-[var(--accent)]" />
+                Evidence Processing
+              </h3>
+              <ul className="space-y-4 text-[var(--muted)]">
+                <li className="flex items-start gap-3 hover:translate-x-1 transition-transform">
+                  <span className="text-[var(--accent)] mt-1">→</span>
+                  <span>Audio transcription and translation</span>
+                </li>
+                <li className="flex items-start gap-3 hover:translate-x-1 transition-transform">
+                  <span className="text-[var(--accent)] mt-1">→</span>
+                  <span>Document analysis and classification</span>
+                </li>
+                <li className="flex items-start gap-3 hover:translate-x-1 transition-transform">
+                  <span className="text-[var(--accent)] mt-1">→</span>
+                  <span>Image and video verification</span>
+                </li>
+                <li className="flex items-start gap-3 hover:translate-x-1 transition-transform">
+                  <span className="text-[var(--accent)] mt-1">→</span>
+                  <span>Metadata extraction and validation</span>
+                </li>
+              </ul>
+            </div>
+
+            <div className="card p-8 hover-lift">
+              <h3 className="text-xl font-semibold mb-6 text-[var(--ink)] flex items-center gap-3">
+                <Search className="w-5 h-5 text-[var(--accent)]" />
+                Investigation Support
+              </h3>
+              <ul className="space-y-4 text-[var(--muted)]">
+                <li className="flex items-start gap-3 hover:translate-x-1 transition-transform">
+                  <span className="text-[var(--accent)] mt-1">→</span>
+                  <span>Pattern recognition in testimony</span>
+                </li>
+                <li className="flex items-start gap-3 hover:translate-x-1 transition-transform">
+                  <span className="text-[var(--accent)] mt-1">→</span>
+                  <span>Entity extraction and linking</span>
+                </li>
+                <li className="flex items-start gap-3 hover:translate-x-1 transition-transform">
+                  <span className="text-[var(--accent)] mt-1">→</span>
+                  <span>Timeline reconstruction</span>
+                </li>
+                <li className="flex items-start gap-3 hover:translate-x-1 transition-transform">
+                  <span className="text-[var(--accent)] mt-1">→</span>
+                  <span>Cross-reference verification</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Key Statistics and Community Highlights */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
-          <Card className="lg:col-span-2">
-            <h2 className="text-2xl font-bold mb-4">What is Lemkin AI?</h2>
-            <p className="text-gray-600 dark:text-gray-400 mb-4">
-              Lemkin AI is a comprehensive open-source initiative providing machine learning models 
-              and tools specifically designed for international criminal justice applications. Our 
-              platform enables investigators, prosecutors, and human rights organizations to leverage 
-              AI technology in their pursuit of justice.
-            </p>
-            <p className="text-gray-600 dark:text-gray-400">
-              From transcribing witness testimonies to analyzing vast archives of evidence, our models 
-              are rigorously tested and ethically developed to meet the unique requirements of 
-              international legal proceedings.
-            </p>
-          </Card>
-          
-          <Card>
-            <h3 className="font-semibold text-lg mb-4">Key Statistics</h3>
-            <div className="space-y-3">
-              <div className="flex justify-between">
-                <span className="text-gray-600 dark:text-gray-400">Active Models</span>
-                <span className="font-semibold">12</span>
+          <MotionCard
+            className="hover-lift bg-gradient-to-br from-[var(--surface)] to-[var(--elevated)] p-8"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 1.3 }}
+          >
+            <h3 className="font-semibold text-lg mb-6 text-[var(--ink)] flex items-center gap-3">
+              <BarChart className="w-5 h-5 text-[var(--accent)]" />
+              Key Statistics
+            </h3>
+            <div className="space-y-4">
+              <div className="flex justify-between items-center p-4 rounded-lg hover:bg-[var(--surface)] transition-colors">
+                <span className="text-[var(--muted)]">Active Models</span>
+                <span className="font-semibold text-[var(--ink)] text-lg">12</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600 dark:text-gray-400">Contributors</span>
-                <span className="font-semibold">247</span>
+              <div className="flex justify-between items-center p-4 rounded-lg hover:bg-[var(--surface)] transition-colors">
+                <span className="text-[var(--muted)]">Contributors</span>
+                <span className="font-semibold text-[var(--ink)] text-lg">247</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600 dark:text-gray-400">Organizations</span>
-                <span className="font-semibold">38</span>
+              <div className="flex justify-between items-center p-4 rounded-lg hover:bg-[var(--surface)] transition-colors">
+                <span className="text-[var(--muted)]">Organizations</span>
+                <span className="font-semibold text-[var(--ink)] text-lg">38</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600 dark:text-gray-400">Languages Supported</span>
-                <span className="font-semibold">23</span>
+              <div className="flex justify-between items-center p-4 rounded-lg hover:bg-[var(--surface)] transition-colors">
+                <span className="text-[var(--muted)]">Languages</span>
+                <span className="font-semibold text-[var(--ink)] text-lg">23</span>
               </div>
             </div>
-          </Card>
-        </div>
+          </MotionCard>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-          <Card>
-            <CheckCircle className="w-8 h-8 text-green-600 dark:text-green-400 mb-3" />
-            <h3 className="font-semibold text-lg mb-2">Vetted & Validated</h3>
-            <p className="text-gray-600 dark:text-gray-400 text-sm">
+          <MotionCard
+            className="hover-lift group cursor-pointer p-8"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 1.4 }}
+            whileHover={{ scale: 1.02 }}
+          >
+            <div className="p-4 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg w-fit mb-4 group-hover:scale-110 transition-transform">
+              <CheckCircle className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+            </div>
+            <h3 className="font-semibold text-lg mb-3 text-[var(--ink)]">Vetted & Validated</h3>
+            <p className="text-[var(--muted)] text-sm leading-relaxed">
               All models undergo rigorous evaluation by legal and technical experts before release.
             </p>
-          </Card>
-          
-          <Card>
-            <LemkinLogo className="w-8 h-8 mb-3" />
-            <h3 className="font-semibold text-lg mb-2">Legally Aware</h3>
-            <p className="text-gray-600 dark:text-gray-400 text-sm">
-              Designed with understanding of international legal standards and evidentiary requirements.
-            </p>
-          </Card>
-          
-          <Card>
-            <Users className="w-8 h-8 text-purple-600 dark:text-purple-400 mb-3" />
-            <h3 className="font-semibold text-lg mb-2">Community Driven</h3>
-            <p className="text-gray-600 dark:text-gray-400 text-sm">
+          </MotionCard>
+
+          <MotionCard
+            className="hover-lift group cursor-pointer p-8"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 1.5 }}
+            whileHover={{ scale: 1.02 }}
+          >
+            <div className="p-4 bg-purple-100 dark:bg-purple-900/30 rounded-lg w-fit mb-4 group-hover:scale-110 transition-transform">
+              <Users className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+            </div>
+            <h3 className="font-semibold text-lg mb-3 text-[var(--ink)]">Community Driven</h3>
+            <p className="text-[var(--muted)] text-sm leading-relaxed">
               Developed in collaboration with practitioners from tribunals, NGOs, and research institutions.
             </p>
-          </Card>
-        </div>
-
-        <div className="prose prose-gray dark:prose-invert max-w-none">
-          <h2 className="text-2xl font-bold mb-4">Current Focus Areas</h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <div>
-              <h3 className="text-xl font-semibold mb-3">Evidence Processing</h3>
-              <ul className="space-y-2 text-gray-600 dark:text-gray-400">
-                <li>• Audio transcription and translation</li>
-                <li>• Document analysis and classification</li>
-                <li>• Image and video verification</li>
-                <li>• Metadata extraction and validation</li>
-              </ul>
-            </div>
-            
-            <div>
-              <h3 className="text-xl font-semibold mb-3">Investigation Support</h3>
-              <ul className="space-y-2 text-gray-600 dark:text-gray-400">
-                <li>• Pattern recognition in testimony</li>
-                <li>• Entity extraction and linking</li>
-                <li>• Timeline reconstruction</li>
-                <li>• Cross-reference verification</li>
-              </ul>
-            </div>
-          </div>
-
-          <h2 className="text-2xl font-bold mb-4">Roadmap</h2>
-          <p className="text-gray-600 dark:text-gray-400 mb-6">
-            Our development roadmap is guided by feedback from field practitioners and evolving 
-            needs in international justice:
-          </p>
-          
-          <div className="space-y-4">
-            <div className="flex gap-4">
-              <div className="w-2 h-2 rounded-full bg-green-500 mt-2"></div>
-              <div>
-                <h4 className="font-semibold">Q1 2025 - Enhanced Multilingual Support</h4>
-                <p className="text-gray-600 dark:text-gray-400 text-sm">
-                  Expanding language coverage for underserved regions
-                </p>
-              </div>
-            </div>
-            
-            <div className="flex gap-4">
-              <div className="w-2 h-2 rounded-full bg-blue-500 mt-2"></div>
-              <div>
-                <h4 className="font-semibold">Q2 2025 - Real-time Processing Pipeline</h4>
-                <p className="text-gray-600 dark:text-gray-400 text-sm">
-                  Enabling live transcription and analysis capabilities
-                </p>
-              </div>
-            </div>
-            
-            <div className="flex gap-4">
-              <div className="w-2 h-2 rounded-full bg-gray-400 mt-2"></div>
-              <div>
-                <h4 className="font-semibold">Q3 2025 - Advanced Verification Tools</h4>
-                <p className="text-gray-600 dark:text-gray-400 text-sm">
-                  Deepfake detection and chain-of-custody validation
-                </p>
-              </div>
-            </div>
-          </div>
+          </MotionCard>
         </div>
       </div>
     </div>

@@ -414,6 +414,28 @@
     @apply transition-all duration-200 hover:brightness-110;
   }
 
+  /* Text Truncation */
+  .line-clamp-1 {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
   /* Text Animations */
   .text-gradient {
     @apply bg-gradient-to-r from-primary-600 to-accent-purple bg-clip-text text-transparent;

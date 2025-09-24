@@ -4,13 +4,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a React-based website for Lemkin AI, an open-source initiative providing machine learning models and tools for international criminal justice, human rights investigation, and legal technology applications. The website is built with TypeScript and features a sophisticated design system with full dark/light mode support.
+This is a React-based website for Lemkin AI, an open-source initiative providing machine learning models and tools for international criminal justice, human rights investigation, and legal technology applications. The website is built with TypeScript and features a sophisticated design system with full dark/light mode support and OpenAI-inspired UI/UX patterns.
 
 ## Tech Stack
 
 - **React 18** with TypeScript: Core framework using hooks (useState, useEffect, useContext)
 - **Tailwind CSS 3.3**: Utility-first CSS framework with custom design tokens
 - **Lucide React**: Icon library providing 20+ icons throughout the UI
+- **Framer Motion**: Animation library for smooth transitions and micro-interactions
 - **Custom Routing**: Built-in router context without external dependencies
 
 ## Development Commands
@@ -31,9 +32,17 @@ npm run eject
 
 ## Architecture
 
-### Application Structure
+### Multi-File Application Structure
 
-The entire application is contained in a single file (`src/LemkinAIWebsite.tsx` - ~3000 lines) with 14 page components and a sophisticated component hierarchy:
+The application has evolved from a single-file architecture to a more modular approach:
+
+**Core Files:**
+- `src/LemkinAIWebsite.tsx`: Main application with 14 page components (~3000 lines)
+- `src/ModelsPageRevised.tsx`: Dedicated AI Models & Tools page with advanced features
+- `src/modelsData.ts`: Comprehensive data models and mock data for tools and models
+- `src/index.css`: Custom design system with CSS variables and OpenAI-inspired patterns
+
+**Key Architecture Components:**
 
 1. **Context Providers** (Root level)
    - `ThemeProvider`: Manages dark/light mode with DOM class manipulation
@@ -52,12 +61,12 @@ The entire application is contained in a single file (`src/LemkinAIWebsite.tsx` 
 
 4. **Page Components** (14 total)
    - `HomePage`: Hero section, featured models, practitioner briefs, contribution CTAs
-   - `ModelsPage`: Model grid with search, filtering, and comparison features
+   - `ModelsPageRevised`: Advanced model/tool grid with search, filtering, and comparison features
    - Other pages: About, Articles, Contact, Contribute, Docs, Governance, Legal, Overview, Resources
 
 ### Custom Design System
 
-The project includes an extensive custom design system spanning both `tailwind.config.js` and `src/index.css`:
+The project includes an extensive OpenAI-inspired design system spanning both `tailwind.config.js` and `src/index.css`:
 
 **Tailwind Config (`tailwind.config.js`):**
 - **Custom Colors**: Primary (blue), neutral (grays), accent (purple/pink/cyan/emerald/orange)
@@ -68,17 +77,19 @@ The project includes an extensive custom design system spanning both `tailwind.c
 
 **CSS Variables System (`src/index.css`):**
 - Professional Palantir/OpenAI-inspired design tokens with CSS custom properties
-- Complete dark/light mode support with semantic color naming (--ink, --muted, --subtle, --surface, --elevated)
+- Complete dark/light mode support with semantic color naming (--ink, --muted, --subtle, --surface, --elevated, --accent)
 - Enhanced shadow and focus ring systems
 - Professional button components with ripple effects
 - Comprehensive hover states and micro-interactions
 
-### Data Architecture
+### Data Architecture (`src/modelsData.ts`)
 
-Mock data is structured for:
-- **Models**: Complex objects with performance metrics, tags, status, and metadata
-- **Practitioner Briefs**: Role-based filtering (Investigators/Prosecutors/Researchers) with peer review status
-- **Resources**: Documentation and reference materials
+Complex TypeScript interfaces and mock data structured for:
+- **Models**: AI/ML models with performance metrics, technical specifications, and evaluation data
+- **Tools**: 18+ renamed tools (no longer "Lemkin-X" pattern) with specific functional names
+- **Model Metrics**: Accuracy, F1 scores, inference speed, model size, parameters
+- **Capabilities**: Real-world impact examples and use case categorization
+- **Module Types**: Differentiation between 'model' and 'module' (tool) types
 
 ## Key Implementation Patterns
 
@@ -89,19 +100,20 @@ Mock data is structured for:
 - No external router dependencies
 
 ### Theme System Architecture
-- Tailwind's `class` dark mode strategy
+- Tailwind's `class` dark mode strategy with CSS variables
 - Theme state persisted via `useEffect` with DOM manipulation
-- All components support both themes with `dark:` prefixes
+- All components support both themes using semantic CSS variables
 - Theme toggle in navigation with smooth transitions
 
 ### Component Design Patterns
 - Extensive use of compound components (Button with variants/sizes)
-- Hover states with transform and shadow changes
+- Hover states with transform and shadow changes using CSS custom properties
 - Mobile-first responsive design
 - Component composition over inheritance
+- Tool-specific icon mappings and color differentiation
 
 ### Performance Considerations
-- Single file architecture reduces bundle complexity
+- Modular file architecture for better code organization
 - Lazy-loaded features through conditional rendering
 - Optimized Tailwind classes with custom utilities
 - Mock data prevents external API dependencies during development
@@ -112,18 +124,27 @@ Mock data is structured for:
 - Update both the `navItems` array in Navigation component
 - Add corresponding case in the main App component's route rendering
 - Ensure mobile menu includes new routes
+- Consider whether new pages should use `ModelsPageRevised.tsx` pattern
 
-### Design System Usage
-- Use custom elevation shadow classes (elevation-1 through elevation-5, plus soft and glow variants) instead of default Tailwind shadows
-- Follow the CSS custom property system: `var(--ink)` for primary text, `var(--muted)` for body text, `var(--surface)` for backgrounds
-- Use the professional button classes: `.btn-primary`, `.btn-outline` with built-in hover states and ripple effects
-- Maintain consistency with the button hierarchy and professional color palette
+### Design System Usage - OpenAI Inspired Patterns
+- **Colors**: Use semantic CSS variables (`var(--accent)`, `var(--ink)`, `var(--muted)`) instead of hard-coded Tailwind colors
+- **Shadows**: Use custom elevation classes (elevation-1 through elevation-5, plus soft and glow variants) instead of default Tailwind shadows
+- **Buttons**: Use professional button classes (`.btn-primary`, `.btn-outline`) with built-in hover states and ripple effects
+- **Icons**: Maintain consistency with tool-specific icons using lucide-react library
+- **Gradients**: Use subtle gradients with low opacity for professional appearance (e.g., `from-[var(--accent)]/8 to-[var(--accent)]/3`)
 
-### Component Styling
-- Dark mode variants are required for all new components - the system uses CSS custom properties that automatically adapt
-- Use the established animation classes from Tailwind config (fade-in, fade-up, slide-in, etc.)
-- Follow the responsive breakpoint strategy: mobile-first with sm/md/lg/xl
-- Leverage CSS utility classes like `.card`, `.skeleton`, `.glass`, `.hover-lift` for consistent styling
+### Component Styling Best Practices
+- **Dark mode variants**: Required for all new components using CSS custom properties that automatically adapt
+- **Animation classes**: Use established animation classes from Tailwind config (fade-in, fade-up, slide-in, etc.)
+- **Responsive design**: Follow mobile-first strategy with sm/md/lg/xl breakpoints
+- **CSS utilities**: Leverage utility classes like `.card`, `.skeleton`, `.glass`, `.hover-lift` for consistent styling
+
+### Models & Tools Page (`src/ModelsPageRevised.tsx`)
+- **Tool naming**: Uses descriptive names instead of generic "Lemkin-X" pattern
+- **Icon consistency**: Tool-specific icons that match functionality (Shield, Clock, BarChart3, etc.)
+- **Color scheme**: Unified color system using `var(--accent)` for cohesive appearance
+- **No tier labels**: Removed tier categorization as requested
+- **Differentiated styling**: Models vs tools use same accent color but different semantic meanings
 
 ### Logo Assets
 The project references specific logo files that should be placed in the public directory:
@@ -136,18 +157,38 @@ The project uses Create React App's default testing setup:
 - Test runner: Jest with React Testing Library
 - No additional linting setup beyond React App's ESLint configuration
 - No separate prettier or formatting configuration
+- Build warnings are acceptable (mainly unused imports), but no build errors
 
 ## Important Development Notes
 
-### Single File Architecture
-- The entire UI is in `src/LemkinAIWebsite.tsx` (~3000 lines) - this is intentional for this project
-- When adding new components, add them within this file following the established patterns
-- Mock data is defined at the top of the file and used throughout pages
+### Architecture Evolution
+- Originally single-file architecture (`src/LemkinAIWebsite.tsx` ~3000 lines)
+- Now modular with dedicated components like `ModelsPageRevised.tsx`
+- When adding new complex pages, consider creating dedicated files following the `ModelsPageRevised.tsx` pattern
+- Mock data is centralized in `src/modelsData.ts` with comprehensive TypeScript interfaces
 
 ### Component Location Reference
-Key components are located at these approximate line numbers in `LemkinAIWebsite.tsx`:
+Key components in `LemkinAIWebsite.tsx`:
 - Theme/Router contexts: lines 1-100
 - UI components (Button, Badge, Card, etc.): lines 400-700
 - Navigation component: line ~830
-- Page components: lines 1050+ (HomePage, ModelsPage, ArticlesPage, etc.)
+- Page components: lines 1050+ (HomePage, ArticlesPage, etc.)
 - Main App routing logic: line ~2910
+
+### Icon Management
+- Use only valid lucide-react icons (verify imports exist)
+- Tool-specific icons should be semantic and professional
+- Maintain consistency between icon choice and functionality
+- Use `var(--accent)` for icon colors instead of hard-coded values
+
+### Data Management
+- Tool data in `src/modelsData.ts` uses descriptive names
+- Models have detailed metrics and technical specifications
+- All mock data includes realistic performance indicators
+- Maintain TypeScript interface consistency when adding new data
+
+# important-instruction-reminders
+Do what has been asked; nothing more, nothing less.
+NEVER create files unless they're absolutely necessary for achieving your goal.
+ALWAYS prefer editing an existing file to creating a new one.
+NEVER proactively create documentation files (*.md) or README files. Only create documentation files if explicitly requested by the User.
