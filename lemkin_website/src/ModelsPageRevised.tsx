@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Search, Filter, Github, Code2, Layers,
   Eye, Brain, FileText, Shield, Target, Scale,
@@ -17,6 +18,8 @@ const ModelsPageRevised: React.FC = () => {
   const [activeSection, setActiveSection] = useState<'overview' | 'implementation' | 'technical'>('overview');
   const [currentCapabilityIndex, setCurrentCapabilityIndex] = useState(0);
   const [transitionState, setTransitionState] = useState<'entered' | 'exiting' | 'entering'>('entered');
+  const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
+  const [isLoading, setIsLoading] = useState(true);
 
   // Filter models based on search and filters
   const filteredModels = useMemo(() => {
@@ -43,6 +46,24 @@ const ModelsPageRevised: React.FC = () => {
   }, [searchQuery, selectedCategory]);
 
   const featuredModels = getFeaturedModels();
+
+  // Simulate loading for progressive data reveal
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 800);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const toggleCardExpansion = (modelId: string) => {
+    setExpandedCards(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(modelId)) {
+        newSet.delete(modelId);
+      } else {
+        newSet.add(modelId);
+      }
+      return newSet;
+    });
+  };
 
   // Create rotating capability cards data
   const capabilityCards = useMemo(() => [
@@ -971,19 +992,40 @@ const ModelsPageRevised: React.FC = () => {
               </div>
             </div>
 
-            {/* Search */}
-            <div className="max-w-2xl mx-auto">
-              <div className="relative">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-[var(--color-text-tertiary)] w-5 h-5" />
+            {/* Enhanced Search */}
+            <motion.div
+              className="max-w-2xl mx-auto"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.4, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <motion.div
+                className="relative"
+                whileHover={{ scale: 1.01 }}
+                transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-[var(--subtle)] w-5 h-5 transition-colors" />
                 <input
                   type="text"
                   placeholder="Search models by name, capabilities, or use cases..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-12 pr-6 py-4 border border-[var(--color-border-primary)] rounded-2xl bg-[var(--color-bg-elevated)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all text-lg shadow-sm"
+                  className="w-full pl-12 pr-12 py-4 border border-[var(--line)] rounded-2xl bg-[var(--elevated)] text-[var(--ink)] placeholder-[var(--subtle)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/50 focus:border-[var(--accent)] transition-all text-lg shadow-sm"
                 />
-              </div>
-            </div>
+                {searchQuery && (
+                  <motion.button
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => setSearchQuery('')}
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 w-6 h-6 text-[var(--subtle)] hover:text-[var(--accent)] transition-colors flex items-center justify-center rounded-full hover:bg-[var(--surface)]"
+                  >
+                    ✕
+                  </motion.button>
+                )}
+              </motion.div>
+            </motion.div>
           </div>
         </div>
       </section>
@@ -1023,12 +1065,57 @@ const ModelsPageRevised: React.FC = () => {
       <section className="py-12">
         <div className="max-w-6xl mx-auto px-6">
           <div className="grid md:grid-cols-2 gap-8">
-            {filteredModels.map((model) => (
-              <div
-                key={model.id}
-                className="group cursor-pointer bg-[var(--color-bg-surface)] border border-[var(--color-border-primary)] rounded-2xl overflow-hidden hover:shadow-elevation-3 hover:border-[var(--color-border-secondary)] transition-all duration-300 hover:scale-[1.01]"
-                onClick={() => setSelectedModel(model)}
-              >
+            {isLoading ? (
+              // Loading skeletons with staggered animation
+              Array.from({ length: 6 }, (_, index) => (
+                <motion.div
+                  key={`skeleton-${index}`}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: 0.5,
+                    delay: index * 0.05,
+                    ease: [0.16, 1, 0.3, 1]
+                  }}
+                  className="bg-[var(--surface)] border border-[var(--line)] rounded-2xl overflow-hidden p-8"
+                >
+                  <div className="flex items-start gap-4 mb-6">
+                    <div className="w-16 h-16 bg-[var(--elevated)] rounded-xl animate-pulse" />
+                    <div className="flex-1">
+                      <div className="h-6 bg-[var(--elevated)] rounded mb-2 animate-pulse" />
+                      <div className="h-4 bg-[var(--elevated)] rounded w-2/3 animate-pulse" />
+                    </div>
+                  </div>
+                  <div className="space-y-2 mb-6">
+                    <div className="h-4 bg-[var(--elevated)] rounded animate-pulse" />
+                    <div className="h-4 bg-[var(--elevated)] rounded w-5/6 animate-pulse" />
+                    <div className="h-4 bg-[var(--elevated)] rounded w-4/6 animate-pulse" />
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <div className="h-4 bg-[var(--elevated)] rounded w-24 animate-pulse" />
+                    <div className="h-4 bg-[var(--elevated)] rounded w-16 animate-pulse" />
+                  </div>
+                </motion.div>
+              ))
+            ) : (
+              filteredModels.map((model, index) => (
+                <motion.div
+                  key={model.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: 0.5,
+                    delay: index * 0.05,
+                    ease: [0.16, 1, 0.3, 1]
+                  }}
+                  whileHover={{
+                    y: -4,
+                    scale: 1.01,
+                    transition: { duration: 0.2, ease: [0.16, 1, 0.3, 1] }
+                  }}
+                  whileTap={{ scale: 0.99 }}
+                  className="group bg-[var(--surface)] border border-[var(--line)] rounded-2xl overflow-hidden shadow-sm hover:shadow-elevation-3 transition-shadow duration-300"
+                >
                 <div className="p-8">
                   {/* Header */}
                   <div className="flex items-start gap-4 mb-6">
@@ -1041,12 +1128,87 @@ const ModelsPageRevised: React.FC = () => {
                       </h3>
                       <span className="text-sm text-[var(--subtle)] block">{model.category}</span>
                     </div>
+                    {/* Visual Performance Indicator */}
+                    {model.metrics.accuracy && (
+                      <div className="relative w-12 h-12">
+                        <svg className="w-12 h-12 transform -rotate-90">
+                          <circle
+                            cx="24"
+                            cy="24"
+                            r="20"
+                            stroke="var(--line)"
+                            strokeWidth="3"
+                            fill="none"
+                          />
+                          <motion.circle
+                            cx="24"
+                            cy="24"
+                            r="20"
+                            stroke="var(--accent)"
+                            strokeWidth="3"
+                            fill="none"
+                            strokeDasharray={`${2 * Math.PI * 20}`}
+                            initial={{ strokeDashoffset: 2 * Math.PI * 20 }}
+                            animate={{
+                              strokeDashoffset: 2 * Math.PI * 20 * (1 - parseFloat(model.metrics.accuracy) / 100)
+                            }}
+                            transition={{ duration: 1, delay: index * 0.05 + 0.3, ease: [0.16, 1, 0.3, 1] }}
+                            strokeLinecap="round"
+                          />
+                        </svg>
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <span className="text-xs font-semibold text-[var(--ink)]">
+                            {parseInt(model.metrics.accuracy)}%
+                          </span>
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   {/* Description */}
                   <p className="text-[var(--muted)] mb-6 leading-relaxed line-clamp-3">
                     {model.cardSummary}
                   </p>
+
+                  {/* Collapsible Details Section */}
+                  <AnimatePresence>
+                    {expandedCards.has(model.id) && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                        className="overflow-hidden mb-4"
+                      >
+                        <div className="pt-4 border-t border-[var(--line)]">
+                          <h4 className="text-sm font-semibold text-[var(--ink)] mb-3">Key Capabilities</h4>
+                          <div className="space-y-2 mb-4">
+                            {model.capabilities[0]?.items.slice(0, 3).map((capability, idx) => (
+                              <div key={idx} className="flex items-start gap-2">
+                                <div className="w-1.5 h-1.5 bg-[var(--accent)] rounded-full mt-2 flex-shrink-0" />
+                                <span className="text-xs text-[var(--muted)] leading-relaxed">{capability}</span>
+                              </div>
+                            ))}
+                          </div>
+                          {model.technicalSpecs && (
+                            <div>
+                              <h4 className="text-sm font-semibold text-[var(--ink)] mb-2">Technical Details</h4>
+                              <div className="grid grid-cols-2 gap-3 text-xs">
+                                <div>
+                                  <span className="text-[var(--subtle)]">Framework:</span>
+                                  <span className="text-[var(--muted)] ml-1 font-mono">{model.technicalSpecs.framework.split(' ')[0]}</span>
+                                </div>
+                                <div>
+                                  <span className="text-[var(--subtle)]">Architecture:</span>
+                                  <span className="text-[var(--muted)] ml-1 font-mono">{model.technicalSpecs.architecture.split(' ')[0]}</span>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
 
                   {/* Footer */}
                   <div className="flex items-center justify-between">
@@ -1056,16 +1218,33 @@ const ModelsPageRevised: React.FC = () => {
                         {getToolTypeDescription(model.name, model.category)}
                       </span>
                     </div>
-                    <div className="flex items-center gap-2 text-[var(--accent)] group-hover:gap-3 transition-all">
-                      <span className="text-sm font-medium">
-                        {model.moduleType === 'module' ? 'Explore tool' : 'Learn more'}
-                      </span>
-                      <ChevronRight className="w-4 h-4" />
+                    <div className="flex items-center gap-2">
+                      <motion.button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleCardExpansion(model.id);
+                        }}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="text-xs text-[var(--subtle)] hover:text-[var(--accent)] transition-colors p-1 rounded"
+                      >
+                        {expandedCards.has(model.id) ? 'Less' : 'Details'}
+                      </motion.button>
+                      <div
+                        className="flex items-center gap-2 text-[var(--accent)] group-hover:gap-3 transition-all cursor-pointer"
+                        onClick={() => setSelectedModel(model)}
+                      >
+                        <span className="text-sm font-medium">
+                          {model.moduleType === 'module' ? 'Explore tool' : 'Learn more'}
+                        </span>
+                        <ChevronRight className="w-4 h-4" />
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              </motion.div>
+            )))
+            }
           </div>
 
           {/* No Results */}
