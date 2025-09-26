@@ -7,7 +7,7 @@ import {
   CheckCircle, AlertCircle, Database,
   Settings, Activity, TrendingUp, Users, Grid,
   Clock, MapPin, HardDrive, Video, Image, Headphones,
-  Scan, BookOpen, MessageSquare, BarChart3, FileText as FileReport, Download
+  Scan, BookOpen, MessageSquare, BarChart3, FileText as FileReport, Download, PenTool
 } from 'lucide-react';
 import { models, Model, modelCategories, getFeaturedModels } from './modelsData';
 
@@ -220,6 +220,8 @@ const ModelsPageRevised: React.FC = () => {
         return <FileReport className="w-5 h-5 text-[var(--accent)]" />;
       case 'Evidence Export Manager':
         return <Download className="w-5 h-5 text-[var(--accent)]" />;
+      case 'Public Interest Legal AI Prompts':
+        return <PenTool className="w-5 h-5 text-[var(--accent)]" />;
       default:
         return <Settings className="w-5 h-5 text-[var(--accent)]" />;
     }
@@ -1128,41 +1130,6 @@ const ModelsPageRevised: React.FC = () => {
                       </h3>
                       <span className="text-sm text-[var(--subtle)] block">{model.category}</span>
                     </div>
-                    {/* Visual Performance Indicator */}
-                    {model.metrics.accuracy && (
-                      <div className="relative w-12 h-12">
-                        <svg className="w-12 h-12 transform -rotate-90">
-                          <circle
-                            cx="24"
-                            cy="24"
-                            r="20"
-                            stroke="var(--line)"
-                            strokeWidth="3"
-                            fill="none"
-                          />
-                          <motion.circle
-                            cx="24"
-                            cy="24"
-                            r="20"
-                            stroke="var(--accent)"
-                            strokeWidth="3"
-                            fill="none"
-                            strokeDasharray={`${2 * Math.PI * 20}`}
-                            initial={{ strokeDashoffset: 2 * Math.PI * 20 }}
-                            animate={{
-                              strokeDashoffset: 2 * Math.PI * 20 * (1 - parseFloat(model.metrics.accuracy) / 100)
-                            }}
-                            transition={{ duration: 1, delay: index * 0.05 + 0.3, ease: [0.16, 1, 0.3, 1] }}
-                            strokeLinecap="round"
-                          />
-                        </svg>
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <span className="text-xs font-semibold text-[var(--ink)]">
-                            {parseInt(model.metrics.accuracy)}%
-                          </span>
-                        </div>
-                      </div>
-                    )}
                   </div>
 
                   {/* Description */}

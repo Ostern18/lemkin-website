@@ -57,15 +57,15 @@ export const ArticlesPage: React.FC = () => {
   const getCategoryColor = (category: Article['category']) => {
     switch (category) {
       case 'technical':
-        return 'bg-[var(--color-primary)]/10 text-[var(--color-primary)] border border-[var(--color-primary)]/20';
+        return 'bg-[var(--accent)]/8 text-[var(--accent)] border border-[var(--accent)]/15';
       case 'operational':
-        return 'bg-[var(--color-primary)]/10 text-[var(--color-primary)] border border-[var(--color-primary)]/20';
+        return 'bg-emerald-500/8 text-emerald-700 dark:text-emerald-400 border border-emerald-500/15';
       case 'legal':
-        return 'bg-[var(--color-primary)]/10 text-[var(--color-primary)] border border-[var(--color-primary)]/20';
+        return 'bg-purple-500/8 text-purple-700 dark:text-purple-400 border border-purple-500/15';
       case 'analytical':
-        return 'bg-[var(--color-primary)]/10 text-[var(--color-primary)] border border-[var(--color-primary)]/20';
+        return 'bg-orange-500/8 text-orange-700 dark:text-orange-400 border border-orange-500/15';
       default:
-        return 'bg-[var(--color-bg-secondary)] text-[var(--color-text-secondary)] border border-[var(--color-border-primary)]';
+        return 'bg-[var(--surface)] text-[var(--muted)] border border-[var(--line)]';
     }
   };
 
@@ -80,8 +80,8 @@ export const ArticlesPage: React.FC = () => {
       <section className="bg-gradient-to-b from-[var(--color-bg-surface)] to-[var(--color-bg-primary)] border-b border-[var(--color-border-primary)]">
         <div className="max-w-6xl mx-auto px-6 py-20">
           <div className="text-center max-w-4xl mx-auto">
-            <h1 className="text-6xl font-bold text-[var(--color-text-primary)] mb-6 leading-[1.1] tracking-tight">Research & Insights</h1>
-            <p className="text-xl text-[var(--color-text-secondary)] leading-relaxed max-w-3xl mx-auto mb-8">
+            <h1 className="text-4xl lg:text-5xl font-bold text-[var(--ink)] mb-6 leading-[1.1] tracking-tight">Research & Insights</h1>
+            <p className="text-lg lg:text-xl text-[var(--muted)] leading-relaxed max-w-3xl mx-auto mb-8">
               Exploring the intersection of AI, human rights, and international justice through
               technical deep-dives, operational guides, and legal analyses.
             </p>
@@ -166,8 +166,15 @@ export const ArticlesPage: React.FC = () => {
             {filteredArticles.map((article) => (
               <article
                 key={article.id}
-                className="group cursor-pointer bg-[var(--color-bg-surface)] border border-[var(--color-border-primary)] rounded-2xl p-8 hover:shadow-elevation-3 hover:border-[var(--color-border-secondary)] hover:scale-[1.02] transition-all duration-300"
+                className="group cursor-pointer bg-[var(--surface)] border border-[var(--line)] rounded-2xl p-8 hover:shadow-lg hover:bg-[var(--elevated)] hover:-translate-y-1 transition-all duration-200 ease-out"
                 onClick={() => setSelectedArticle(article)}
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setSelectedArticle(article);
+                  }
+                }}
               >
                 {/* Category Badge */}
                 <div className="flex items-center justify-between mb-4">
@@ -181,12 +188,12 @@ export const ArticlesPage: React.FC = () => {
                 </div>
 
                 {/* Title */}
-                <h3 className="text-2xl font-bold text-[var(--color-text-primary)] mb-4 group-hover:text-[var(--color-primary)] transition-colors leading-tight">
+                <h3 className="text-xl lg:text-2xl font-semibold text-[var(--ink)] mb-3 group-hover:text-[var(--accent)] transition-colors leading-[1.3]">
                   {article.title}
                 </h3>
 
                 {/* Excerpt */}
-                <p className="text-[var(--color-text-secondary)] mb-6 leading-relaxed line-clamp-3">
+                <p className="text-base text-[var(--muted)] mb-5 leading-[1.6] line-clamp-3">
                   {article.excerpt}
                 </p>
 
@@ -199,7 +206,7 @@ export const ArticlesPage: React.FC = () => {
                         e.stopPropagation();
                         toggleTag(tag);
                       }}
-                      className="px-2 py-1 bg-[var(--color-bg-secondary)] text-[var(--color-text-secondary)] rounded text-xs hover:bg-[var(--color-bg-tertiary)] transition-colors"
+                      className="px-2.5 py-1 bg-[var(--surface)] text-[var(--subtle)] rounded-md text-xs font-medium hover:bg-[var(--elevated)] transition-colors border border-[var(--line-soft)]"
                     >
                       {tag}
                     </button>
@@ -214,14 +221,15 @@ export const ArticlesPage: React.FC = () => {
                 {/* Footer */}
                 <div className="flex items-center justify-between pt-4 border-t border-[var(--color-border-primary)]">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-[var(--color-primary)]/10 flex items-center justify-center">
-                      <span className="text-xs font-medium text-[var(--color-primary)]">
-                        {article.author.split(' ').map(n => n[0]).join('')}
-                      </span>
+                    <div className="flex gap-2">
+                      {article.authors.map((author, idx) => (
+                        <div key={idx} className="px-3 py-1 rounded-full bg-[var(--color-bg-secondary)] border border-[var(--color-border-primary)] text-xs font-medium text-[var(--color-text-secondary)]">
+                          {author}
+                        </div>
+                      ))}
                     </div>
-                    <div className="text-sm">
-                      <div className="font-medium text-[var(--color-text-primary)]">{article.author}</div>
-                      <div className="text-[var(--color-text-tertiary)]">{new Date(article.date).toLocaleDateString()}</div>
+                    <div className="text-sm text-[var(--color-text-tertiary)]">
+                      {new Date(article.date).toLocaleDateString()}
                     </div>
                   </div>
                   <div className="flex items-center gap-1 text-[var(--color-primary)] group-hover:gap-2 transition-all">

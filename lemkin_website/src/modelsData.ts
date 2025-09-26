@@ -203,6 +203,7 @@ export const models: Model[] = [
       'Transparency: Open-source methodology allows for external auditing',
       'Human oversight: Always requires expert verification before operational use'
     ],
+    githubRepo: 'https://github.com/Lemkin-AI/civinfra-detection',
     localPath: '/Users/oliverstern/Documents/lemkin-data-collection/models/gaza_trained_model/',
     deployment: {
       requirements: ['TensorFlow Serving', 'Docker', 'GPU support (optional)']
@@ -320,6 +321,7 @@ export const models: Model[] = [
       'Privacy protection measures for affected communities in training data',
       'Open methodology allows for external validation and bias detection'
     ],
+    githubRepo: 'https://github.com/Lemkin-AI/buildingdamage-assessment',
     localPath: '/Users/oliverstern/Documents/lemkin-data-collection/models/syria_xbd_trained_model_final/',
     deployment: {
       requirements: ['Python 3.7+', 'Keras', 'scikit-learn', 'Docker']
@@ -432,6 +434,7 @@ export const models: Model[] = [
       'Peacekeeping operations',
       'Protected facility monitoring'
     ],
+    githubRepo: 'https://github.com/Lemkin-AI/rightsviolation-detector',
     localPath: '/Users/oliverstern/Documents/lemkin-data-collection/hra-models/',
     deployment: {
       requirements: ['TensorFlow Serving', 'Docker', 'Minimal hardware requirements']
@@ -565,7 +568,7 @@ export const models: Model[] = [
       'Academic legal research and analysis',
       'NGO report processing'
     ],
-    githubRepo: 'https://github.com/Lemkin-AI/lemkin-ai-models/tree/main/models/roberta-joint-ner-re',
+    githubRepo: 'https://github.com/Lemkin-AI/roberta-joint-ner-re',
     huggingFaceModel: 'LemkinAI/roberta-joint-ner-re',
     deployment: {
       apiEndpoint: 'https://api.lemkin.ai/v1/ner-re',
@@ -692,7 +695,7 @@ export const models: Model[] = [
       'NGO reporting and documentation',
       'Academic legal writing assistance'
     ],
-    githubRepo: 'https://github.com/Lemkin-AI/lemkin-ai-models/tree/main/models/t5-legal-narrative',
+    githubRepo: 'https://github.com/Lemkin-AI/t5-legal-narrative',
     huggingFaceModel: 'LemkinAI/t5-legal-narrative',
     deployment: {
       apiEndpoint: 'https://api.lemkin.ai/v1/narrative-generation',
@@ -2741,6 +2744,137 @@ export const models: Model[] = [
     tags: ['Export', 'ICC Compliance', 'Court Standards', 'Privacy Protection', 'Legal Formatting'],
     featured: false,
     tier: 6,
+    moduleType: 'module'
+  },
+  {
+    id: 'legal-ai-prompts',
+    name: 'Public Interest Legal AI Prompts',
+    type: 'tool',
+    category: 'Document Processing',
+    status: 'production',
+    description: 'Comprehensive collection of specialized prompting techniques and templates for legal AI applications in human rights, international criminal justice, and public interest law. This resource provides battle-tested prompts for document analysis, evidence processing, legal research, and case preparation.',
+    shortDescription: 'Expert-curated prompting guide for legal AI applications in human rights and international justice',
+    cardSummary: 'Specialized prompting templates and techniques for legal AI in human rights investigations',
+    publicSummary: 'A comprehensive guide that helps legal professionals and investigators use AI effectively for human rights documentation, evidence analysis, and international justice work.',
+    howItWorks: {
+      overview: 'This prompting guide provides structured templates and proven techniques for leveraging large language models in legal and investigative contexts.',
+      steps: [
+        {
+          title: 'Template Selection',
+          description: 'Choose from categorized prompt templates based on your specific legal task (document analysis, evidence extraction, witness statement processing, etc.)'
+        },
+        {
+          title: 'Customization',
+          description: 'Adapt the templates to your specific jurisdiction, legal framework, and investigation requirements'
+        },
+        {
+          title: 'Implementation',
+          description: 'Apply the prompts with various AI models (GPT-4, Claude, etc.) for consistent, high-quality legal analysis'
+        },
+        {
+          title: 'Validation',
+          description: 'Use built-in verification prompts to cross-check AI outputs and ensure accuracy'
+        }
+      ],
+      technicalDetails: 'The guide includes prompt engineering best practices, chain-of-thought reasoning templates, few-shot learning examples, and structured output formats optimized for legal workflows.'
+    },
+    realWorldImpact: [
+      {
+        domain: 'War Crimes Documentation',
+        examples: [
+          'Standardized prompts for extracting evidence from witness testimonies',
+          'Templates for identifying violations of international humanitarian law',
+          'Structured analysis of conflict-related documents'
+        ]
+      },
+      {
+        domain: 'Human Rights Investigations',
+        examples: [
+          'Prompts for pattern detection in human rights violations',
+          'Templates for victim statement analysis',
+          'Cross-referencing multiple sources for verification'
+        ]
+      },
+      {
+        domain: 'Legal Research',
+        examples: [
+          'Case law analysis and precedent identification',
+          'Statutory interpretation prompts',
+          'Comparative legal analysis across jurisdictions'
+        ]
+      }
+    ],
+    capabilities: [
+      {
+        category: 'Document Analysis',
+        items: [
+          'Contract review and analysis',
+          'Legal brief summarization',
+          'Evidence extraction from lengthy documents',
+          'Multi-language legal document processing'
+        ]
+      },
+      {
+        category: 'Investigation Support',
+        items: [
+          'Witness statement consistency checking',
+          'Timeline construction from multiple sources',
+          'Entity relationship mapping',
+          'Pattern identification in violation reports'
+        ]
+      },
+      {
+        category: 'Legal Writing',
+        items: [
+          'Draft legal memoranda',
+          'Case summary generation',
+          'Argument structuring',
+          'Citation formatting and checking'
+        ]
+      }
+    ],
+    metrics: {
+      coverage: '150+ prompt templates',
+      languages: 'Multilingual support (10+ languages)',
+      formats: 'JSON, Markdown, Plain text',
+      compatibility: 'GPT-4, Claude, Gemini, open-source LLMs'
+    },
+    technicalSpecs: {
+      framework: 'Model-agnostic prompting framework',
+      architecture: 'Structured prompt engineering',
+      inputFormat: 'Text-based legal documents',
+      outputFormat: 'Structured JSON, formatted reports, legal documents',
+      requirements: ['LLM API access', 'Basic prompt engineering knowledge']
+    },
+    useCases: [
+      'International criminal investigations',
+      'Human rights documentation',
+      'Legal research and analysis',
+      'Evidence processing and validation',
+      'Case preparation and management',
+      'Multilingual legal document review',
+      'Witness testimony analysis',
+      'Legal compliance checking'
+    ],
+    limitations: [
+      'Requires understanding of prompt engineering',
+      'Output quality depends on underlying LLM',
+      'Legal review still required for all outputs',
+      'May need customization for specific jurisdictions'
+    ],
+    ethicalConsiderations: [
+      'Designed for legitimate legal and humanitarian purposes',
+      'Includes bias mitigation techniques',
+      'Emphasizes human oversight and validation',
+      'Promotes transparency in AI-assisted legal work'
+    ],
+    githubRepo: 'https://github.com/LemkinAI/public-interest-legal-ai-prompts',
+    deployment: {
+      requirements: ['Access to LLM APIs', 'Understanding of legal domain']
+    },
+    tags: ['Prompting', 'Legal AI', 'Human Rights', 'Documentation', 'Investigation', 'Templates', 'Best Practices'],
+    featured: true,
+    tier: 1,
     moduleType: 'module'
   }
 ];
