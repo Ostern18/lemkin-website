@@ -363,7 +363,7 @@ const ModelsPageRevised: React.FC = () => {
                     Try Model
                   </a>
                 )}
-                <a href={selectedModel.githubRepo || `https://github.com/Lemkin-AI/${selectedModel.name.toLowerCase().replace(/\s+/g, '-')}`} target="_blank" rel="noopener noreferrer"
+                <a href={selectedModel.githubRepo || `https://github.com/LemkinAI/${selectedModel.name.toLowerCase().replace(/\s+/g, '-')}`} target="_blank" rel="noopener noreferrer"
                    className="inline-flex items-center gap-2 px-6 py-3 border border-[var(--color-border-primary)] text-[var(--color-text-primary)] rounded-xl hover:bg-[var(--color-bg-secondary)] hover:shadow-sm transition-all font-semibold group">
                   <Github className="w-4 h-4 group-hover:scale-110 transition-transform" />
                   View Source
@@ -683,7 +683,7 @@ const ModelsPageRevised: React.FC = () => {
                           Try Model
                         </a>
                       )}
-                      <a href={selectedModel.githubRepo || `https://github.com/Lemkin-AI/${selectedModel.name.toLowerCase().replace(/\s+/g, '-')}`} target="_blank" rel="noopener noreferrer"
+                      <a href={selectedModel.githubRepo || `https://github.com/LemkinAI/${selectedModel.name.toLowerCase().replace(/\s+/g, '-')}`} target="_blank" rel="noopener noreferrer"
                          className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 border border-[var(--color-border-primary)] text-[var(--color-text-primary)] rounded-xl hover:bg-[var(--color-bg-secondary)] transition-all font-medium group">
                         <Github className="w-4 h-4 group-hover:scale-110 transition-transform" />
                         View Source
@@ -906,7 +906,7 @@ const ModelsPageRevised: React.FC = () => {
                     <div className="space-y-3 mb-4">
                       <div className="bg-[var(--color-bg-secondary)] border border-[var(--color-border-primary)] rounded-lg p-4">
                         <code className="text-sm text-[var(--color-text-secondary)]">
-                          git clone {selectedModel.githubRepo || `https://github.com/Lemkin-AI/${selectedModel.name.toLowerCase().replace(/\s+/g, '-')}`}
+                          git clone {selectedModel.githubRepo || `https://github.com/LemkinAI/${selectedModel.name.toLowerCase().replace(/\s+/g, '-')}`}
                         </code>
                       </div>
                       <div className="bg-[var(--color-bg-secondary)] border border-[var(--color-border-primary)] rounded-lg p-4">
@@ -920,7 +920,7 @@ const ModelsPageRevised: React.FC = () => {
                         </code>
                       </div>
                     </div>
-                    <a href={selectedModel.githubRepo || `https://github.com/Lemkin-AI/${selectedModel.name.toLowerCase().replace(/\s+/g, '-')}`} target="_blank" rel="noopener noreferrer"
+                    <a href={selectedModel.githubRepo || `https://github.com/LemkinAI/${selectedModel.name.toLowerCase().replace(/\s+/g, '-')}`} target="_blank" rel="noopener noreferrer"
                        className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--color-primary)] text-white rounded-lg hover:bg-[var(--color-primary)]/90 transition-all font-medium text-sm">
                       <Github className="w-4 h-4" />
                       View Full Setup Guide

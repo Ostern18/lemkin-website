@@ -203,7 +203,7 @@ export const models: Model[] = [
       'Transparency: Open-source methodology allows for external auditing',
       'Human oversight: Always requires expert verification before operational use'
     ],
-    githubRepo: 'https://github.com/Lemkin-AI/civinfra-detection',
+    githubRepo: 'https://github.com/LemkinAI/civinfra-detection',
     localPath: '/Users/oliverstern/Documents/lemkin-data-collection/models/gaza_trained_model/',
     deployment: {
       requirements: ['TensorFlow Serving', 'Docker', 'GPU support (optional)']
@@ -321,7 +321,7 @@ export const models: Model[] = [
       'Privacy protection measures for affected communities in training data',
       'Open methodology allows for external validation and bias detection'
     ],
-    githubRepo: 'https://github.com/Lemkin-AI/buildingdamage-assessment',
+    githubRepo: 'https://github.com/LemkinAI/buildingdamage-assessment',
     localPath: '/Users/oliverstern/Documents/lemkin-data-collection/models/syria_xbd_trained_model_final/',
     deployment: {
       requirements: ['Python 3.7+', 'Keras', 'scikit-learn', 'Docker']
@@ -434,7 +434,7 @@ export const models: Model[] = [
       'Peacekeeping operations',
       'Protected facility monitoring'
     ],
-    githubRepo: 'https://github.com/Lemkin-AI/rightsviolation-detector',
+    githubRepo: 'https://github.com/LemkinAI/rightsviolation-detector',
     localPath: '/Users/oliverstern/Documents/lemkin-data-collection/hra-models/',
     deployment: {
       requirements: ['TensorFlow Serving', 'Docker', 'Minimal hardware requirements']
@@ -568,7 +568,7 @@ export const models: Model[] = [
       'Academic legal research and analysis',
       'NGO report processing'
     ],
-    githubRepo: 'https://github.com/Lemkin-AI/roberta-joint-ner-re',
+    githubRepo: 'https://github.com/LemkinAI/roberta-joint-ner-re',
     huggingFaceModel: 'LemkinAI/roberta-joint-ner-re',
     deployment: {
       apiEndpoint: 'https://api.lemkin.ai/v1/ner-re',
@@ -695,7 +695,7 @@ export const models: Model[] = [
       'NGO reporting and documentation',
       'Academic legal writing assistance'
     ],
-    githubRepo: 'https://github.com/Lemkin-AI/t5-legal-narrative',
+    githubRepo: 'https://github.com/LemkinAI/t5-legal-narrative',
     huggingFaceModel: 'LemkinAI/t5-legal-narrative',
     deployment: {
       apiEndpoint: 'https://api.lemkin.ai/v1/narrative-generation',
@@ -1506,6 +1506,7 @@ export const models: Model[] = [
     tags: ['OSINT', 'Intelligence Gathering', 'Ethical Collection', 'Evidence', 'Investigation'],
     featured: true,
     tier: 3,
+    githubRepo: 'https://github.com/LemkinAI/Open-Source-Intelligence-Collector',
     moduleType: 'module'
   },
   {
@@ -2182,6 +2183,7 @@ export const models: Model[] = [
     tags: ['OCR', 'Document Processing', 'Multi-language', 'Handwriting', 'Digitization'],
     featured: false,
     tier: 5,
+    githubRepo: 'https://github.com/LemkinAI/Optical-Character-Recognition-Engine',
     moduleType: 'module'
   },
   {
@@ -2294,6 +2296,7 @@ export const models: Model[] = [
     tags: ['Legal Research', 'Case Law', 'Precedent Analysis', 'Citations', 'Database Search'],
     featured: false,
     tier: 5,
+    githubRepo: 'https://github.com/LemkinAI/Research-Document-Analyzer',
     moduleType: 'module'
   },
   {
@@ -2406,6 +2409,7 @@ export const models: Model[] = [
     tags: ['Communication Analysis', 'Network Mapping', 'Pattern Detection', 'Privacy Protection', 'Investigation'],
     featured: false,
     tier: 5,
+    githubRepo: 'https://github.com/LemkinAI/Communication-Analysis-Tool',
     moduleType: 'module'
   },
 
@@ -2520,6 +2524,7 @@ export const models: Model[] = [
     tags: ['Dashboard', 'Visualization', 'Case Management', 'Collaboration', 'Interactive'],
     featured: false,
     tier: 6,
+    githubRepo: 'https://github.com/LemkinAI/Investigation-Dashboard',
     moduleType: 'module'
   },
   {
@@ -2632,6 +2637,7 @@ export const models: Model[] = [
     tags: ['Report Generation', 'Legal Documents', 'Templates', 'Automation', 'Formatting'],
     featured: false,
     tier: 6,
+    githubRepo: 'https://github.com/LemkinAI/Report-Generation-Suite',
     moduleType: 'module'
   },
   {
@@ -2744,6 +2750,7 @@ export const models: Model[] = [
     tags: ['Export', 'ICC Compliance', 'Court Standards', 'Privacy Protection', 'Legal Formatting'],
     featured: false,
     tier: 6,
+    githubRepo: 'https://github.com/LemkinAI/Evidence-Export-Manager',
     moduleType: 'module'
   },
   {

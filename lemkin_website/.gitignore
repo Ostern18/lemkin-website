@@ -28,3 +28,25 @@ yarn-error.log*
 
 # Claude
 .claude/
+
+# Environment
+.env
+.env.*
+
+# OS
+Thumbs.db
+
+# Logs
+logs
+*.log
+lerna-debug.log*
+
+# Editor directories and files
+*.sublime-workspace
+*.sublime-project
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache

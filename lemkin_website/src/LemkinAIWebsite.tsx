@@ -1749,7 +1749,7 @@ const Navigation = () => {
             </Pressable>
             <Pressable
               className="btn-outline"
-              onClick={() => window.open('https://github.com/lemkin-ai', '_blank')}
+              onClick={() => window.open('https://github.com/LemkinAI', '_blank')}
             >
               GitHub
             </Pressable>
@@ -1843,7 +1843,7 @@ const Footer = () => {
             <ul className="space-y-3 text-sm">
               <li><button onClick={() => navigate('/contribute')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block focus-ring rounded-sm">Contribute</button></li>
               <li><button onClick={() => navigate('/governance')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block focus-ring rounded-sm">Governance</button></li>
-              <li><a href="https://github.com/lemkin-ai" className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors inline-flex items-center gap-1 focus-ring rounded-sm">
+              <li><a href="https://github.com/LemkinAI" className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors inline-flex items-center gap-1 focus-ring rounded-sm">
                 GitHub <ExternalLink className="w-3 h-3" />
               </a></li>
               <li><a href="https://discord.gg/lemkin-ai" className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors block focus-ring rounded-sm">Discord</a></li>
@@ -1866,7 +1866,7 @@ const Footer = () => {
 
             {/* Social Links */}
             <div className="flex items-center gap-4">
-              <a href="https://github.com/lemkin-ai" className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors focus-ring rounded-sm">
+              <a href="https://github.com/LemkinAI" className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors focus-ring rounded-sm">
                 <Github className="w-5 h-5" />
               </a>
               <a href="https://twitter.com/lemkin-ai" className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors focus-ring rounded-sm">
@@ -3705,7 +3705,7 @@ const ContributePage = () => {
           </p>
 
           <div className="mt-8 flex gap-4">
-            <Button onClick={() => window.open('https://github.com/lemkin-ai')}>
+            <Button onClick={() => window.open('https://github.com/LemkinAI')}>
               <Github className="w-5 h-5" />
               View on GitHub
             </Button>
@@ -3814,7 +3814,7 @@ const ContactPage = () => {
             <p className="text-gray-600 dark:text-gray-400 mb-4">
               Bug reports, feature requests, and technical questions
             </p>
-            <a href="https://github.com/lemkin-ai/issues" className="text-[var(--color-fg-primary)] hover:underline focus-ring rounded-sm">
+            <a href="https://github.com/LemkinAI/issues" className="text-[var(--color-fg-primary)] hover:underline focus-ring rounded-sm">
               GitHub Issues
             </a>
           </Card>
@@ -4408,7 +4408,7 @@ lemkin-integrity generate-manifest CASE-2024-001 \\
                 <div>
                   <h3 className="font-semibold mb-2">Development Setup</h3>
                   <CodeBlock
-                    code={`git clone https://github.com/lemkin-org/lemkin-integrity.git
+                    code={`git clone https://github.com/LemkinAI/lemkin-integrity.git
 cd lemkin-integrity
 pip install -e ".[dev]"`}
                     language="bash"
@@ -4833,7 +4833,7 @@ ${module.id} process-data input.file --output results.json`}
                   <h3 className="font-semibold">Contributing</h3>
                   <CodeBlock
                     code={`# Clone the repository
-git clone https://github.com/lemkin-org/${module.id}.git
+git clone https://github.com/LemkinAI/${module.id}.git
 cd ${module.id}
 
 # Install development dependencies
