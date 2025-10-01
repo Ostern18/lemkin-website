@@ -154,7 +154,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## 📧 Contact
 
 - Website: [lemkin.ai](https://lemkin.ai)
-- Email: contact@lemkin.ai
+- Email: ostern@lemkinai.com
 - GitHub: [@Ostern18](https://github.com/Ostern18)
 
 ---

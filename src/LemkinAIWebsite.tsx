@@ -1,5 +1,5 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
-import { X, Search, Calendar, Clock, AlertCircle, CheckCircle, Book, Code, Users, Mail, ExternalLink, Github, Twitter, FileText, Download, ArrowRight, ArrowLeft, Copy, Check, Scale, Shield, Eye, Gavel, Grid, Package, Sun, Moon, User, Share, Folder, BarChart, Database, AlertTriangle, Zap } from 'lucide-react';
+import { X, Search, Calendar, Clock, AlertCircle, CheckCircle, Book, Code, Users, Mail, ExternalLink, Github, Twitter, Linkedin, FileText, Download, ArrowRight, ArrowLeft, Copy, Check, Scale, Shield, Eye, Gavel, Grid, Package, Sun, Moon, User, Share, Folder, BarChart, Database, AlertTriangle, Zap } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { RouteProgressBar, Pressable, MotionCard } from './motion';
 import { ArticlesPage } from './ArticlesPage';
@@ -285,52 +285,52 @@ const ViewButton: React.FC<{ onClick: () => void }> = ({ onClick }) => (
 // Mock Data
 const mockModels = [
   {
-    id: 'whisper-legal-v2',
-    name: 'Whisper Legal v2',
-    description: 'Fine-tuned speech recognition model optimized for legal proceedings and testimony transcription.',
-    tags: ['audio', 'transcription', 'legal'],
-    status: 'stable',
-    version: '2.1.0',
+    id: 'civinfra-detection',
+    name: 'CivInfra-Detection',
+    description: 'World\'s first AI model specifically designed for identifying civilian infrastructure in conflict zones.',
+    tags: ['computer-vision', 'satellite-imagery', 'infrastructure'],
+    status: 'production',
+    version: '1.2.0',
     license: 'Apache 2.0',
     lastUpdated: '2025-01-10',
     downloads: 15420,
-    accuracy: 94.7,
-    precision: 93.2,
-    recall: 95.1,
-    f1Score: 94.1,
-    evaluator: 'UN IRMCT'
+    accuracy: 95.5,
+    precision: 94.2,
+    recall: 96.1,
+    f1Score: 95.1,
+    evaluator: 'UN OCHA'
   },
   {
-    id: 'doc-analyzer-xl',
-    name: 'Document Analyzer XL',
-    description: 'Multi-modal model for analyzing legal documents, evidence photos, and case materials.',
-    tags: ['vision', 'nlp', 'multimodal'],
-    status: 'beta',
-    version: '1.0.0-beta.3',
+    id: 'evidence-integrity-toolkit',
+    name: 'Evidence Integrity Toolkit',
+    description: 'Comprehensive cryptographic verification system for maintaining chain of custody in digital evidence.',
+    tags: ['cryptography', 'evidence', 'blockchain'],
+    status: 'production',
+    version: '2.1.0',
     license: 'MIT',
     lastUpdated: '2025-01-08',
     downloads: 8930,
-    accuracy: 91.2,
-    precision: 89.8,
-    recall: 92.5,
-    f1Score: 91.1,
-    evaluator: 'HRW Digital Lab'
+    accuracy: 99.8,
+    precision: 99.9,
+    recall: 99.7,
+    f1Score: 99.8,
+    evaluator: 'Digital Evidence Lab'
   },
   {
-    id: 'testimony-classifier',
-    name: 'Testimony Classifier',
-    description: 'NLP model for categorizing and analyzing witness testimonies and statements.',
-    tags: ['nlp', 'classification', 'legal'],
-    status: 'stable',
-    version: '3.2.1',
+    id: 'document-classification-engine',
+    name: 'Document Classification Engine',
+    description: 'Advanced document analysis and categorization system for legal evidence processing.',
+    tags: ['nlp', 'classification', 'documents'],
+    status: 'production',
+    version: '1.5.2',
     license: 'Apache 2.0',
     lastUpdated: '2024-12-20',
     downloads: 22105,
-    accuracy: 89.5,
-    precision: 88.1,
-    recall: 90.4,
-    f1Score: 89.2,
-    evaluator: 'ICC Registry'
+    accuracy: 91.2,
+    precision: 90.1,
+    recall: 92.4,
+    f1Score: 91.2,
+    evaluator: 'Legal Tech Consortium'
   }
 ];
 
@@ -1646,7 +1646,6 @@ const Navigation = () => {
     { path: '/models', label: 'AI Models & Tools' },
     { path: '/docs', label: 'Docs' },
     { path: '/articles', label: 'Articles' },
-    { path: '/ecosystem', label: 'Ecosystem' },
     { path: '/about', label: 'About' }
   ];
 
@@ -1787,8 +1786,8 @@ const Footer = () => {
           </dl>
         </div>
 
-        {/* Enhanced grid with better visual hierarchy */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+        {/* Simplified grid with only essential sections */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
           {/* Transparency */}
           <div>
             <h3 className="text-sm font-semibold text-[var(--color-text-primary)] mb-4 flex items-center gap-2">
@@ -1796,26 +1795,7 @@ const Footer = () => {
               Transparency
             </h3>
             <ul className="space-y-3 text-sm">
-              <li><button onClick={() => navigate('/docs/changelog')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block focus-ring rounded-sm">Changelog</button></li>
-              <li><button onClick={() => navigate('/docs/evaluation')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block focus-ring rounded-sm">Eval Methodology</button></li>
-              <li><button onClick={() => navigate('/docs/provenance')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block focus-ring rounded-sm">Data Provenance</button></li>
-              <li><button onClick={() => navigate('/docs/audits')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block focus-ring rounded-sm">Audit Reports</button></li>
-              <li><button onClick={() => navigate('/docs/performance')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block focus-ring rounded-sm">Performance Metrics</button></li>
-            </ul>
-          </div>
-
-          {/* Security */}
-          <div>
-            <h3 className="text-sm font-semibold text-[var(--color-text-primary)] mb-4 flex items-center gap-2">
-              <Shield className="w-4 h-4 text-[var(--color-text-primary)]" />
-              Security
-            </h3>
-            <ul className="space-y-3 text-sm">
-              <li><button onClick={() => navigate('/legal/responsible-use')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block focus-ring rounded-sm">Responsible Use</button></li>
-              <li><button onClick={() => navigate('/security/disclosure')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block focus-ring rounded-sm">Disclosure Policy</button></li>
-              <li><button onClick={() => navigate('/security/sbom')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block focus-ring rounded-sm">SBOM</button></li>
-              <li><button onClick={() => navigate('/security/compliance')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block focus-ring rounded-sm">Compliance</button></li>
-              <li><button onClick={() => navigate('/security/incident')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block focus-ring rounded-sm">Incident Response</button></li>
+              <li><button onClick={() => navigate('/transparency')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block focus-ring rounded-sm">Values & Policies</button></li>
             </ul>
           </div>
 
@@ -1826,11 +1806,7 @@ const Footer = () => {
               Legal
             </h3>
             <ul className="space-y-3 text-sm">
-              <li><button onClick={() => navigate('/legal/licensing')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block focus-ring rounded-sm">Licenses</button></li>
-              <li><button onClick={() => navigate('/legal/privacy')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block focus-ring rounded-sm">Privacy Policy</button></li>
-              <li><button onClick={() => navigate('/legal/terms')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block focus-ring rounded-sm">Terms of Use</button></li>
-              <li><button onClick={() => navigate('/legal/copyright')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block focus-ring rounded-sm">Copyright</button></li>
-              <li><button onClick={() => navigate('/legal/dmca')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block focus-ring rounded-sm">DMCA Policy</button></li>
+              <li><button onClick={() => navigate('/legal')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block focus-ring rounded-sm">Open Source & Usage Rules</button></li>
             </ul>
           </div>
 
@@ -1842,12 +1818,9 @@ const Footer = () => {
             </h3>
             <ul className="space-y-3 text-sm">
               <li><button onClick={() => navigate('/contribute')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block focus-ring rounded-sm">Contribute</button></li>
-              <li><button onClick={() => navigate('/governance')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block focus-ring rounded-sm">Governance</button></li>
               <li><a href="https://github.com/LemkinAI" className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors inline-flex items-center gap-1 focus-ring rounded-sm">
                 GitHub <ExternalLink className="w-3 h-3" />
               </a></li>
-              <li><a href="https://discord.gg/lemkin-ai" className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors block focus-ring rounded-sm">Discord</a></li>
-              <li><button onClick={() => navigate('/code-of-conduct')} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-left block focus-ring rounded-sm">Code of Conduct</button></li>
             </ul>
           </div>
         </div>
@@ -1866,13 +1839,10 @@ const Footer = () => {
 
             {/* Social Links */}
             <div className="flex items-center gap-4">
-              <a href="https://github.com/LemkinAI" className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors focus-ring rounded-sm">
-                <Github className="w-5 h-5" />
+              <a href="https://www.linkedin.com/company/lemkin-ai/?viewAsMember=true" target="_blank" rel="noopener noreferrer" className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors focus-ring rounded-sm">
+                <Linkedin className="w-5 h-5" />
               </a>
-              <a href="https://twitter.com/lemkin-ai" className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors focus-ring rounded-sm">
-                <Twitter className="w-5 h-5" />
-              </a>
-              <a href="mailto:contact@lemkin.ai" className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors focus-ring rounded-sm">
+              <a href="mailto:ostern@lemkinai.com" className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors focus-ring rounded-sm">
                 <Mail className="w-5 h-5" />
               </a>
             </div>
@@ -2890,27 +2860,27 @@ const ModelDetailPage = () => {
             <div>
               <h2 className="text-2xl font-bold mb-4">Overview</h2>
               <p className="text-gray-600 dark:text-gray-400 mb-6">
-                Whisper Legal v2 is a state-of-the-art speech recognition model specifically fine-tuned for legal proceedings 
-                and testimony transcription. Built upon OpenAI's Whisper architecture, this model has been enhanced with 
-                extensive training on international court proceedings, witness testimonies, and legal terminology across 
-                multiple languages.
+                CivInfra-Detection is the world's first AI model specifically designed for identifying civilian infrastructure
+                in conflict zones. Trained on comprehensive satellite imagery datasets, this model can detect hospitals, schools,
+                water treatment facilities, and other critical civilian infrastructure that requires protection under
+                international humanitarian law.
               </p>
-              
+
               <h3 className="text-xl font-semibold mt-8 mb-4">Key Features</h3>
               <ul className="space-y-2 text-gray-600 dark:text-gray-400">
-                <li>• Multi-language support for 15+ languages commonly used in international proceedings</li>
-                <li>• Enhanced accuracy for legal terminology and proper nouns</li>
-                <li>• Speaker diarization capabilities for multi-party conversations</li>
-                <li>• Timestamp alignment for evidence synchronization</li>
-                <li>• Privacy-preserving processing with on-premise deployment options</li>
+                <li>• Detection of 19 types of civilian infrastructure with 95.5% accuracy</li>
+                <li>• High-resolution satellite and aerial imagery analysis</li>
+                <li>• Real-time conflict zone monitoring capabilities</li>
+                <li>• Multi-spectral imaging support for enhanced detection</li>
+                <li>• Automated alert system for infrastructure targeting</li>
               </ul>
 
               <h3 className="text-xl font-semibold mt-8 mb-4">Use Cases</h3>
               <ul className="space-y-2 text-gray-600 dark:text-gray-400">
-                <li>• Transcribing witness testimonies and victim statements</li>
-                <li>• Processing intercepted communications as evidence</li>
-                <li>• Creating searchable archives of court proceedings</li>
-                <li>• Real-time transcription for remote hearings</li>
+                <li>• Monitoring civilian infrastructure in active conflict zones</li>
+                <li>• Pre-conflict baseline mapping for protection planning</li>
+                <li>• Post-conflict damage assessment and reconstruction planning</li>
+                <li>• Evidence collection for war crimes investigations</li>
               </ul>
             </div>
           )}
@@ -2918,19 +2888,23 @@ const ModelDetailPage = () => {
           {activeTab === 'usage' && (
             <div>
               <h2 className="text-2xl font-bold mb-4">Usage</h2>
-              
+
               <h3 className="text-xl font-semibold mb-4">Installation</h3>
               <div className="bg-gray-900 dark:bg-gray-950 rounded-lg p-4 mb-6">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-xs text-gray-400">bash</span>
                   <button
-                    onClick={() => handleCopy('pip install lemkin-whisper-legal')}
+                    onClick={() => handleCopy('git clone https://github.com/LemkinAI/civinfra-detection\ncd civinfra-detection\npip install -r requirements.txt')}
                     className="text-gray-400 hover:text-white transition-colors"
                   >
                     {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                   </button>
                 </div>
-                <code className="text-sm text-gray-300">pip install lemkin-whisper-legal</code>
+                <pre className="text-sm text-gray-300">
+{`git clone https://github.com/LemkinAI/civinfra-detection
+cd civinfra-detection
+pip install -r requirements.txt`}
+                </pre>
               </div>
 
               <h3 className="text-xl font-semibold mb-4">Quick Start</h3>
@@ -2938,34 +2912,37 @@ const ModelDetailPage = () => {
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-xs text-gray-400">python</span>
                   <button
-                    onClick={() => handleCopy(`from lemkin import WhisperLegal\n\nmodel = WhisperLegal.from_pretrained("whisper-legal-v2")\ntranscription = model.transcribe("testimony.wav")`)}
+                    onClick={() => handleCopy(`from civinfra_detection import CivInfraDetector\n\ndetector = CivInfraDetector()\nresults = detector.analyze_image("satellite_image.tif")\nprint(f"Detected {len(results)} infrastructure sites")`)}
                     className="text-gray-400 hover:text-white transition-colors"
                   >
                     {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                   </button>
                 </div>
                 <pre className="text-sm text-gray-300">
-{`from lemkin import WhisperLegal
+{`from civinfra_detection import CivInfraDetector
 
-model = WhisperLegal.from_pretrained("whisper-legal-v2")
-transcription = model.transcribe("testimony.wav")
-print(transcription.text)`}
+detector = CivInfraDetector()
+results = detector.analyze_image("satellite_image.tif")
+print(f"Detected {len(results)} infrastructure sites")`}
                 </pre>
               </div>
 
               <h3 className="text-xl font-semibold mb-4">Advanced Configuration</h3>
               <p className="text-gray-600 dark:text-gray-400 mb-4">
-                For production deployments, we recommend using the following configuration for optimal performance:
+                For batch processing and enhanced accuracy, configure the detector with specific parameters:
               </p>
               <div className="bg-gray-900 dark:bg-gray-950 rounded-lg p-4">
                 <pre className="text-sm text-gray-300">
-{`model = WhisperLegal.from_pretrained(
-    "whisper-legal-v2",
+{`detector = CivInfraDetector(
+    confidence_threshold=0.85,
     device="cuda",
-    compute_type="float16",
-    enable_diarization=True,
-    language_detection=True
-)`}
+    batch_size=16,
+    enable_multispectral=True
+)
+
+# Process multiple images
+results = detector.analyze_batch(["img1.tif", "img2.tif"])
+detector.export_results(results, "infrastructure_report.json")`}
                 </pre>
               </div>
             </div>
@@ -3447,8 +3424,8 @@ const DocsPage = () => {
     },
     {
       id: 'models',
-      title: 'Models',
-      items: ['Overview', 'Whisper Legal', 'Document Analyzer', 'Testimony Classifier']
+      title: 'Models & Tools',
+      items: ['Overview', 'CivInfra-Detection', 'Evidence Integrity Toolkit', 'Document Classification Engine']
     },
     {
       id: 'api',
@@ -3523,39 +3500,38 @@ const DocsPage = () => {
                 <li>• Active internet connection for model downloads</li>
               </ul>
 
-              <h3 className="text-xl font-semibold mb-4">Installation</h3>
+              <h3 className="text-xl font-semibold mb-4">Getting Started</h3>
               <p className="text-gray-600 dark:text-gray-400 mb-4">
-                Install the Lemkin AI SDK using pip:
+                Lemkin AI models and tools are available as open-source releases on GitHub. Each model/tool
+                has its own repository with specific installation instructions and dependencies.
               </p>
-              
-              <div className="bg-gray-900 dark:bg-gray-950 rounded-lg p-4 mb-6">
-                <code className="text-sm text-gray-300">pip install lemkin-ai</code>
-              </div>
 
-              <h3 className="text-xl font-semibold mb-4">First Steps</h3>
-              <p className="text-gray-600 dark:text-gray-400 mb-4">
-                After installation, you can verify everything is working correctly:
-              </p>
-              
               <div className="bg-gray-900 dark:bg-gray-950 rounded-lg p-4 mb-6">
                 <pre className="text-sm text-gray-300">
-{`import lemkin
+{`# Example: Clone a specific model repository
+git clone https://github.com/LemkinAI/civinfra-detection
+cd civinfra-detection
 
-# Check version
-print(lemkin.__version__)
-
-# List available models
-models = lemkin.list_models()
-for model in models:
-    print(f"- {model.name}: {model.description}")`}
+# Follow the model-specific setup instructions
+pip install -r requirements.txt`}
                 </pre>
+              </div>
+
+              <h3 className="text-xl font-semibold mb-4">Available Models and Tools</h3>
+              <p className="text-gray-600 dark:text-gray-400 mb-4">
+                Browse our collection of AI models and analysis tools designed for human rights investigations:
+              </p>
+
+              <div className="space-y-2 text-gray-600 dark:text-gray-400 mb-6">
+                <p><strong>AI Models:</strong> CivInfra-Detection, BuildingDamage-Assessment, RightsViolation-Detector, RoBERTa Joint NER+RE, T5 Legal Narrative Generation</p>
+                <p><strong>Analysis Tools:</strong> Evidence Integrity Toolkit, Document Classification Engine, Timeline Reconstruction Tool, Digital Forensics Toolkit, and more</p>
               </div>
 
               <h3 className="text-xl font-semibold mb-4">Next Steps</h3>
               <p className="text-gray-600 dark:text-gray-400">
-                Now that you have Lemkin AI installed, explore our model catalog to find the right 
-                tools for your use case, or dive into our guides for best practices on deployment 
-                and integration.
+                Visit our Models & Tools page to explore the full catalog and find the right
+                solutions for your use case. Each repository includes detailed documentation,
+                example usage, and integration guidelines.
               </p>
             </div>
           </main>
@@ -3704,14 +3680,38 @@ const ContributePage = () => {
             maintainers team.
           </p>
 
-          <div className="mt-8 flex gap-4">
-            <Button onClick={() => window.open('https://github.com/LemkinAI')}>
-              <Github className="w-5 h-5" />
+          <div className="mt-8 flex flex-col sm:flex-row gap-4">
+            <Button onClick={() => window.open('https://github.com/LemkinAI', '_blank')}>
+              <Github className="w-5 h-5 mr-2" />
               View on GitHub
             </Button>
             <Button variant="secondary" onClick={() => navigate('/governance')}>
               Learn About Governance
             </Button>
+          </div>
+
+          <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-6 mt-8">
+            <h3 className="font-semibold text-green-800 dark:text-green-300 mb-2">Ready to Contribute?</h3>
+            <p className="text-green-700 dark:text-green-400 text-sm mb-3">
+              Start by exploring our GitHub repositories, reading the contribution guidelines, and joining our community discussions.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-2">
+              <a
+                href="https://github.com/LemkinAI"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-green-700 dark:text-green-400 hover:text-green-900 dark:hover:text-green-200 text-sm font-medium focus-ring rounded-sm"
+              >
+                GitHub Organization <ExternalLink className="w-3 h-3" />
+              </a>
+              <span className="text-green-600 dark:text-green-500">•</span>
+              <a
+                href="mailto:ostern@lemkinai.com"
+                className="text-green-700 dark:text-green-400 hover:text-green-900 dark:hover:text-green-200 text-sm font-medium focus-ring rounded-sm"
+              >
+                ostern@lemkinai.com
+              </a>
+            </div>
           </div>
         </div>
       </div>
@@ -3803,8 +3803,8 @@ const ContactPage = () => {
             <p className="text-gray-600 dark:text-gray-400 mb-4">
               Questions about the project and collaboration
             </p>
-            <a href="mailto:info@lemkin.ai" className="text-[var(--color-fg-primary)] hover:underline focus-ring rounded-sm">
-              info@lemkin.ai
+            <a href="mailto:ostern@lemkinai.com" className="text-[var(--color-fg-primary)] hover:underline focus-ring rounded-sm">
+              ostern@lemkinai.com
             </a>
           </Card>
           
@@ -3825,8 +3825,8 @@ const ContactPage = () => {
             <p className="text-gray-600 dark:text-gray-400 mb-4">
               For collaboration and partnership inquiries
             </p>
-            <a href="mailto:partnerships@lemkin.ai" className="text-[var(--color-fg-primary)] hover:underline focus-ring rounded-sm">
-              partnerships@lemkin.ai
+            <a href="mailto:ostern@lemkinai.com" className="text-[var(--color-fg-primary)] hover:underline focus-ring rounded-sm">
+              ostern@lemkinai.com
             </a>
           </Card>
           
@@ -3836,8 +3836,8 @@ const ContactPage = () => {
             <p className="text-gray-600 dark:text-gray-400 mb-4">
               For reporting security vulnerabilities
             </p>
-            <a href="mailto:security@lemkin.ai" className="text-[var(--color-fg-primary)] hover:underline focus-ring rounded-sm">
-              security@lemkin.ai
+            <a href="mailto:ostern@lemkinai.com" className="text-[var(--color-fg-primary)] hover:underline focus-ring rounded-sm">
+              ostern@lemkinai.com
             </a>
           </Card>
         </div>
@@ -3866,115 +3866,107 @@ const ContactPage = () => {
 };
 
 const LegalPage = () => {
-  const [activeTab, setActiveTab] = useState('privacy');
-  
   return (
     <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-8">Legal</h1>
-        
-        <div className="flex gap-4 mb-8 border-b border-gray-200 dark:border-gray-700">
-          <button
-            onClick={() => setActiveTab('privacy')}
-            className={`pb-4 px-1 font-medium transition-colors ${
-              activeTab === 'privacy'
-                ? 'text-[var(--color-fg-primary)] border-b-2 border-[var(--color-accent-cta)]'
-                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
-            }`}
-          >
-            Privacy Policy
-          </button>
-          <button
-            onClick={() => setActiveTab('terms')}
-            className={`pb-4 px-1 font-medium transition-colors ${
-              activeTab === 'terms'
-                ? 'text-[var(--color-fg-primary)] border-b-2 border-[var(--color-accent-cta)]'
-                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
-            }`}
-          >
-            Terms of Service
-          </button>
-        </div>
+        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-8">Legal & Usage Guidelines</h1>
 
         <div className="prose prose-gray dark:prose-invert max-w-none">
-          {activeTab === 'privacy' && (
-            <>
-              <h2 className="text-2xl font-bold mb-4">Privacy Policy</h2>
-              <p className="text-gray-600 dark:text-gray-400 mb-4">
-                Last updated: January 15, 2025
-              </p>
-              
-              <h3 className="text-xl font-semibold mt-6 mb-3">Data Collection</h3>
-              <p className="text-gray-600 dark:text-gray-400 mb-4">
-                Lemkin AI collects minimal data necessary for providing our services. We do not sell, 
-                trade, or otherwise transfer your information to third parties.
-              </p>
+          <p className="text-lg text-gray-600 dark:text-gray-400 mb-8">
+            Lemkin AI provides open-source tools and models specifically designed for human rights investigations
+            and international justice applications. All usage must align with these core principles.
+          </p>
 
-              <h3 className="text-xl font-semibold mt-6 mb-3">Usage Analytics</h3>
-              <p className="text-gray-600 dark:text-gray-400 mb-4">
-                We collect anonymous usage statistics to improve our models and services. This data 
-                does not contain personally identifiable information.
-              </p>
+          <h2 className="text-2xl font-bold mt-8 mb-4">Open Source Licensing</h2>
 
-              <h3 className="text-xl font-semibold mt-6 mb-3">Model Training</h3>
-              <p className="text-gray-600 dark:text-gray-400 mb-4">
-                Our models are trained exclusively on publicly available or ethically sourced data. 
-                We do not use user-submitted data for training without explicit consent.
-              </p>
+          <h3 className="text-xl font-semibold mb-3">License Terms</h3>
+          <p className="text-gray-600 dark:text-gray-400 mb-4">
+            All Lemkin AI models and tools are released under permissive open-source licenses (Apache 2.0, MIT, or equivalent).
+            Users are free to use, modify, and distribute our software subject to the license conditions specified
+            in each repository.
+          </p>
 
-              <h3 className="text-xl font-semibold mt-6 mb-3">Data Security</h3>
-              <p className="text-gray-600 dark:text-gray-400 mb-4">
-                We implement industry-standard security measures to protect your data. All data 
-                transmission is encrypted using TLS 1.3 or higher.
-              </p>
+          <h3 className="text-xl font-semibold mb-3">Attribution Requirements</h3>
+          <p className="text-gray-600 dark:text-gray-400 mb-4">
+            When using Lemkin AI tools in research, publications, or applications, please provide appropriate attribution.
+            Citation guidelines are provided in each repository's README file.
+          </p>
 
-              <h3 className="text-xl font-semibold mt-6 mb-3">Your Rights</h3>
-              <p className="text-gray-600 dark:text-gray-400">
-                You have the right to access, correct, or delete your personal information. Contact 
-                us at privacy@lemkin.ai to exercise these rights.
-              </p>
-            </>
-          )}
+          <h3 className="text-xl font-semibold mb-3">Commercial Use</h3>
+          <p className="text-gray-600 dark:text-gray-400 mb-6">
+            Commercial use is permitted under our open-source licenses, provided it aligns with our ethical use
+            guidelines and serves legitimate human rights or justice purposes.
+          </p>
 
-          {activeTab === 'terms' && (
-            <>
-              <h2 className="text-2xl font-bold mb-4">Terms of Service</h2>
-              <p className="text-gray-600 dark:text-gray-400 mb-4">
-                Last updated: January 15, 2025
-              </p>
+          <h2 className="text-2xl font-bold mt-8 mb-4">Human Rights Usage Expectation</h2>
 
-              <h3 className="text-xl font-semibold mt-6 mb-3">Acceptance of Terms</h3>
-              <p className="text-gray-600 dark:text-gray-400 mb-4">
-                By accessing and using Lemkin AI services, you agree to be bound by these Terms of 
-                Service and all applicable laws and regulations.
-              </p>
+          <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-6 mb-6">
+            <h3 className="font-semibold text-amber-800 dark:text-amber-300 mb-2 flex items-center gap-2">
+              <AlertTriangle className="w-5 h-5" />
+              Required: Human Rights Purpose
+            </h3>
+            <p className="text-amber-700 dark:text-amber-400 text-sm">
+              All Lemkin AI tools and models are designed exclusively for human rights investigations, international
+              justice applications, and related humanitarian purposes. Users must demonstrate legitimate human rights
+              or justice-related use cases.
+            </p>
+          </div>
 
-              <h3 className="text-xl font-semibold mt-6 mb-3">Use License</h3>
-              <p className="text-gray-600 dark:text-gray-400 mb-4">
-                Our models and software are provided under open-source licenses specified in each 
-                repository. Commercial use requires compliance with respective license terms.
-              </p>
+          <h3 className="text-xl font-semibold mb-3">Acceptable Use Cases</h3>
+          <ul className="space-y-2 text-gray-600 dark:text-gray-400 mb-4">
+            <li>• Human rights investigations and documentation</li>
+            <li>• War crimes and atrocity research</li>
+            <li>• International legal proceedings and evidence analysis</li>
+            <li>• Academic research on conflict and human rights</li>
+            <li>• NGO and civil society documentation efforts</li>
+            <li>• Journalist investigations of human rights violations</li>
+            <li>• Government agencies working on accountability and justice</li>
+          </ul>
 
-              <h3 className="text-xl font-semibold mt-6 mb-3">Ethical Use Policy</h3>
-              <p className="text-gray-600 dark:text-gray-400 mb-4">
-                Users must comply with our Ethical Use Policy, which prohibits use of our tools for 
-                harassment, discrimination, surveillance of protected groups, or any activity that 
-                violates human rights.
-              </p>
+          <h3 className="text-xl font-semibold mb-3">Prohibited Uses</h3>
+          <ul className="space-y-2 text-gray-600 dark:text-gray-400 mb-6">
+            <li>• Surveillance or monitoring of individuals without legal authority</li>
+            <li>• Targeting or harassment of protected groups</li>
+            <li>• Military applications not related to humanitarian law compliance</li>
+            <li>• Commercial exploitation unrelated to human rights</li>
+            <li>• Any application that violates human rights or international law</li>
+            <li>• Suppression of legitimate political dissent or protest</li>
+          </ul>
 
-              <h3 className="text-xl font-semibold mt-6 mb-3">Disclaimer</h3>
-              <p className="text-gray-600 dark:text-gray-400 mb-4">
-                Our services are provided "as is" without warranties of any kind. We are not liable 
-                for any damages arising from the use of our services.
-              </p>
+          <h2 className="text-2xl font-bold mt-8 mb-4">Compliance & Verification</h2>
 
-              <h3 className="text-xl font-semibold mt-6 mb-3">Indemnification</h3>
-              <p className="text-gray-600 dark:text-gray-400">
-                You agree to indemnify and hold harmless Lemkin AI and its contributors from any 
-                claims arising from your use of our services.
-              </p>
-            </>
-          )}
+          <h3 className="text-xl font-semibold mb-3">User Verification</h3>
+          <p className="text-gray-600 dark:text-gray-400 mb-4">
+            While our tools are open-source, we reserve the right to request verification of intended use cases
+            and may deny access to pre-trained models or specialized resources if usage does not align with
+            our human rights mission.
+          </p>
+
+          <h3 className="text-xl font-semibold mb-3">Reporting Misuse</h3>
+          <p className="text-gray-600 dark:text-gray-400 mb-4">
+            If you become aware of misuse of Lemkin AI tools, please report it to{' '}
+            <a href="mailto:ostern@lemkinai.com" className="text-[var(--accent)] hover:underline">
+              ostern@lemkinai.com
+            </a>. We take violations of our usage guidelines seriously.
+          </p>
+
+          <h3 className="text-xl font-semibold mb-3">Legal Disclaimers</h3>
+          <p className="text-gray-600 dark:text-gray-400 mb-6">
+            Lemkin AI tools are provided "as is" without warranties. Users are responsible for ensuring their
+            usage complies with applicable laws and regulations in their jurisdiction. We are not liable for
+            misuse of our tools or any damages arising from their use.
+          </p>
+
+          <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6 mt-8">
+            <h3 className="font-semibold text-blue-800 dark:text-blue-300 mb-2">Questions About Usage?</h3>
+            <p className="text-blue-700 dark:text-blue-400 text-sm">
+              If you're unsure whether your intended use case aligns with our guidelines, contact us at{' '}
+              <a href="mailto:ostern@lemkinai.com" className="underline hover:no-underline">
+                ostern@lemkinai.com
+              </a>{' '}
+              before proceeding. We're happy to provide guidance on appropriate usage.
+            </p>
+          </div>
         </div>
       </div>
     </div>
@@ -4875,6 +4867,106 @@ cat CONTRIBUTING.md`}
   );
 };
 
+const TransparencyPage = () => {
+  return (
+    <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto">
+        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-8">Transparency</h1>
+
+        <div className="prose prose-gray dark:prose-invert max-w-none">
+          <p className="text-lg text-gray-600 dark:text-gray-400 mb-8">
+            Lemkin AI is committed to transparency in everything we do. Our values and policies guide how we develop,
+            deploy, and maintain AI systems for human rights investigations and international justice.
+          </p>
+
+          <h2 className="text-2xl font-bold mt-8 mb-4">Our Values</h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <Card>
+              <h3 className="font-semibold text-lg mb-2 flex items-center gap-2">
+                <Eye className="w-5 h-5 text-[var(--color-fg-primary)]" />
+                Transparency
+              </h3>
+              <p className="text-gray-600 dark:text-gray-400 text-sm">
+                Open-source code, published methodologies, and clear documentation of capabilities and limitations.
+              </p>
+            </Card>
+
+            <Card>
+              <h3 className="font-semibold text-lg mb-2 flex items-center gap-2">
+                <Shield className="w-5 h-5 text-[var(--color-fg-primary)]" />
+                Accountability
+              </h3>
+              <p className="text-gray-600 dark:text-gray-400 text-sm">
+                Regular audits, bias testing, and validation by practitioners and independent experts.
+              </p>
+            </Card>
+
+            <Card>
+              <h3 className="font-semibold text-lg mb-2 flex items-center gap-2">
+                <Users className="w-5 h-5 text-[var(--color-fg-primary)]" />
+                Human-Centered
+              </h3>
+              <p className="text-gray-600 dark:text-gray-400 text-sm">
+                Technology that augments human judgment, never replaces it. Built with and for practitioners.
+              </p>
+            </Card>
+
+            <Card>
+              <h3 className="font-semibold text-lg mb-2 flex items-center gap-2">
+                <Globe className="w-5 h-5 text-[var(--color-fg-primary)]" />
+                Justice-Focused
+              </h3>
+              <p className="text-gray-600 dark:text-gray-400 text-sm">
+                Every tool designed specifically for advancing accountability and protecting human rights.
+              </p>
+            </Card>
+          </div>
+
+          <h2 className="text-2xl font-bold mt-8 mb-4">Our Policies</h2>
+
+          <h3 className="text-xl font-semibold mb-3">Ethical AI Development</h3>
+          <p className="text-gray-600 dark:text-gray-400 mb-4">
+            We follow strict ethical guidelines in developing AI systems, including regular bias testing,
+            fairness assessments, and validation with diverse datasets representing different regions,
+            languages, and contexts.
+          </p>
+
+          <h3 className="text-xl font-semibold mb-3">Data Protection & Privacy</h3>
+          <p className="text-gray-600 dark:text-gray-400 mb-4">
+            All models are designed with privacy-preserving features. We support on-premises deployment,
+            do not collect user data, and provide built-in redaction capabilities to protect sensitive information.
+          </p>
+
+          <h3 className="text-xl font-semibold mb-3">Model Validation</h3>
+          <p className="text-gray-600 dark:text-gray-400 mb-4">
+            Every model undergoes rigorous testing by independent experts, including legal professionals,
+            human rights investigators, and technical auditors. Performance metrics and limitations are
+            publicly documented.
+          </p>
+
+          <h3 className="text-xl font-semibold mb-3">Responsible Disclosure</h3>
+          <p className="text-gray-600 dark:text-gray-400 mb-6">
+            We maintain open channels for reporting security issues, ethical concerns, or model limitations.
+            Critical issues are addressed promptly with public updates on remediation efforts.
+          </p>
+
+          <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6 mt-8">
+            <h3 className="font-semibold text-blue-800 dark:text-blue-300 mb-2">Questions or Concerns?</h3>
+            <p className="text-blue-700 dark:text-blue-400 text-sm">
+              We welcome questions about our practices, policies, or specific models. Contact us at{' '}
+              <a href="mailto:ostern@lemkinai.com" className="underline hover:no-underline">
+                ostern@lemkinai.com
+              </a>{' '}
+              or open an issue on our GitHub repositories.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 // Main App Component
 // Route announcer for accessibility
 const RouteAnnouncer = () => {
@@ -4986,6 +5078,8 @@ const App = () => {
         return <GovernancePage />;
       case '/contact':
         return <ContactPage />;
+      case '/transparency':
+        return <TransparencyPage />;
       case '/legal':
         return <LegalPage />;
       default:

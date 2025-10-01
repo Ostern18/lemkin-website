@@ -37,9 +37,13 @@ npm run eject
 The application has evolved from a single-file architecture to a more modular approach:
 
 **Core Files:**
+- `src/App.tsx`: Application entry point that renders LemkinAIWebsite
 - `src/LemkinAIWebsite.tsx`: Main application with 14 page components (~3000 lines)
 - `src/ModelsPageRevised.tsx`: Dedicated AI Models & Tools page with advanced features
+- `src/ArticlesPage.tsx`: Dedicated articles page with search, filtering, and article reader
+- `src/ArticleReader.tsx`: Component for reading individual articles with related articles
 - `src/modelsData.ts`: Comprehensive data models and mock data for tools and models
+- `src/articlesData.ts`: Article metadata and structure for the articles system
 - `src/index.css`: Custom design system with CSS variables and OpenAI-inspired patterns
 
 **Key Architecture Components:**
@@ -62,7 +66,8 @@ The application has evolved from a single-file architecture to a more modular ap
 4. **Page Components** (14 total)
    - `HomePage`: Hero section, featured models, practitioner briefs, contribution CTAs
    - `ModelsPageRevised`: Advanced model/tool grid with search, filtering, and comparison features
-   - Other pages: About, Articles, Contact, Contribute, Docs, Governance, Legal, Overview, Resources
+   - `ArticlesPage`: Standalone articles page with search, filtering by category/tags, and article reader integration
+   - Other pages: About, Contact, Contribute, Docs, Governance, Legal, Overview, Resources
 
 ### Custom Design System
 
@@ -82,14 +87,21 @@ The project includes an extensive OpenAI-inspired design system spanning both `t
 - Professional button components with ripple effects
 - Comprehensive hover states and micro-interactions
 
-### Data Architecture (`src/modelsData.ts`)
+### Data Architecture
 
+**Models Data (`src/modelsData.ts`):**
 Complex TypeScript interfaces and mock data structured for:
 - **Models**: AI/ML models with performance metrics, technical specifications, and evaluation data
 - **Tools**: 18+ renamed tools (no longer "Lemkin-X" pattern) with specific functional names
 - **Model Metrics**: Accuracy, F1 scores, inference speed, model size, parameters
 - **Capabilities**: Real-world impact examples and use case categorization
 - **Module Types**: Differentiation between 'model' and 'module' (tool) types
+
+**Articles Data (`src/articlesData.ts`):**
+- **Article Interface**: Comprehensive article metadata including title, excerpt, category, tags, author, date, read time
+- **Content Loading**: Articles load content from markdown files in `/public/articles/` directory
+- **Categorization**: Articles organized by categories (AI/ML, Legal Tech, Investigation Methods, Technical, Policy)
+- **Tagging System**: Rich tagging for search and filtering functionality
 
 ## Key Implementation Patterns
 
@@ -159,13 +171,21 @@ The project uses Create React App's default testing setup:
 - No separate prettier or formatting configuration
 - Build warnings are acceptable (mainly unused imports), but no build errors
 
+## Deployment
+
+The project is configured for AWS Amplify deployment via `amplify.yml`:
+- Build process: `npm install` → `npm run build`
+- Output directory: `build/`
+- Caching: `node_modules` cached between builds
+
 ## Important Development Notes
 
 ### Architecture Evolution
 - Originally single-file architecture (`src/LemkinAIWebsite.tsx` ~3000 lines)
-- Now modular with dedicated components like `ModelsPageRevised.tsx`
-- When adding new complex pages, consider creating dedicated files following the `ModelsPageRevised.tsx` pattern
-- Mock data is centralized in `src/modelsData.ts` with comprehensive TypeScript interfaces
+- Now modular with dedicated components like `ModelsPageRevised.tsx` and `ArticlesPage.tsx`
+- When adding new complex pages, consider creating dedicated files following the `ModelsPageRevised.tsx` or `ArticlesPage.tsx` patterns
+- Mock data is centralized in `src/modelsData.ts` and `src/articlesData.ts` with comprehensive TypeScript interfaces
+- Articles system loads content dynamically from markdown files in `/public/articles/` directory
 
 ### Component Location Reference
 Key components in `LemkinAIWebsite.tsx`:
@@ -185,7 +205,16 @@ Key components in `LemkinAIWebsite.tsx`:
 - Tool data in `src/modelsData.ts` uses descriptive names
 - Models have detailed metrics and technical specifications
 - All mock data includes realistic performance indicators
+- Article data in `src/articlesData.ts` includes comprehensive metadata for filtering and search
+- Articles content is stored as markdown files in `/public/articles/` directory
 - Maintain TypeScript interface consistency when adding new data
+
+### Articles System
+- **Content Structure**: Markdown files in `/public/articles/` with frontmatter-style metadata
+- **Dynamic Loading**: Articles loaded via fetch API with error handling
+- **Search & Filter**: Full-text search across title, excerpt, and tags with category and tag filtering
+- **Related Articles**: Automatically generated based on shared tags
+- **Performance**: Client-side filtering with memoized computations for responsive UI
 
 # important-instruction-reminders
 Do what has been asked; nothing more, nothing less.
