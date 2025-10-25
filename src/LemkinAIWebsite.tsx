@@ -1760,6 +1760,50 @@ const Navigation = () => {
   );
 };
 
+// Partner Logos Scrolling Component
+const PartnerLogos = () => {
+  const partners = [
+    { name: 'University of Cambridge', logo: '/logos/University of Cambridge.png' },
+    { name: 'International Criminal Court', logo: '/logos/International Criminal Court.jpg' },
+    { name: 'Oxford University', logo: '/logos/Oxford University.png' },
+    { name: 'UN Human Rights Council', logo: '/logos/UNHRC logo.jpg' },
+    { name: 'Partner Organization', logo: '/logos/idA3XeRcqD_1761183087180.jpeg' },
+    { name: 'Partner Institution', logo: '/logos/idRRY5xb-b_1761183108115.jpeg' },
+    { name: 'Supporting Organization', logo: '/logos/idwHsodUnz_1761183295194.jpeg' },
+  ];
+
+  return (
+    <div className="w-full overflow-hidden bg-[var(--color-bg-secondary)] border-y border-[var(--bd)] py-12">
+      <div className="relative">
+        {/* Gradient overlays for fade effect */}
+        <div className="absolute left-0 top-0 bottom-0 w-40 bg-gradient-to-r from-[var(--color-bg-secondary)] to-transparent z-10 pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-40 bg-gradient-to-l from-[var(--color-bg-secondary)] to-transparent z-10 pointer-events-none" />
+
+        <div className="flex animate-scroll">
+          {/* First set of logos */}
+          {partners.concat(partners).map((partner, index) => (
+            <div
+              key={`partner-${index}`}
+              className="flex-shrink-0 mx-10 flex items-center justify-center"
+              style={{ width: '240px', height: '120px' }}
+            >
+              <img
+                src={partner.logo}
+                alt={partner.name}
+                className="max-w-full max-h-full object-contain grayscale hover:grayscale-0 opacity-60 hover:opacity-100 transition-all duration-300"
+                style={{ filter: 'brightness(0.95)' }}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+      <p className="text-center text-sm text-[var(--subtle)] mt-8">
+        Supporting organizations and partners in the fight for justice
+      </p>
+    </div>
+  );
+};
+
 // Enhanced Footer with Trust Center from homepage_improvements.md
 const Footer = () => {
   const { navigate } = useRouter();
@@ -2056,6 +2100,9 @@ const HomePage = () => {
           </div>
         </div>
       </section>
+
+      {/* Partner Logos Scrolling Row */}
+      <PartnerLogos />
 
       {/* Featured Models */}
       <section className="py-16 px-4 sm:px-6 lg:px-8 bg-[var(--color-bg-surface)]">

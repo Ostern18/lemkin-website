@@ -38,9 +38,9 @@ The application has evolved from a single-file architecture to a more modular ap
 
 **Core Files:**
 - `src/App.tsx`: Application entry point that renders LemkinAIWebsite
-- `src/LemkinAIWebsite.tsx`: Main application with 14 page components (~3000 lines)
-- `src/ModelsPageRevised.tsx`: Dedicated AI Models & Tools page with advanced features
-- `src/ArticlesPage.tsx`: Dedicated articles page with search, filtering, and article reader
+- `src/LemkinAIWebsite.tsx`: Main application with 14 page components (~5100 lines)
+- `src/ModelsPageRevised.tsx`: Dedicated AI Models & Tools page with advanced features (~1300 lines)
+- `src/ArticlesPage.tsx`: Dedicated articles page with search, filtering, and article reader (~300 lines)
 - `src/ArticleReader.tsx`: Component for reading individual articles with related articles
 - `src/modelsData.ts`: Comprehensive data models and mock data for tools and models
 - `src/articlesData.ts`: Article metadata and structure for the articles system
@@ -181,8 +181,8 @@ The project is configured for AWS Amplify deployment via `amplify.yml`:
 ## Important Development Notes
 
 ### Architecture Evolution
-- Originally single-file architecture (`src/LemkinAIWebsite.tsx` ~3000 lines)
-- Now modular with dedicated components like `ModelsPageRevised.tsx` and `ArticlesPage.tsx`
+- Originally single-file architecture, now evolved (`src/LemkinAIWebsite.tsx` ~5100 lines)
+- Modular with dedicated components like `ModelsPageRevised.tsx` and `ArticlesPage.tsx`
 - When adding new complex pages, consider creating dedicated files following the `ModelsPageRevised.tsx` or `ArticlesPage.tsx` patterns
 - Mock data is centralized in `src/modelsData.ts` and `src/articlesData.ts` with comprehensive TypeScript interfaces
 - Articles system loads content dynamically from markdown files in `/public/articles/` directory
@@ -215,9 +215,3 @@ Key components in `LemkinAIWebsite.tsx`:
 - **Search & Filter**: Full-text search across title, excerpt, and tags with category and tag filtering
 - **Related Articles**: Automatically generated based on shared tags
 - **Performance**: Client-side filtering with memoized computations for responsive UI
-
-# important-instruction-reminders
-Do what has been asked; nothing more, nothing less.
-NEVER create files unless they're absolutely necessary for achieving your goal.
-ALWAYS prefer editing an existing file to creating a new one.
-NEVER proactively create documentation files (*.md) or README files. Only create documentation files if explicitly requested by the User.
