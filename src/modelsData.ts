@@ -2883,6 +2883,161 @@ export const models: Model[] = [
     featured: true,
     tier: 1,
     moduleType: 'module'
+  },
+  {
+    id: 'lemkin-ai-agents',
+    name: 'AI Agents for Human Rights Investigation',
+    type: 'module',
+    category: 'Core Analysis',
+    status: 'production',
+    description: 'AI agents for human rights investigations and legal documentation with strict evidentiary standards. This repository contains two complete implementations: Anthropic Claude SDK (using Claude Sonnet 4.5 with native PDF/image processing) and OpenAI Agents SDK (using OpenAI Agents framework with multi-agent workflows). Both implementations provide the same 18 specialized agents with identical capabilities but leverage different underlying AI frameworks, all featuring chain-of-custody tracking, human-in-the-loop gates, and evidentiary compliance.',
+    shortDescription: '18 specialized AI agents with dual implementation (Claude SDK + OpenAI SDK) for evidence processing',
+    cardSummary: 'Dual-framework AI agents (Claude/OpenAI) for document analysis and human rights investigations',
+    publicSummary: 'A collection of AI assistants available in two versions (Claude and OpenAI) that help investigators process evidence, analyze documents, and build legal cases with proper tracking and human oversight at every step.',
+    howItWorks: {
+      overview: 'The agent system provides specialized AI capabilities for different aspects of legal investigation, from document parsing to crime-specific analysis. Available in two complete implementations (Claude SDK and OpenAI SDK) with identical capabilities but different underlying frameworks.',
+      steps: [
+        {
+          title: 'Choose Your Implementation',
+          description: 'Select between Anthropic Claude SDK (Sonnet 4.5 with native vision) or OpenAI Agents SDK (multi-agent framework) based on your needs and infrastructure.'
+        },
+        {
+          title: 'Agent Selection',
+          description: 'Choose from 18 specialized agents across three domains: Investigative Research, Document Processing, and Crime-Specific Analysis.'
+        },
+        {
+          title: 'Evidence Processing',
+          description: 'Agents process documents, images, and data with automatic chain-of-custody tracking and integrity verification.'
+        },
+        {
+          title: 'Multi-Agent Collaboration',
+          description: 'Agents work together seamlessly, sharing infrastructure for comprehensive evidence analysis across workflows.'
+        },
+        {
+          title: 'Human Review',
+          description: 'Built-in gates trigger human review for high-stakes decisions, ensuring AI augments rather than replaces investigators.'
+        }
+      ],
+      technicalDetails: 'Dual implementation: (1) Claude SDK uses Sonnet 4.5 with Vision API for native PDF/image processing and 200K token context, (2) OpenAI SDK uses Agents framework for advanced multi-agent workflows. Both feature blockchain-style immutable audit trails and standardized legal report templates.'
+    },
+    realWorldImpact: [
+      {
+        domain: 'Document Processing',
+        examples: [
+          'Parse multilingual documents at scale with 200K token context',
+          'Extract structured data from medical records and forensic reports',
+          'Identify patterns across thousands of witness statements'
+        ]
+      },
+      {
+        domain: 'Evidence Analysis',
+        examples: [
+          'Analyze satellite imagery for mass graves or detention facilities',
+          'Detect torture indicators in medical records using Istanbul Protocol',
+          'Cross-reference evidence against legal charge elements automatically'
+        ]
+      },
+      {
+        domain: 'Legal Investigation',
+        examples: [
+          'Generate court-ready documentation with complete audit trails',
+          'Build evidence chains for atrocity prosecutions',
+          'Accelerate investigations from months to days with AI-powered automation'
+        ]
+      }
+    ],
+    capabilities: [
+      {
+        category: 'Domain 1: Investigative Research & Intelligence (5 agents)',
+        items: [
+          'OSINT Synthesis Agent - Multi-source monitoring and claim verification',
+          'Satellite Imagery Analyst - Feature identification and change detection',
+          'Social Media Evidence Harvester - Screenshot analysis and authenticity assessment',
+          'Historical Context & Background Researcher - Conflict background and actor profiling',
+          'Legal Framework & Jurisdiction Advisor - International law and precedent analysis'
+        ]
+      },
+      {
+        category: 'Domain 2: Document Processing & Analysis (4 agents)',
+        items: [
+          'Multi-Format Document Parser - PDF/image extraction with OCR',
+          'Comparative Document Analyzer - Version comparison and forgery detection',
+          'Medical & Forensic Record Analyst - Istanbul Protocol torture assessment',
+          'Evidence Gap & Next Steps Identifier - Gap analysis and action planning'
+        ]
+      },
+      {
+        category: 'Domain 3: Crime-Specific & Specialized Analysis (9 agents)',
+        items: [
+          'Torture & Ill-Treatment Analyst - Torture documentation and pattern analysis',
+          'Genocide Intent Analyzer - Intent analysis and systematic destruction assessment',
+          'Enforced Disappearance Investigator - Disappearance pattern tracking',
+          'Siege & Starvation Warfare Analyst - Supply flow and humanitarian access analysis',
+          'Digital Forensics & Metadata Analyst - Metadata extraction and tampering detection',
+          'Forensic Analysis Reviewer - DNA/ballistics/autopsy report interpretation',
+          'Ballistics & Weapons Identifier - Weapon identification and ammunition analysis',
+          'Military Structure & Tactics Analyst - Unit structure and command hierarchy analysis',
+          'NGO & UN Reporting Specialist - UN mechanism submissions and advocacy materials'
+        ]
+      },
+      {
+        category: 'Shared Infrastructure (Both Implementations)',
+        items: [
+          'BaseAgent - Core functionality for all agents',
+          'VisionCapableAgent - PDF/image processing capabilities',
+          'AuditLogger - Blockchain-style immutable audit trails',
+          'EvidenceHandler - Evidence ingestion and integrity verification',
+          'OutputFormatter - Standardized legal report templates'
+        ]
+      }
+    ],
+    metrics: {
+      coverage: '18 specialized agents × 2 implementations = 36 total agents',
+      languages: '15+ languages supported',
+      formats: 'PDF, images, text, medical records, satellite imagery',
+      compatibility: 'Claude Sonnet 4.5 OR OpenAI GPT-4 (dual implementation)'
+    },
+    technicalSpecs: {
+      framework: 'Dual: (1) Anthropic Claude SDK, (2) OpenAI Agents SDK (both Python 3.9+)',
+      architecture: 'Multi-agent system with shared infrastructure (compatible across both implementations)',
+      inputFormat: 'Text, PDF, images, structured data',
+      outputFormat: 'Structured JSON, legal reports, audit trails',
+      requirements: ['Python 3.9+', 'Anthropic API key OR OpenAI API key', 'See requirements.txt for each implementation']
+    },
+    useCases: [
+      'Human rights investigations and documentation',
+      'International criminal justice (ICC/hybrid tribunal cases)',
+      'Civil rights litigation and pattern analysis',
+      'Public defender case assessment',
+      'War crimes evidence processing',
+      'Command responsibility tracking',
+      'Witness statement analysis at scale',
+      'Forensic evidence verification'
+    ],
+    limitations: [
+      'Requires either Anthropic API key (Claude SDK) or OpenAI API key (OpenAI SDK)',
+      'Human review required for high-stakes legal decisions',
+      'Output quality depends on input evidence quality',
+      'Some agents require domain expertise for proper use',
+      'API costs may accumulate with high-volume processing',
+      'Two separate codebases to maintain (though agents have identical capabilities)'
+    ],
+    ethicalConsiderations: [
+      'Human-in-the-loop by default - AI augments, doesn\'t replace investigators',
+      'Complete audit trails for legal accountability and transparency',
+      'Evidentiary standards prioritized over innovation',
+      'Open source methods for reproducibility and verification',
+      'Designed for legitimate legal and humanitarian purposes only'
+    ],
+    githubRepo: 'https://github.com/LemkinAI/Lemkin-AI-Agents',
+    localPath: './opensource/lemkin-AIAgents/Anthropic-Claude-Agent-SDK',
+    deployment: {
+      requirements: ['Python 3.9+', 'Choose: Anthropic API key (Claude SDK) OR OpenAI API key (OpenAI SDK)', 'See requirements.txt in each implementation directory']
+    },
+    tags: ['AI Agents', 'Claude SDK', 'OpenAI SDK', 'Dual Implementation', 'Document Processing', 'Evidence Analysis', 'Legal Investigation', 'Human Rights', 'Multi-Agent', 'Vision API', 'Chain of Custody', 'Evidentiary Standards', 'Istanbul Protocol', 'OSINT', 'Forensic Analysis'],
+    featured: true,
+    tier: 2,
+    moduleType: 'module'
   }
 ];
 

@@ -1,0 +1,53 @@
+# LemkinAI Agents - Python Dependencies (OpenAI Agents SDK Implementation)
+
+# Core dependencies
+openai-agents>=0.4.1       # OpenAI Agents SDK framework
+openai>=1.50.0             # OpenAI API client (used by agents SDK)
+python-dotenv>=1.0.0       # Environment variable management
+pydantic>=2.5.0            # Data validation and settings management
+
+# Testing
+pytest>=8.0.0              # Testing framework
+pytest-asyncio>=0.23.0     # Async test support
+pytest-cov>=4.1.0          # Coverage reporting
+pytest-mock>=3.12.0        # Mocking support
+
+# Document processing
+pypdf>=5.0.0               # PDF processing
+pillow>=10.0.0             # Image processing
+python-magic>=0.4.27       # File type detection
+pdf2image>=1.16.3          # PDF to image conversion
+
+# Data handling
+pandas>=2.0.0              # Data analysis
+numpy>=1.24.0              # Numerical computing
+
+# Utilities
+requests>=2.31.0           # HTTP library
+tqdm>=4.66.0               # Progress bars
+rich>=13.7.0               # Rich terminal output
+
+# Optional dependencies for specific features
+# Uncomment as needed:
+
+# OCR capabilities
+# pytesseract>=0.3.10      # OCR engine
+# opencv-python>=4.8.0     # Computer vision
+
+# NLP processing
+# spacy>=3.7.0             # NLP library
+# transformers>=4.35.0     # HuggingFace transformers
+
+# Geospatial analysis
+# geopandas>=0.14.0        # Geospatial data analysis
+# shapely>=2.0.0           # Geometric operations
+
+# Development dependencies
+black>=24.0.0              # Code formatting
+flake8>=7.0.0              # Linting
+mypy>=1.8.0                # Type checking
+isort>=5.13.0              # Import sorting
+
+# Documentation
+mkdocs>=1.5.0              # Documentation generator
+mkdocs-material>=9.5.0     # Material theme for MkDocs
