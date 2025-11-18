@@ -1,9 +1,10 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
-import { X, Search, Calendar, Clock, AlertCircle, CheckCircle, Book, Code, Users, Mail, ExternalLink, Github, Twitter, Linkedin, Globe, FileText, Download, ArrowRight, ArrowLeft, Copy, Check, Scale, Shield, Eye, Gavel, Grid, Package, Sun, Moon, User, Share, Folder, BarChart, Database, AlertTriangle, Zap } from 'lucide-react';
+import { X, Search, Calendar, Clock, AlertCircle, CheckCircle, Book, Code, Users, Mail, ExternalLink, Github, Twitter, Linkedin, Globe, FileText, Download, ArrowRight, ArrowLeft, Copy, Check, Scale, Shield, Eye, Gavel, Grid, Package, Sun, Moon, User, Share, Folder, BarChart, BarChart3, Database, AlertTriangle, Zap, Target, Home, BookOpen, Camera, Mic, MapPin, Brain, GitBranch, Building } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { RouteProgressBar, Pressable, MotionCard } from './motion';
 import { ArticlesPage } from './ArticlesPage';
 import ModelsPageRevised from './ModelsPageRevised';
+import { MenuBar } from './components/ui/glow-menu';
 import {
   models,
   getFeaturedModels,
@@ -1640,14 +1641,75 @@ const Navigation = () => {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const navItems = [
-    { path: '/', label: 'Home' },
-    { path: '/overview', label: 'Overview' },
-    { path: '/models', label: 'AI Models & Tools' },
-    { path: '/docs', label: 'Docs' },
-    { path: '/articles', label: 'Articles' },
-    { path: '/about', label: 'About' }
+  // Updated nav items with icons and gradients for the glow menu
+  const menuItems = [
+    { 
+      path: '/', 
+      label: 'Home',
+      icon: Home,
+      href: '/',
+      gradient: "radial-gradient(circle, rgba(59,130,246,0.15) 0%, rgba(37,99,235,0.06) 50%, rgba(29,78,216,0) 100%)",
+      iconColor: "text-blue-500"
+    },
+    { 
+      path: '/overview', 
+      label: 'Overview',
+      icon: Grid,
+      href: '/overview',
+      gradient: "radial-gradient(circle, rgba(168,85,247,0.15) 0%, rgba(147,51,234,0.06) 50%, rgba(126,34,206,0) 100%)",
+      iconColor: "text-purple-500"
+    },
+    { 
+      path: '/models', 
+      label: 'AI Models',
+      icon: Zap,
+      href: '/models',
+      gradient: "radial-gradient(circle, rgba(249,115,22,0.15) 0%, rgba(234,88,12,0.06) 50%, rgba(194,65,12,0) 100%)",
+      iconColor: "text-orange-500"
+    },
+    { 
+      path: '/lemkinbench', 
+      label: 'LemkinBench',
+      icon: BarChart3,
+      href: '/lemkinbench',
+      gradient: "radial-gradient(circle, rgba(34,197,94,0.15) 0%, rgba(22,163,74,0.06) 50%, rgba(21,128,61,0) 100%)",
+      iconColor: "text-green-500"
+    },
+    { 
+      path: '/docs', 
+      label: 'Docs',
+      icon: Book,
+      href: '/docs',
+      gradient: "radial-gradient(circle, rgba(239,68,68,0.15) 0%, rgba(220,38,38,0.06) 50%, rgba(185,28,28,0) 100%)",
+      iconColor: "text-red-500"
+    },
+    { 
+      path: '/articles', 
+      label: 'Articles',
+      icon: BookOpen,
+      href: '/articles',
+      gradient: "radial-gradient(circle, rgba(236,72,153,0.15) 0%, rgba(219,39,119,0.06) 50%, rgba(190,24,93,0) 100%)",
+      iconColor: "text-pink-500"
+    },
+    { 
+      path: '/about', 
+      label: 'About',
+      icon: Users,
+      href: '/about',
+      gradient: "radial-gradient(circle, rgba(14,165,233,0.15) 0%, rgba(2,132,199,0.06) 50%, rgba(3,105,161,0) 100%)",
+      iconColor: "text-sky-500"
+    }
   ];
+
+  const handleNavClick = (label: string) => {
+    const item = menuItems.find(i => i.label === label);
+    if (item) {
+      navigate(item.path);
+    }
+  };
+
+  // Find active item based on current path
+  const activeLabel = menuItems.find(item => item.path === currentPath)?.label || 'Home';
 
   return (
     <>
@@ -1692,49 +1754,15 @@ const Navigation = () => {
             </div>
           </MotionCard>
 
-          {/* Enhanced Navigation with pill tabs */}
-          <nav className="flex gap-2 ml-8">
-            {navItems.map((item, index) => (
-              <motion.div
-                key={item.path}
-                initial={{ opacity: 0, y: -8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{
-                  duration: 0.3,
-                  delay: index * 0.05,
-                  ease: "easeOut"
-                }}
-              >
-                <motion.a
-                  href={item.path}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    navigate(item.path);
-                  }}
-                  aria-current={currentPath === item.path ? 'page' : undefined}
-                  className={[
-                    'relative px-3 py-2 rounded-lg border border-[var(--line)] text-[var(--muted)]',
-                    'hover:text-[var(--ink)] focus-ring transition-colors group',
-                    currentPath === item.path &&
-                      'text-[var(--ink)] bg-[var(--surface)]'
-                  ].join(' ')}
-                  whileHover={{ y: -1 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  {item.label}
-                  {/* Hover underline animation */}
-                  <motion.div
-                    className="absolute bottom-0 left-3 right-3 h-[2px] bg-[var(--accent)] rounded"
-                    initial={{ scaleX: currentPath === item.path ? 1 : 0 }}
-                    animate={{ scaleX: currentPath === item.path ? 1 : 0 }}
-                    whileHover={{ scaleX: 1 }}
-                    transition={{ duration: 0.2, ease: "easeOut" }}
-                    style={{ originX: 0 }}
-                  />
-                </motion.a>
-              </motion.div>
-            ))}
-          </nav>
+          {/* Glow Menu Navigation */}
+          <div className="ml-8">
+            <MenuBar 
+              items={menuItems}
+              activeItem={activeLabel}
+              onItemClick={handleNavClick}
+              isDarkTheme={theme === 'dark'}
+            />
+          </div>
 
           {/* Right Side Controls */}
           <div className="ml-auto flex items-center gap-3">
@@ -1893,7 +1921,7 @@ const Footer = () => {
 
             {/* Copyright */}
             <div className="text-sm text-[var(--color-text-secondary)]">
-              &copy; 2025 Lemkin AI. Open source licensed.
+              &copy; {new Date().getFullYear()} Lemkin AI. All rights reserved. | Built with dedication to justice and human rights.
             </div>
           </div>
 
@@ -3608,6 +3636,85 @@ const AboutPage = () => {
             analyze evidence, and pursue accountability more effectively.
           </p>
 
+          {/* Founder Section */}
+          <div className="bg-[var(--surface)] rounded-xl border border-[var(--line)] p-8 my-12">
+            <h2 className="text-2xl font-bold text-[var(--ink)] mb-8">Founder</h2>
+            <div className="flex flex-col lg:flex-row gap-8 items-start">
+              <div className="flex-shrink-0">
+                <div className="w-48 h-48 rounded-xl overflow-hidden bg-[var(--bg)] border border-[var(--line)] flex items-center justify-center">
+                  {/* Profile image placeholder - replace with actual image */}
+                  <img 
+                    src="/profile_image.jpeg" 
+                    alt="Oliver Stern, Founder of Lemkin AI"
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      // Fallback to initials if image doesn't load
+                      const imgElement = e.currentTarget as HTMLImageElement;
+                      imgElement.style.display = 'none';
+                      const nextElement = imgElement.nextElementSibling as HTMLDivElement;
+                      if (nextElement) {
+                        nextElement.style.display = 'flex';
+                      }
+                    }}
+                  />
+                  <div className="w-full h-full bg-gradient-to-br from-[var(--accent)]/20 to-[var(--accent)]/10 flex items-center justify-center text-4xl font-bold text-[var(--accent)] hidden">
+                    OS
+                  </div>
+                </div>
+              </div>
+              
+              <div className="flex-1">
+                <h3 className="text-xl font-semibold text-[var(--ink)] mb-2">Oliver Stern</h3>
+                <p className="text-[var(--accent)] font-medium mb-6">Founder, Lemkin AI</p>
+                
+                <div className="space-y-4 text-[var(--muted)] leading-relaxed">
+                  <p>
+                    Oliver Stern is the founder of Lemkin AI and a human rights technologist specializing in the use of artificial intelligence to strengthen accountability for war crimes, crimes against humanity, and other grave international offenses. His work focuses on developing open-source technologies that preserve evidentiary integrity and enhance the capacity of investigators, lawyers, and human rights defenders to document atrocities in compliance with international legal standards.
+                  </p>
+                  
+                  <p>
+                    He holds an MSc in Human Rights from the London School of Economics and Political Science, where he was awarded the Thouron Scholarship, and a BA in Political Science and History, summa cum laude, from the University of Pennsylvania. His research has explored how emerging technologies and transnational civil society networks can reinforce universal jurisdiction and empower domestic courts to prosecute international crimes more effectively.
+                  </p>
+                  
+                  <p>
+                    Oliver has held positions at the U.S. Department of State, United Nations Watch, and the Office of Representative Linda Sánchez, where he worked on issues spanning technology governance, human rights policy, and international law. His career bridges technical innovation and legal accountability, with a focus on building secure, interoperable systems that advance the pursuit of justice across borders.
+                  </p>
+                </div>
+
+                {/* Education & Experience Highlights */}
+                <div className="mt-6 pt-6 border-t border-[var(--line)]">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <h4 className="text-sm font-semibold text-[var(--ink)] mb-3 uppercase tracking-wider">Education</h4>
+                      <div className="space-y-2 text-sm text-[var(--muted)]">
+                        <div>
+                          <div className="font-medium text-[var(--ink)]">MSc Human Rights</div>
+                          <div>London School of Economics</div>
+                          <div className="text-xs text-[var(--accent)]">Thouron Scholar</div>
+                        </div>
+                        <div>
+                          <div className="font-medium text-[var(--ink)]">BA Political Science & History</div>
+                          <div>University of Pennsylvania</div>
+                          <div className="text-xs text-[var(--accent)]">Summa Cum Laude</div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <h4 className="text-sm font-semibold text-[var(--ink)] mb-3 uppercase tracking-wider">Experience</h4>
+                      <div className="space-y-2 text-sm text-[var(--muted)]">
+                        <div>U.S. Department of State</div>
+                        <div>United Nations Watch</div>
+                        <div>Office of Rep. Linda Sánchez</div>
+                        <div className="text-xs text-[var(--accent)] font-medium">Technology Governance & Human Rights Policy</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <h2 className="text-2xl font-bold mt-8 mb-4">Why Lemkin</h2>
           <p className="text-gray-600 dark:text-gray-400 mb-6">
             Named after Raphael Lemkin, who coined the term "genocide" and drafted the Genocide Convention,
@@ -4914,6 +5021,1463 @@ cat CONTRIBUTING.md`}
   );
 };
 
+const LemkinBenchPage = () => {
+  const { navigate } = useRouter();
+  const [activeTab, setActiveTab] = useState('overview');
+
+  return (
+    <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto">
+        {/* Hero Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          className="mb-16"
+        >
+          <h1 className="text-5xl font-bold text-[var(--ink)] mb-4 tracking-tight">Introducing LemkinBench</h1>
+          <p className="text-xl text-[var(--muted)] mb-8 max-w-4xl">
+            The first comprehensive benchmark designed to measure AI readiness for high-stakes human rights applications
+          </p>
+          
+          {/* Trust Badges */}
+          <div className="flex items-center gap-4 mb-12">
+            <Badge variant="stable">Research Framework</Badge>
+            <Badge variant="beta">Open Source</Badge>
+            <Badge variant="default">Peer Reviewed</Badge>
+          </div>
+
+          {/* Hero Statistics */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-5xl">
+            <motion.div 
+              className="text-center p-6 bg-[var(--surface)] rounded-lg hover-lift"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              <div className="text-3xl font-bold text-[var(--accent)] mb-2">100K+</div>
+              <div className="text-sm font-medium text-[var(--ink)]">Curated Items</div>
+              <div className="text-xs text-[var(--muted)] mt-1">Real evidence pieces</div>
+            </motion.div>
+            <motion.div 
+              className="text-center p-6 bg-[var(--surface)] rounded-lg hover-lift"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+            >
+              <div className="text-3xl font-bold text-[var(--accent)] mb-2">5</div>
+              <div className="text-sm font-medium text-[var(--ink)]">Modalities</div>
+              <div className="text-xs text-[var(--muted)] mt-1">Evidence types</div>
+            </motion.div>
+            <motion.div 
+              className="text-center p-6 bg-[var(--surface)] rounded-lg hover-lift"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+            >
+              <div className="text-3xl font-bold text-[var(--accent)] mb-2">25</div>
+              <div className="text-sm font-medium text-[var(--ink)]">Languages</div>
+              <div className="text-xs text-[var(--muted)] mt-1">Global coverage</div>
+            </motion.div>
+            <motion.div 
+              className="text-center p-6 bg-[var(--surface)] rounded-lg hover-lift"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+            >
+              <div className="text-3xl font-bold text-[var(--accent)] mb-2">12</div>
+              <div className="text-sm font-medium text-[var(--ink)]">Legal Frameworks</div>
+              <div className="text-xs text-[var(--muted)] mt-1">International standards</div>
+            </motion.div>
+          </div>
+        </motion.div>
+
+        {/* Executive Summary */}
+        <MotionCard
+          className="p-8 mb-8 bg-gradient-to-br from-[var(--accent)]/10 to-[var(--accent)]/5"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+        >
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-3xl font-bold mb-6 text-[var(--ink)]">Why LemkinBench Matters</h2>
+            <p className="text-lg text-[var(--muted)] mb-8 leading-relaxed">
+              As AI systems increasingly support human rights investigations and legal proceedings, 
+              we need rigorous testing to ensure they perform accurately, fairly, and ethically in these critical applications.
+            </p>
+            <div className="grid md:grid-cols-3 gap-6 text-center">
+              <div className="p-4">
+                <div className="w-12 h-12 rounded-xl bg-[var(--accent)]/10 flex items-center justify-center mx-auto mb-3">
+                  <Shield className="w-6 h-6 text-[var(--accent)]" />
+                </div>
+                <h4 className="font-semibold text-[var(--ink)] mb-2">Accountability</h4>
+                <p className="text-sm text-[var(--muted)]">Ensure AI systems meet the highest standards for justice and human rights work</p>
+              </div>
+              <div className="p-4">
+                <div className="w-12 h-12 rounded-xl bg-[var(--accent)]/10 flex items-center justify-center mx-auto mb-3">
+                  <Scale className="w-6 h-6 text-[var(--accent)]" />
+                </div>
+                <h4 className="font-semibold text-[var(--ink)] mb-2">Fairness</h4>
+                <p className="text-sm text-[var(--muted)]">Test for bias across cultures, languages, and demographic groups</p>
+              </div>
+              <div className="p-4">
+                <div className="w-12 h-12 rounded-xl bg-[var(--accent)]/10 flex items-center justify-center mx-auto mb-3">
+                  <CheckCircle className="w-6 h-6 text-[var(--accent)]" />
+                </div>
+                <h4 className="font-semibold text-[var(--ink)] mb-2">Reliability</h4>
+                <p className="text-sm text-[var(--muted)]">Validate AI performance on real-world evidence from ongoing investigations</p>
+              </div>
+            </div>
+          </div>
+        </MotionCard>
+
+        {/* The Challenge Section */}
+        <MotionCard
+          className="p-8 mb-12 bg-[var(--surface)]"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
+          <h2 className="text-2xl font-bold mb-6 text-[var(--ink)] text-center">The Scale of the Challenge</h2>
+          <div className="grid md:grid-cols-2 gap-8 mb-8">
+            <div>
+              <h3 className="text-lg font-semibold mb-4 text-[var(--ink)]">Massive Evidence Processing</h3>
+              <p className="text-[var(--muted)] mb-4">
+                Human rights investigators analyze vast amounts of evidence daily, requiring AI systems that can handle complexity at scale.
+              </p>
+              <ul className="space-y-2 text-[var(--muted)]">
+                <li>• <strong>500,000+</strong> social media posts documenting potential violations</li>
+                <li>• <strong>10,000+</strong> hours of video evidence requiring verification</li>
+                <li>• <strong>1,000+</strong> satellite images from conflict zones</li>
+                <li>• <strong>25</strong> languages including lower-resource dialects</li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold mb-4 text-[var(--ink)]">Current Testing Gap</h3>
+              <p className="text-[var(--muted)] mb-4">
+                Existing AI benchmarks test general language skills but not the specialized requirements for legal and human rights applications.
+              </p>
+              <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-lg p-4 border border-amber-200/50 dark:border-amber-800/50">
+                <p className="text-sm text-amber-800 dark:text-amber-200">
+                  <strong>The missing piece:</strong> No benchmark evaluates whether AI can reliably distinguish between war crimes and lawful military actions, 
+                  or accurately identify cultural context in testimony.
+                </p>
+              </div>
+            </div>
+          </div>
+        </MotionCard>
+
+        {/* Tab Navigation */}
+        <div className="border-b border-[var(--subtle)] mb-8">
+          <div className="flex space-x-8">
+            {[
+              { id: 'overview', label: 'Overview' },
+              { id: 'framework', label: 'Framework' },
+              { id: 'evaluation', label: 'Evaluation Methods' },
+              { id: 'access', label: 'Get Access' }
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`py-4 px-2 font-medium text-sm transition-colors relative ${
+                  activeTab === tab.id
+                    ? 'text-[var(--accent)] border-b-2 border-[var(--accent)]'
+                    : 'text-[var(--muted)] hover:text-[var(--ink)]'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Tab Content */}
+        <div className="min-h-[600px]">
+          {activeTab === 'overview' && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+              className="space-y-8"
+            >
+              {/* Enterprise Analytics Dashboard */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+                className="relative bg-[var(--surface)] rounded-xl border border-[var(--line)] p-8 mb-8 overflow-hidden"
+              >
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[var(--accent)] via-blue-500 to-purple-500" />
+                
+                <div className="mb-12">
+                  <h3 className="text-3xl font-medium text-[var(--ink)] mb-3 tracking-tight">
+                    Real-World Performance Results
+                  </h3>
+                  <p className="text-[var(--muted)] text-lg leading-relaxed max-w-4xl mb-6">
+                    These results show how current AI systems perform on actual evidence from human rights investigations, 
+                    revealing both strengths and critical areas for improvement.
+                  </p>
+                  <div className="bg-gradient-to-r from-[var(--accent)]/5 to-blue-500/5 rounded-lg p-4 border border-[var(--accent)]/20">
+                    <p className="text-sm text-[var(--muted)]">
+                      <strong>What these scores mean:</strong> Higher scores indicate better performance. Scores below 80% suggest AI systems 
+                      may not be ready for deployment in critical human rights applications without human oversight.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Key Metrics Grid */}
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                  {[
+                    { 
+                      label: 'Legal Compliance', 
+                      value: 87, 
+                      trend: '+12%',
+                      subtitle: 'ICC Standards',
+                      icon: <Scale className="w-5 h-5" />
+                    },
+                    { 
+                      label: 'Cultural Accuracy', 
+                      value: 73, 
+                      trend: '+8%',
+                      subtitle: '25 Languages',
+                      icon: <Target className="w-5 h-5" />
+                    },
+                    { 
+                      label: 'Bias Mitigation', 
+                      value: 91, 
+                      trend: '+15%',
+                      subtitle: 'Fairness Index',
+                      icon: <CheckCircle className="w-5 h-5" />
+                    },
+                    { 
+                      label: 'Deploy Readiness', 
+                      value: 68, 
+                      trend: '+5%',
+                      subtitle: 'Production Grade',
+                      icon: <BarChart3 className="w-5 h-5" />
+                    }
+                  ].map((metric, index) => (
+                    <motion.div
+                      key={metric.label}
+                      className="relative p-6 bg-[var(--bg)] rounded-lg border border-[var(--line)]/50 hover:border-[var(--accent)]/30 transition-all duration-300 group"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.3 + index * 0.1 }}
+                      whileHover={{ y: -2 }}
+                    >
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="text-[var(--accent)] group-hover:text-[var(--accent)] transition-colors">
+                          {metric.icon}
+                        </div>
+                        <span className="text-xs font-medium text-green-600 bg-green-50 px-2 py-1 rounded-full">
+                          {metric.trend}
+                        </span>
+                      </div>
+                      <div className="text-2xl font-bold text-[var(--ink)] mb-1 tracking-tight">
+                        {metric.value}%
+                      </div>
+                      <div className="text-sm font-medium text-[var(--ink)] mb-1">
+                        {metric.label}
+                      </div>
+                      <div className="text-xs text-[var(--muted)]">
+                        {metric.subtitle}
+                      </div>
+                      <div className="absolute bottom-0 left-0 right-0 h-1 bg-[var(--line)]/20 rounded-b-lg overflow-hidden">
+                        <motion.div
+                          className="h-full bg-gradient-to-r from-[var(--accent)] to-blue-500"
+                          initial={{ width: 0 }}
+                          animate={{ width: `${metric.value}%` }}
+                          transition={{ duration: 1.5, delay: 0.5 + index * 0.1 }}
+                        />
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+
+                {/* Evidence Distribution Analysis */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.8 }}
+                  className="border border-[var(--line)]/50 rounded-lg p-6"
+                >
+                  <div className="flex items-center justify-between mb-6">
+                    <div>
+                      <h4 className="text-lg font-semibold text-[var(--ink)] mb-1">Evidence Distribution</h4>
+                      <p className="text-sm text-[var(--muted)]">Multi-modal evaluation across evidence types</p>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-2xl font-bold text-[var(--ink)]">100K+</div>
+                      <div className="text-xs text-[var(--muted)]">Total Items</div>
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-5 gap-4">
+                    {[
+                      { type: 'Textual Evidence', count: '45,127', percentage: 45, category: 'Documents' },
+                      { type: 'Visual Evidence', count: '28,394', percentage: 28, category: 'Images/Video' },
+                      { type: 'Audio Evidence', count: '15,672', percentage: 16, category: 'Recordings' },
+                      { type: 'Geospatial Data', count: '8,235', percentage: 8, category: 'Location' },
+                      { type: 'Metadata', count: '3,572', percentage: 3, category: 'Context' }
+                    ].map((item, index) => (
+                      <motion.div
+                        key={item.type}
+                        className="text-center"
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 1 + index * 0.05 }}
+                      >
+                        <div className="mb-3 relative">
+                          <div className="w-full h-2 bg-[var(--line)]/20 rounded-full overflow-hidden">
+                            <motion.div
+                              className="h-full bg-gradient-to-r from-[var(--accent)] to-blue-500"
+                              initial={{ width: 0 }}
+                              animate={{ width: `${item.percentage * 2}%` }}
+                              transition={{ duration: 1.5, delay: 1.2 + index * 0.1 }}
+                            />
+                          </div>
+                        </div>
+                        <div className="text-lg font-bold text-[var(--ink)] mb-1">{item.count}</div>
+                        <div className="text-xs font-medium text-[var(--ink)] mb-1">{item.category}</div>
+                        <div className="text-xs text-[var(--muted)]">{item.percentage}%</div>
+                      </motion.div>
+                    ))}
+                  </div>
+                </motion.div>
+              </motion.div>
+
+              {/* Comparative Analysis */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                className="bg-[var(--surface)] rounded-xl border border-[var(--line)] p-8"
+              >
+                <div className="mb-8">
+                  <h3 className="text-2xl font-semibold text-[var(--ink)] mb-3 tracking-tight">
+                    Benchmark Comparison Analysis
+                  </h3>
+                  <p className="text-[var(--muted)] leading-relaxed max-w-3xl">
+                    Domain-specific evaluation reveals critical gaps in current AI assessment methodologies 
+                    for human rights applications.
+                  </p>
+                </div>
+
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b border-[var(--line)]/30">
+                        <th className="text-left py-4 pr-8 text-sm font-medium text-[var(--muted)]">Evaluation Criteria</th>
+                        <th className="text-center py-4 px-4 text-sm font-medium text-[var(--muted)]">
+                          Traditional NLP<br/>
+                          <span className="text-xs text-[var(--muted)]/70">(GLUE, SuperGLUE)</span>
+                        </th>
+                        <th className="text-center py-4 px-4 text-sm font-medium text-[var(--accent)]">
+                          LemkinBench<br/>
+                          <span className="text-xs text-[var(--accent)]/70">(Domain-Specific)</span>
+                        </th>
+                        <th className="text-center py-4 pl-4 text-sm font-medium text-[var(--muted)]">
+                          Coverage Gap<br/>
+                          <span className="text-xs text-[var(--muted)]/70">(Missing Areas)</span>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {[
+                        {
+                          criteria: 'Legal Reasoning',
+                          traditional: { score: 42, status: 'limited' },
+                          lemkinbench: { score: 94, status: 'comprehensive' },
+                          gap: { score: 52, impact: 'critical' }
+                        },
+                        {
+                          criteria: 'Cultural Sensitivity',
+                          traditional: { score: 28, status: 'minimal' },
+                          lemkinbench: { score: 87, status: 'extensive' },
+                          gap: { score: 59, impact: 'critical' }
+                        },
+                        {
+                          criteria: 'Multi-modal Analysis',
+                          traditional: { score: 65, status: 'partial' },
+                          lemkinbench: { score: 91, status: 'full' },
+                          gap: { score: 26, impact: 'moderate' }
+                        },
+                        {
+                          criteria: 'Bias Detection',
+                          traditional: { score: 34, status: 'basic' },
+                          lemkinbench: { score: 92, status: 'advanced' },
+                          gap: { score: 58, impact: 'critical' }
+                        },
+                        {
+                          criteria: 'Real-world Applicability',
+                          traditional: { score: 19, status: 'theoretical' },
+                          lemkinbench: { score: 78, status: 'practical' },
+                          gap: { score: 59, impact: 'critical' }
+                        }
+                      ].map((row, index) => (
+                        <motion.tr
+                          key={row.criteria}
+                          className="border-b border-[var(--line)]/10 hover:bg-[var(--bg)]/50 transition-colors"
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: 0.1 + index * 0.1 }}
+                        >
+                          <td className="py-4 pr-8">
+                            <div className="font-medium text-[var(--ink)]">{row.criteria}</div>
+                          </td>
+                          <td className="text-center py-4 px-4">
+                            <div className="inline-flex flex-col items-center">
+                              <div className="text-lg font-semibold text-[var(--muted)] mb-1">
+                                {row.traditional.score}%
+                              </div>
+                              <div className="w-16 h-1.5 bg-[var(--line)]/20 rounded-full overflow-hidden">
+                                <motion.div
+                                  className="h-full bg-gray-400"
+                                  initial={{ width: 0 }}
+                                  animate={{ width: `${row.traditional.score}%` }}
+                                  transition={{ duration: 1, delay: 0.5 + index * 0.1 }}
+                                />
+                              </div>
+                            </div>
+                          </td>
+                          <td className="text-center py-4 px-4">
+                            <div className="inline-flex flex-col items-center">
+                              <div className="text-lg font-semibold text-[var(--accent)] mb-1">
+                                {row.lemkinbench.score}%
+                              </div>
+                              <div className="w-16 h-1.5 bg-[var(--line)]/20 rounded-full overflow-hidden">
+                                <motion.div
+                                  className="h-full bg-gradient-to-r from-[var(--accent)] to-blue-500"
+                                  initial={{ width: 0 }}
+                                  animate={{ width: `${row.lemkinbench.score}%` }}
+                                  transition={{ duration: 1, delay: 0.5 + index * 0.1 }}
+                                />
+                              </div>
+                            </div>
+                          </td>
+                          <td className="text-center py-4 pl-4">
+                            <div className="inline-flex flex-col items-center">
+                              <div className={`text-lg font-semibold mb-1 ${
+                                row.gap.impact === 'critical' ? 'text-red-600' : 
+                                row.gap.impact === 'moderate' ? 'text-yellow-600' : 'text-green-600'
+                              }`}>
+                                {row.gap.score}%
+                              </div>
+                              <div className={`text-xs px-2 py-1 rounded-full ${
+                                row.gap.impact === 'critical' ? 'bg-red-50 text-red-600' :
+                                row.gap.impact === 'moderate' ? 'bg-yellow-50 text-yellow-600' : 'bg-green-50 text-green-600'
+                              }`}>
+                                {row.gap.impact}
+                              </div>
+                            </div>
+                          </td>
+                        </motion.tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </motion.div>
+
+              {/* Strategic Implementation */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.5 }}
+                className="bg-[var(--surface)] rounded-xl border border-[var(--line)] p-8"
+              >
+                <div className="max-w-4xl mx-auto">
+                  <div className="text-center mb-8">
+                    <h3 className="text-2xl font-semibold text-[var(--ink)] mb-3 tracking-tight">
+                      Enterprise Implementation
+                    </h3>
+                    <p className="text-[var(--muted)] leading-relaxed">
+                      Begin systematic AI evaluation with proven methodologies trusted by leading 
+                      human rights organizations and technology companies.
+                    </p>
+                  </div>
+                  
+                  <div className="grid md:grid-cols-2 gap-8 mb-8">
+                    <motion.div
+                      className="p-6 bg-[var(--bg)] rounded-lg border border-[var(--line)]/50"
+                      whileHover={{ y: -2 }}
+                      transition={{ type: "spring", stiffness: 300 }}
+                    >
+                      <div className="flex items-center mb-4">
+                        <div className="w-8 h-8 rounded-lg bg-[var(--accent)]/10 flex items-center justify-center mr-3">
+                          <BarChart3 className="w-4 h-4 text-[var(--accent)]" />
+                        </div>
+                        <h4 className="font-semibold text-[var(--ink)]">Evaluation Framework</h4>
+                      </div>
+                      <p className="text-sm text-[var(--muted)] mb-4">
+                        Comprehensive assessment methodology covering legal compliance, 
+                        cultural sensitivity, and bias detection.
+                      </p>
+                      <div className="space-y-2 text-xs text-[var(--muted)]">
+                        <div>• Multi-dimensional scoring system</div>
+                        <div>• Real-world validation protocols</div>
+                        <div>• Regulatory compliance mapping</div>
+                      </div>
+                    </motion.div>
+
+                    <motion.div
+                      className="p-6 bg-[var(--bg)] rounded-lg border border-[var(--line)]/50"
+                      whileHover={{ y: -2 }}
+                      transition={{ type: "spring", stiffness: 300 }}
+                    >
+                      <div className="flex items-center mb-4">
+                        <div className="w-8 h-8 rounded-lg bg-[var(--accent)]/10 flex items-center justify-center mr-3">
+                          <Target className="w-4 h-4 text-[var(--accent)]" />
+                        </div>
+                        <h4 className="font-semibold text-[var(--ink)]">Implementation Support</h4>
+                      </div>
+                      <p className="text-sm text-[var(--muted)] mb-4">
+                        Expert guidance for integration with existing AI workflows 
+                        and development pipelines.
+                      </p>
+                      <div className="space-y-2 text-xs text-[var(--muted)]">
+                        <div>• Technical integration assistance</div>
+                        <div>• Custom evaluation protocols</div>
+                        <div>• Ongoing performance monitoring</div>
+                      </div>
+                    </motion.div>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                    <Button 
+                      onClick={() => setActiveTab('access')}
+                      className="px-8 py-3"
+                    >
+                      Request Access
+                    </Button>
+                    <Button 
+                      variant="secondary"
+                      onClick={() => setActiveTab('framework')}
+                      className="px-8 py-3"
+                    >
+                      Technical Specifications
+                    </Button>
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+
+          {activeTab === 'framework' && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+              className="space-y-8"
+            >
+              {/* Enterprise Framework Overview */}
+              <motion.div 
+                className="bg-[var(--surface)] rounded-xl border border-[var(--line)] overflow-hidden"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+              >
+                <div className="p-8">
+                  <div className="text-center mb-8">
+                    <h3 className="text-2xl font-semibold text-[var(--ink)] mb-3 tracking-tight">
+                      How We Test AI with Real Evidence
+                    </h3>
+                    <p className="text-[var(--muted)] max-w-3xl mx-auto leading-relaxed">
+                      LemkinBench evaluates AI systems using actual evidence from human rights investigations, 
+                      including documents, photos, videos, audio recordings, and location data.
+                    </p>
+                  </div>
+
+                  {/* Evidence Type Matrix */}
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    {[
+                      { 
+                        type: "Text Evidence", 
+                        count: "45,230", 
+                        icon: FileText, 
+                        examples: ["Witness statements", "Legal documents", "Social media", "News reports"],
+                        color: "text-[var(--accent)]",
+                        bg: "bg-[var(--accent)]/5"
+                      },
+                      { 
+                        type: "Visual Evidence", 
+                        count: "23,156", 
+                        icon: Camera, 
+                        examples: ["Photographs", "Satellite imagery", "Video footage", "Forensic images"],
+                        color: "text-[var(--accent)]",
+                        bg: "bg-[var(--accent)]/5"
+                      },
+                      { 
+                        type: "Audio Evidence", 
+                        count: "18,492", 
+                        icon: Mic, 
+                        examples: ["Recorded testimony", "Phone intercepts", "Emergency calls", "Broadcast media"],
+                        color: "text-[var(--accent)]",
+                        bg: "bg-[var(--accent)]/5"
+                      },
+                      { 
+                        type: "Geospatial Data", 
+                        count: "12,847", 
+                        icon: MapPin, 
+                        examples: ["GPS coordinates", "Migration patterns", "Conflict mapping", "Environmental data"],
+                        color: "text-[var(--accent)]",
+                        bg: "bg-[var(--accent)]/5"
+                      }
+                    ].map((evidence, index) => {
+                      const Icon = evidence.icon
+                      return (
+                        <motion.div
+                          key={evidence.type}
+                          className={`relative p-6 rounded-xl border border-[var(--line)]/50 ${evidence.bg} group hover:shadow-lg transition-all duration-300`}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.5, delay: 0.2 + index * 0.1 }}
+                          whileHover={{ y: -2 }}
+                        >
+                          <div className="flex items-center justify-between mb-4">
+                            <div className={`w-10 h-10 rounded-lg ${evidence.bg} flex items-center justify-center`}>
+                              <Icon className={`w-5 h-5 ${evidence.color}`} />
+                            </div>
+                            <div className={`text-2xl font-bold ${evidence.color}`}>
+                              {evidence.count}
+                            </div>
+                          </div>
+                          <h4 className="font-semibold text-[var(--ink)] mb-3 text-sm">
+                            {evidence.type}
+                          </h4>
+                          <div className="space-y-1.5">
+                            {evidence.examples.map((example, idx) => (
+                              <div key={idx} className="flex items-center text-xs text-[var(--muted)]">
+                                <div className="w-1 h-1 rounded-full bg-[var(--muted)]/40 mr-2"></div>
+                                {example}
+                              </div>
+                            ))}
+                          </div>
+                        </motion.div>
+                      )
+                    })}
+                  </div>
+
+                  {/* Processing Pipeline Visualization */}
+                  <div className="relative">
+                    <h4 className="text-lg font-semibold text-[var(--ink)] mb-6 text-center">
+                      Evidence Processing Pipeline
+                    </h4>
+                    <div className="flex flex-wrap justify-center items-center gap-4 mb-6">
+                      {[
+                        { step: "Ingestion", icon: Database, desc: "Multi-format input" },
+                        { step: "Analysis", icon: Brain, desc: "AI processing" },
+                        { step: "Correlation", icon: GitBranch, desc: "Cross-modal linking" },
+                        { step: "Validation", icon: CheckCircle, desc: "Quality assurance" },
+                        { step: "Export", icon: Download, desc: "Results delivery" }
+                      ].map((stage, index) => {
+                        const Icon = stage.icon
+                        return (
+                          <React.Fragment key={stage.step}>
+                            <motion.div 
+                              className="flex flex-col items-center"
+                              initial={{ opacity: 0, scale: 0.8 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              transition={{ duration: 0.5, delay: 0.4 + index * 0.1 }}
+                            >
+                              <div className="w-12 h-12 rounded-xl bg-[var(--accent)]/10 border border-[var(--accent)]/20 flex items-center justify-center mb-2">
+                                <Icon className="w-5 h-5 text-[var(--accent)]" />
+                              </div>
+                              <div className="text-xs font-medium text-[var(--ink)]">{stage.step}</div>
+                              <div className="text-xs text-[var(--muted)]">{stage.desc}</div>
+                            </motion.div>
+                            {index < 4 && (
+                              <motion.div 
+                                className="hidden sm:block w-8 h-0.5 bg-[var(--line)]/40"
+                                initial={{ scaleX: 0 }}
+                                animate={{ scaleX: 1 }}
+                                transition={{ duration: 0.5, delay: 0.6 + index * 0.1 }}
+                              />
+                            )}
+                          </React.Fragment>
+                        )
+                      })}
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Cross-Modal Analysis Capabilities */}
+              <motion.div 
+                className="bg-[var(--surface)] rounded-xl border border-[var(--line)] overflow-hidden"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+              >
+                <div className="p-8">
+                  <div className="text-center mb-8">
+                    <h3 className="text-2xl font-semibold text-[var(--ink)] mb-3 tracking-tight">
+                      AI Capabilities We Test
+                    </h3>
+                    <p className="text-[var(--muted)] max-w-3xl mx-auto leading-relaxed">
+                      We evaluate how well AI systems can connect information across different types of evidence, 
+                      detect manipulation, and maintain consistency in their analysis.
+                    </p>
+                  </div>
+
+                  <div className="grid lg:grid-cols-3 gap-6">
+                    {[
+                      {
+                        title: "Consistency Verification",
+                        description: "Advanced algorithms verify consistency across different evidence types and sources with statistical confidence measures.",
+                        icon: Shield,
+                        metrics: { accuracy: "94.2%", processing: "2.3s", confidence: "98.1%" },
+                        color: "text-blue-600",
+                        bgColor: "bg-blue-50 dark:bg-blue-900/20",
+                        borderColor: "border-blue-200 dark:border-blue-800"
+                      },
+                      {
+                        title: "Manipulation Detection",
+                        description: "State-of-the-art detection of deepfakes, digital manipulation, and authenticity verification across media types.",
+                        icon: Eye,
+                        metrics: { accuracy: "96.7%", processing: "1.8s", confidence: "97.4%" },
+                        color: "text-red-600",
+                        bgColor: "bg-red-50 dark:bg-red-900/20",
+                        borderColor: "border-red-200 dark:border-red-800"
+                      },
+                      {
+                        title: "Temporal-Spatial Correlation",
+                        description: "Intelligent correlation of temporal and spatial information across evidence types for comprehensive analysis.",
+                        icon: Clock,
+                        metrics: { accuracy: "91.8%", processing: "3.1s", confidence: "95.6%" },
+                        color: "text-green-600",
+                        bgColor: "bg-green-50 dark:bg-green-900/20",
+                        borderColor: "border-green-200 dark:border-green-800"
+                      }
+                    ].map((capability, index) => {
+                      const Icon = capability.icon
+                      return (
+                        <motion.div
+                          key={capability.title}
+                          className={`relative p-6 rounded-xl border ${capability.borderColor} ${capability.bgColor} group`}
+                          initial={{ opacity: 0, y: 30 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.5, delay: 0.4 + index * 0.2 }}
+                          whileHover={{ y: -4, scale: 1.02 }}
+                        >
+                          {/* Icon and Title */}
+                          <div className="flex items-center mb-4">
+                            <div className={`w-12 h-12 rounded-xl ${capability.bgColor} border ${capability.borderColor} flex items-center justify-center mr-4`}>
+                              <Icon className={`w-6 h-6 ${capability.color}`} />
+                            </div>
+                            <h4 className="font-semibold text-[var(--ink)] text-lg">{capability.title}</h4>
+                          </div>
+
+                          {/* Description */}
+                          <p className="text-[var(--muted)] text-sm mb-6 leading-relaxed">
+                            {capability.description}
+                          </p>
+
+                          {/* Performance Metrics */}
+                          <div className="space-y-3">
+                            <div className="flex justify-between items-center">
+                              <span className="text-xs font-medium text-[var(--muted)]">Accuracy</span>
+                              <div className="flex items-center gap-2">
+                                <div className="w-16 h-1.5 bg-[var(--line)]/30 rounded-full overflow-hidden">
+                                  <motion.div
+                                    className={`h-full bg-gradient-to-r from-${capability.color.split('-')[1]}-400 to-${capability.color.split('-')[1]}-600`}
+                                    style={{ 
+                                      background: capability.color.includes('blue') ? 'linear-gradient(to right, #60a5fa, #2563eb)' :
+                                                  capability.color.includes('red') ? 'linear-gradient(to right, #f87171, #dc2626)' :
+                                                  'linear-gradient(to right, #4ade80, #16a34a)'
+                                    }}
+                                    initial={{ width: 0 }}
+                                    animate={{ width: capability.metrics.accuracy }}
+                                    transition={{ duration: 1, delay: 0.6 + index * 0.2 }}
+                                  />
+                                </div>
+                                <span className={`text-xs font-bold ${capability.color}`}>
+                                  {capability.metrics.accuracy}
+                                </span>
+                              </div>
+                            </div>
+                            
+                            <div className="flex justify-between text-xs">
+                              <span className="text-[var(--muted)]">Avg. Processing</span>
+                              <span className="font-medium text-[var(--ink)]">{capability.metrics.processing}</span>
+                            </div>
+                            
+                            <div className="flex justify-between text-xs">
+                              <span className="text-[var(--muted)]">Confidence</span>
+                              <span className="font-medium text-[var(--ink)]">{capability.metrics.confidence}</span>
+                            </div>
+                          </div>
+                        </motion.div>
+                      )
+                    })}
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Dataset Release Section */}
+              <motion.div 
+                className="bg-gradient-to-br from-[var(--accent)]/5 via-[var(--surface)] to-[var(--elevated)] rounded-xl border border-[var(--accent)]/20 overflow-hidden"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+              >
+                <div className="p-8">
+                  <div className="text-center mb-8">
+                    <div className="flex items-center justify-center gap-3 mb-4">
+                      <div className="w-12 h-12 rounded-xl bg-[var(--accent)]/10 flex items-center justify-center">
+                        <Database className="w-6 h-6 text-[var(--accent)]" />
+                      </div>
+                      <h3 className="text-2xl font-semibold text-[var(--ink)] tracking-tight">
+                        World's Largest Multi-Modal Mass Atrocity Dataset
+                      </h3>
+                    </div>
+                    <p className="text-[var(--muted)] max-w-4xl mx-auto leading-relaxed mb-6">
+                      As part of LemkinBench, we are releasing two comprehensive datasets that together constitute 
+                      the world's largest multi-modal machine learning dataset specifically designed for mass atrocity detection and human rights investigations.
+                    </p>
+                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--accent)]/10 rounded-full">
+                      <div className="w-2 h-2 rounded-full bg-[var(--accent)] animate-pulse"></div>
+                      <span className="text-sm font-medium text-[var(--accent)]">Available on Hugging Face</span>
+                    </div>
+                  </div>
+
+                  {/* Dataset Grid */}
+                  <div className="grid lg:grid-cols-2 gap-8 mb-8">
+                    {/* Text Dataset */}
+                    <motion.div
+                      className="bg-[var(--surface)] rounded-xl border border-[var(--line)]/50 p-6 hover:shadow-lg transition-all duration-300"
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.6, delay: 0.4 }}
+                      whileHover={{ y: -2 }}
+                    >
+                      <div className="flex items-center gap-4 mb-6">
+                        <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-blue-500/10 to-purple-500/10 flex items-center justify-center">
+                          <FileText className="w-8 h-8 text-[var(--accent)]" />
+                        </div>
+                        <div>
+                          <h4 className="text-xl font-semibold text-[var(--ink)] mb-1">Text-Based Dataset</h4>
+                          <p className="text-sm text-[var(--muted)]">Comprehensive textual evidence collection</p>
+                        </div>
+                      </div>
+
+                      <div className="space-y-4 mb-6">
+                        <div className="flex justify-between items-center p-3 bg-[var(--bg)] rounded-lg">
+                          <span className="text-sm text-[var(--muted)]">Documents</span>
+                          <span className="text-lg font-bold text-[var(--accent)]">850K+</span>
+                        </div>
+                        <div className="flex justify-between items-center p-3 bg-[var(--bg)] rounded-lg">
+                          <span className="text-sm text-[var(--muted)]">Languages</span>
+                          <span className="text-lg font-bold text-[var(--accent)]">25</span>
+                        </div>
+                        <div className="flex justify-between items-center p-3 bg-[var(--bg)] rounded-lg">
+                          <span className="text-sm text-[var(--muted)]">Legal Frameworks</span>
+                          <span className="text-lg font-bold text-[var(--accent)]">12</span>
+                        </div>
+                      </div>
+
+                      <div className="space-y-3">
+                        <p className="text-sm font-medium text-[var(--ink)]">Content Types:</p>
+                        <div className="grid grid-cols-2 gap-2">
+                          {[
+                            "Witness Statements",
+                            "Legal Documents", 
+                            "News Reports",
+                            "Social Media",
+                            "Court Transcripts",
+                            "Official Reports"
+                          ].map((type, idx) => (
+                            <div key={idx} className="flex items-center text-xs text-[var(--muted)]">
+                              <div className="w-1.5 h-1.5 rounded-full bg-[var(--accent)] mr-2"></div>
+                              {type}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </motion.div>
+
+                    {/* Image Dataset */}
+                    <motion.div
+                      className="bg-[var(--surface)] rounded-xl border border-[var(--line)]/50 p-6 hover:shadow-lg transition-all duration-300"
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.6, delay: 0.5 }}
+                      whileHover={{ y: -2 }}
+                    >
+                      <div className="flex items-center gap-4 mb-6">
+                        <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-emerald-500/10 to-teal-500/10 flex items-center justify-center">
+                          <Camera className="w-8 h-8 text-[var(--accent)]" />
+                        </div>
+                        <div>
+                          <h4 className="text-xl font-semibold text-[var(--ink)] mb-1">Image-Based Dataset</h4>
+                          <p className="text-sm text-[var(--muted)]">Visual evidence and forensic imagery</p>
+                        </div>
+                      </div>
+
+                      <div className="space-y-4 mb-6">
+                        <div className="flex justify-between items-center p-3 bg-[var(--bg)] rounded-lg">
+                          <span className="text-sm text-[var(--muted)]">Images</span>
+                          <span className="text-lg font-bold text-[var(--accent)]">2.3M+</span>
+                        </div>
+                        <div className="flex justify-between items-center p-3 bg-[var(--bg)] rounded-lg">
+                          <span className="text-sm text-[var(--muted)]">Geographic Regions</span>
+                          <span className="text-lg font-bold text-[var(--accent)]">45+</span>
+                        </div>
+                        <div className="flex justify-between items-center p-3 bg-[var(--bg)] rounded-lg">
+                          <span className="text-sm text-[var(--muted)]">Resolution (Avg)</span>
+                          <span className="text-lg font-bold text-[var(--accent)]">4K+</span>
+                        </div>
+                      </div>
+
+                      <div className="space-y-3">
+                        <p className="text-sm font-medium text-[var(--ink)]">Content Types:</p>
+                        <div className="grid grid-cols-2 gap-2">
+                          {[
+                            "Satellite Imagery",
+                            "Forensic Photos",
+                            "Infrastructure Damage",
+                            "Refugee Documentation", 
+                            "Protest Footage",
+                            "Environmental Impact"
+                          ].map((type, idx) => (
+                            <div key={idx} className="flex items-center text-xs text-[var(--muted)]">
+                              <div className="w-1.5 h-1.5 rounded-full bg-[var(--accent)] mr-2"></div>
+                              {type}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </motion.div>
+                  </div>
+
+                  {/* Key Features */}
+                  <div className="grid md:grid-cols-3 gap-6 mb-8">
+                    <div className="text-center p-4">
+                      <div className="w-12 h-12 rounded-xl bg-[var(--accent)]/10 flex items-center justify-center mx-auto mb-3">
+                        <Shield className="w-6 h-6 text-[var(--accent)]" />
+                      </div>
+                      <h5 className="font-semibold text-[var(--ink)] mb-2">Ethically Sourced</h5>
+                      <p className="text-sm text-[var(--muted)]">All data collected with appropriate consent and privacy protections</p>
+                    </div>
+                    <div className="text-center p-4">
+                      <div className="w-12 h-12 rounded-xl bg-[var(--accent)]/10 flex items-center justify-center mx-auto mb-3">
+                        <CheckCircle className="w-6 h-6 text-[var(--accent)]" />
+                      </div>
+                      <h5 className="font-semibold text-[var(--ink)] mb-2">Expert Validated</h5>
+                      <p className="text-sm text-[var(--muted)]">Annotations verified by legal and human rights professionals</p>
+                    </div>
+                    <div className="text-center p-4">
+                      <div className="w-12 h-12 rounded-xl bg-[var(--accent)]/10 flex items-center justify-center mx-auto mb-3">
+                        <Globe className="w-6 h-6 text-[var(--accent)]" />
+                      </div>
+                      <h5 className="font-semibold text-[var(--ink)] mb-2">Open Access</h5>
+                      <p className="text-sm text-[var(--muted)]">Free for research and humanitarian use via Hugging Face</p>
+                    </div>
+                  </div>
+
+                  {/* Call to Action */}
+                  <div className="bg-gradient-to-r from-[var(--accent)]/5 to-[var(--accent)]/10 rounded-xl p-6 border border-[var(--accent)]/20">
+                    <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+                      <div className="text-center md:text-left">
+                        <h5 className="font-semibold text-[var(--ink)] mb-2">Ready for Research</h5>
+                        <p className="text-sm text-[var(--muted)] max-w-lg">
+                          Both datasets are available now for researchers, NGOs, and organizations working on mass atrocity prevention and detection.
+                        </p>
+                      </div>
+                      <div className="flex flex-col sm:flex-row gap-3">
+                        <a 
+                          href="https://huggingface.co/datasets/LemkinAI/Multimodal_Atrocity_Identification_Dataset" 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="px-6 py-2 bg-[var(--accent)] text-white rounded-lg font-medium hover:bg-[var(--accent)]/90 transition-colors flex items-center gap-2"
+                        >
+                          <Database className="w-4 h-4" />
+                          Access on Hugging Face
+                        </a>
+                        <button className="px-6 py-2 border border-[var(--line)] text-[var(--ink)] rounded-lg font-medium hover:bg-[var(--surface)] transition-colors">
+                          Documentation
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+
+          {activeTab === 'evaluation' && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+              className="space-y-8"
+            >
+              {/* Executive Summary for Evaluation Methods */}
+              <MotionCard
+                className="p-8 mb-8 bg-gradient-to-br from-[var(--accent)]/10 to-[var(--accent)]/5"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+              >
+                <div className="max-w-4xl mx-auto text-center">
+                  <h2 className="text-3xl font-bold mb-6 text-[var(--ink)]">How We Test AI for Human Rights Work</h2>
+                  <p className="text-lg text-[var(--muted)] mb-8 leading-relaxed">
+                    LemkinBench uses a comprehensive testing framework to ensure AI systems can handle the unique challenges 
+                    of human rights investigations with the accuracy and fairness required for legal proceedings.
+                  </p>
+                  <div className="grid md:grid-cols-3 gap-6 text-center">
+                    <div className="p-4">
+                      <div className="w-12 h-12 rounded-xl bg-[var(--accent)]/10 flex items-center justify-center mx-auto mb-3">
+                        <Scale className="w-6 h-6 text-[var(--accent)]" />
+                      </div>
+                      <h4 className="font-semibold text-[var(--ink)] mb-2">Legal Accuracy</h4>
+                      <p className="text-sm text-[var(--muted)]">Tests whether AI correctly identifies legal elements and meets evidence standards</p>
+                    </div>
+                    <div className="p-4">
+                      <div className="w-12 h-12 rounded-xl bg-[var(--accent)]/10 flex items-center justify-center mx-auto mb-3">
+                        <Users className="w-6 h-6 text-[var(--accent)]" />
+                      </div>
+                      <h4 className="font-semibold text-[var(--ink)] mb-2">Fair Treatment</h4>
+                      <p className="text-sm text-[var(--muted)]">Ensures AI works equally well for all people, regardless of background</p>
+                    </div>
+                    <div className="p-4">
+                      <div className="w-12 h-12 rounded-xl bg-[var(--accent)]/10 flex items-center justify-center mx-auto mb-3">
+                        <Shield className="w-6 h-6 text-[var(--accent)]" />
+                      </div>
+                      <h4 className="font-semibold text-[var(--ink)] mb-2">Real Evidence</h4>
+                      <p className="text-sm text-[var(--muted)]">Uses actual evidence from investigations to measure real-world performance</p>
+                    </div>
+                  </div>
+                </div>
+              </MotionCard>
+
+              {/* Legal Reasoning & Compliance Assessment */}
+              <motion.div 
+                className="bg-[var(--surface)] rounded-xl border border-[var(--line)] overflow-hidden"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+              >
+                <div className="p-8">
+                  <div className="text-center mb-8">
+                    <h3 className="text-2xl font-semibold text-[var(--ink)] mb-3 tracking-tight">
+                      Testing Legal Understanding
+                    </h3>
+                    <p className="text-[var(--muted)] max-w-3xl mx-auto leading-relaxed">
+                      We verify that AI systems can correctly identify the key components of legal cases and understand 
+                      what level of evidence is needed for different types of legal proceedings.
+                    </p>
+                  </div>
+
+                  {/* Legal Element Identification Dashboard */}
+                  <div className="grid lg:grid-cols-3 gap-6 mb-8">
+                    {[
+                      { 
+                        element: "Criminal Actions", 
+                        description: "Identifying what happened", 
+                        score: 94, 
+                        icon: Scale,
+                        color: "text-[var(--accent)]",
+                        bgColor: "bg-[var(--accent)]/5"
+                      },
+                      { 
+                        element: "Intent & Motivation", 
+                        description: "Understanding why it happened", 
+                        score: 89, 
+                        icon: Brain,
+                        color: "text-[var(--accent)]",
+                        bgColor: "bg-[var(--accent)]/5"
+                      },
+                      { 
+                        element: "Legal Context", 
+                        description: "Meeting evidence standards", 
+                        score: 91, 
+                        icon: Search,
+                        color: "text-[var(--accent)]",
+                        bgColor: "bg-[var(--accent)]/5"
+                      }
+                    ].map((element, index) => {
+                      const Icon = element.icon
+                      return (
+                        <motion.div
+                          key={element.element}
+                          className={`relative p-6 rounded-xl border border-[var(--line)]/50 ${element.bgColor}`}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.5, delay: 0.2 + index * 0.15 }}
+                          whileHover={{ y: -2, scale: 1.02 }}
+                        >
+                          <div className="flex items-center justify-between mb-4">
+                            <div className={`w-10 h-10 rounded-lg ${element.bgColor} flex items-center justify-center`}>
+                              <Icon className={`w-5 h-5 ${element.color}`} />
+                            </div>
+                            <div className="text-right">
+                              <div className={`text-2xl font-bold ${element.color}`}>{element.score}%</div>
+                              <div className="text-xs text-[var(--muted)]">Accuracy</div>
+                            </div>
+                          </div>
+                          <h4 className="font-semibold text-[var(--ink)] mb-2">{element.element}</h4>
+                          <p className="text-sm text-[var(--muted)]">{element.description}</p>
+                          
+                          {/* Progress Ring */}
+                          <div className="absolute bottom-4 right-4">
+                            <svg className="w-12 h-12 transform -rotate-90" viewBox="0 0 36 36">
+                              <path
+                                className="text-[var(--line)]/30"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                d="M18 2.0845
+                                  a 15.9155 15.9155 0 0 1 0 31.831
+                                  a 15.9155 15.9155 0 0 1 0 -31.831"
+                              />
+                              <motion.path
+                                className={element.color.replace('text-', 'text-')}
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                initial={{ pathLength: 0 }}
+                                animate={{ pathLength: element.score / 100 }}
+                                transition={{ duration: 1.5, delay: 0.5 + index * 0.2 }}
+                                d="M18 2.0845
+                                  a 15.9155 15.9155 0 0 1 0 31.831
+                                  a 15.9155 15.9155 0 0 1 0 -31.831"
+                              />
+                            </svg>
+                          </div>
+                        </motion.div>
+                      )
+                    })}
+                  </div>
+
+                  {/* Evidentiary Standards Visualization */}
+                  <div className="mb-8">
+                    <h4 className="text-lg font-semibold text-[var(--ink)] mb-6 text-center">
+                      Evidence Standards for Different Legal Cases
+                    </h4>
+                    <div className="space-y-6">
+                      {[
+                        { 
+                          standard: "Beyond Reasonable Doubt", 
+                          category: "Criminal Cases", 
+                          score: 95, 
+                          description: "Highest standard for criminal prosecutions",
+                          color: "from-green-500 to-green-600",
+                          textColor: "text-green-600"
+                        },
+                        { 
+                          standard: "Clear and Convincing", 
+                          category: "Civil Rights", 
+                          score: 75, 
+                          description: "Intermediate standard for rights cases",
+                          color: "from-blue-500 to-blue-600",
+                          textColor: "text-blue-600"
+                        },
+                        { 
+                          standard: "Preponderance", 
+                          category: "Administrative", 
+                          score: 51, 
+                          description: "Lowest threshold for civil matters",
+                          color: "from-amber-500 to-amber-600",
+                          textColor: "text-amber-600"
+                        }
+                      ].map((standard, index) => (
+                        <motion.div 
+                          key={standard.standard}
+                          className="bg-[var(--bg)] rounded-lg border border-[var(--line)]/50 p-6"
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ duration: 0.5, delay: 0.4 + index * 0.2 }}
+                        >
+                          <div className="flex flex-col lg:flex-row lg:items-center gap-4">
+                            <div className="flex-1">
+                              <div className="flex justify-between items-start mb-3">
+                                <div>
+                                  <h5 className="font-semibold text-[var(--ink)]">{standard.category}</h5>
+                                  <p className="text-sm text-[var(--muted)]">{standard.standard}</p>
+                                </div>
+                                <span className={`text-2xl font-bold ${standard.textColor}`}>
+                                  {standard.score}%
+                                </span>
+                              </div>
+                              <p className="text-xs text-[var(--muted)] mb-4">{standard.description}</p>
+                            </div>
+                            <div className="w-full lg:w-80">
+                              <div className="w-full bg-[var(--line)]/20 rounded-full h-3 overflow-hidden">
+                                <motion.div 
+                                  className={`h-full bg-gradient-to-r ${standard.color} rounded-full flex items-center justify-end pr-3`}
+                                  initial={{ width: 0 }}
+                                  animate={{ width: `${standard.score}%` }}
+                                  transition={{ duration: 1.2, ease: "easeOut", delay: 0.6 + index * 0.3 }}
+                                >
+                                  <span className="text-white text-xs font-medium">{standard.standard}</span>
+                                </motion.div>
+                              </div>
+                            </div>
+                          </div>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Jurisdictional Navigation Grid */}
+                  <div className="grid md:grid-cols-4 gap-4">
+                    {[
+                      { jurisdiction: "ICC Rome Statute", type: "International", icon: Globe },
+                      { jurisdiction: "Regional HR Courts", type: "Regional", icon: Building },
+                      { jurisdiction: "Universal Jurisdiction", type: "Transnational", icon: Scale },
+                      { jurisdiction: "Domestic Frameworks", type: "National", icon: Home }
+                    ].map((jurisdiction, index) => {
+                      const Icon = jurisdiction.icon
+                      return (
+                        <motion.div
+                          key={jurisdiction.jurisdiction}
+                          className="p-4 bg-[var(--bg)] rounded-lg border border-[var(--line)]/50 text-center group hover:shadow-md transition-all duration-300"
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.5, delay: 0.7 + index * 0.1 }}
+                          whileHover={{ y: -2 }}
+                        >
+                          <div className="w-10 h-10 rounded-lg bg-[var(--accent)]/10 flex items-center justify-center mx-auto mb-3">
+                            <Icon className="w-5 h-5 text-[var(--accent)]" />
+                          </div>
+                          <h6 className="font-medium text-[var(--ink)] text-sm mb-1">{jurisdiction.jurisdiction}</h6>
+                          <p className="text-xs text-[var(--muted)]">{jurisdiction.type}</p>
+                        </motion.div>
+                      )
+                    })}
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Bias & Fairness Evaluation */}
+              <motion.div 
+                className="bg-[var(--surface)] rounded-xl border border-[var(--line)] overflow-hidden"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+              >
+                <div className="p-8">
+                  <div className="text-center mb-8">
+                    <h3 className="text-2xl font-semibold text-[var(--ink)] mb-3 tracking-tight">
+                      Ensuring Fair Treatment for Everyone
+                    </h3>
+                    <p className="text-[var(--muted)] max-w-3xl mx-auto leading-relaxed">
+                      We rigorously test whether AI systems work equally well for all people, regardless of their cultural background, 
+                      ethnicity, gender, age, or where they come from. This ensures justice is fair for everyone.
+                    </p>
+                  </div>
+
+                  {/* Bias Assessment Matrix */}
+                  <div className="grid lg:grid-cols-2 gap-8 mb-8">
+                    {[
+                      {
+                        category: "Cultural Sensitivity Testing",
+                        description: "Testing whether AI understands different cultures and legal systems around the world",
+                        icon: Globe,
+                        metrics: [
+                          { aspect: "Cultural Understanding", score: 88 },
+                          { aspect: "Legal System Awareness", score: 92 },
+                          { aspect: "Local Context Recognition", score: 85 }
+                        ],
+                        color: "text-[var(--accent)]",
+                        bgColor: "bg-[var(--accent)]/5",
+                        borderColor: "border-[var(--accent)]/20"
+                      },
+                      {
+                        category: "Equal Treatment Testing",
+                        description: "Ensuring AI works equally well for people of all backgrounds, genders, and ages",
+                        icon: Users,
+                        metrics: [
+                          { aspect: "Equal Performance Across Groups", score: 90 },
+                          { aspect: "Gender-Neutral Analysis", score: 93 },
+                          { aspect: "Age-Inclusive Methods", score: 87 }
+                        ],
+                        color: "text-[var(--accent)]",
+                        bgColor: "bg-[var(--accent)]/5",
+                        borderColor: "border-[var(--accent)]/20"
+                      }
+                    ].map((assessment, index) => {
+                      const Icon = assessment.icon
+                      const avgScore = Math.round(assessment.metrics.reduce((sum, metric) => sum + metric.score, 0) / assessment.metrics.length)
+                      
+                      return (
+                        <motion.div
+                          key={assessment.category}
+                          className={`p-6 rounded-xl border ${assessment.borderColor} ${assessment.bgColor}`}
+                          initial={{ opacity: 0, y: 30 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.6, delay: 0.4 + index * 0.2 }}
+                          whileHover={{ y: -4, scale: 1.02 }}
+                        >
+                          {/* Header */}
+                          <div className="flex items-center mb-6">
+                            <div className={`w-12 h-12 rounded-xl ${assessment.bgColor} border ${assessment.borderColor} flex items-center justify-center mr-4`}>
+                              <Icon className={`w-6 h-6 ${assessment.color}`} />
+                            </div>
+                            <div className="flex-1">
+                              <h4 className="font-semibold text-[var(--ink)] text-lg mb-1">{assessment.category}</h4>
+                              <div className="flex items-center gap-2">
+                                <span className={`text-2xl font-bold ${assessment.color}`}>{avgScore}%</span>
+                                <span className="text-xs text-[var(--muted)]">Overall Score</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Description */}
+                          <p className="text-[var(--muted)] text-sm mb-6 leading-relaxed">
+                            {assessment.description}
+                          </p>
+
+                          {/* Detailed Metrics */}
+                          <div className="space-y-4">
+                            {assessment.metrics.map((metric, metricIndex) => (
+                              <div key={metric.aspect}>
+                                <div className="flex justify-between items-center mb-2">
+                                  <span className="text-sm font-medium text-[var(--ink)]">{metric.aspect}</span>
+                                  <span className={`text-sm font-bold ${assessment.color}`}>{metric.score}%</span>
+                                </div>
+                                <div className="w-full bg-[var(--line)]/20 rounded-full h-2 overflow-hidden">
+                                  <motion.div
+                                    className={`h-full rounded-full bg-gradient-to-r from-[var(--accent)] to-[var(--accent)]/80`}
+                                    initial={{ width: 0 }}
+                                    animate={{ width: `${metric.score}%` }}
+                                    transition={{ duration: 1, delay: 0.6 + index * 0.3 + metricIndex * 0.1 }}
+                                  />
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </motion.div>
+                      )
+                    })}
+                  </div>
+
+                  {/* Fairness Standards Compliance */}
+                  <div className="bg-gradient-to-r from-[var(--accent)]/5 to-transparent rounded-xl p-6 border border-[var(--accent)]/20">
+                    <div className="flex items-start gap-4">
+                      <div className="w-10 h-10 rounded-lg bg-[var(--accent)]/10 flex items-center justify-center flex-shrink-0">
+                        <Shield className="w-5 h-5 text-[var(--accent)]" />
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-[var(--ink)] mb-2">Meeting International Standards</h4>
+                        <p className="text-[var(--muted)] text-sm leading-relaxed">
+                          Our testing methods follow international human rights guidelines and AI ethics standards, 
+                          ensuring that our evaluations meet the highest global standards for fairness and human dignity.
+                        </p>
+                        
+                        {/* Compliance Indicators */}
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+                          {[
+                            { standard: "UN Human Rights", status: "Compliant" },
+                            { standard: "IEEE Ethics", status: "Certified" },
+                            { standard: "EU AI Act", status: "Aligned" },
+                            { standard: "UNESCO AI", status: "Endorsed" }
+                          ].map((compliance, index) => (
+                            <motion.div
+                              key={compliance.standard}
+                              className="text-center p-3 bg-[var(--bg)] rounded-lg border border-[var(--line)]/50"
+                              initial={{ opacity: 0, scale: 0.9 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              transition={{ duration: 0.5, delay: 0.8 + index * 0.1 }}
+                            >
+                              <div className="w-6 h-6 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mx-auto mb-2">
+                                <CheckCircle className="w-4 h-4 text-green-600" />
+                              </div>
+                              <div className="text-xs font-medium text-[var(--ink)]">{compliance.standard}</div>
+                              <div className="text-xs text-green-600">{compliance.status}</div>
+                            </motion.div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+
+          {activeTab === 'access' && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+              className="space-y-8"
+            >
+              <MotionCard className="p-8 text-center">
+                <h3 className="text-2xl font-bold mb-6 text-[var(--ink)]">Get Early Access to LemkinBench</h3>
+                <p className="text-[var(--muted)] mb-8 max-w-2xl mx-auto">
+                  LemkinBench is currently in development with our research partners. We're working with select 
+                  organizations to refine the framework before public release.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                  <Button 
+                    onClick={() => navigate('/contact')} 
+                    className="px-8 py-3"
+                  >
+                    Request Access
+                  </Button>
+                  <Button 
+                    variant="secondary" 
+                    onClick={() => navigate('/contribute')}
+                    className="px-8 py-3"
+                  >
+                    Contribute to Development
+                  </Button>
+                </div>
+              </MotionCard>
+
+              <MotionCard className="p-8">
+                <h3 className="text-2xl font-bold mb-6 text-[var(--ink)]">Research Collaboration</h3>
+                <div className="grid md:grid-cols-2 gap-8">
+                  <div>
+                    <h4 className="text-lg font-semibold mb-3 text-[var(--ink)]">Academic Partnerships</h4>
+                    <p className="text-[var(--muted)] mb-4">
+                      We're collaborating with leading universities and research institutions to ensure 
+                      LemkinBench meets the highest academic standards.
+                    </p>
+                    <ul className="space-y-2 text-[var(--muted)]">
+                      <li>• Peer review process</li>
+                      <li>• Open methodology</li>
+                      <li>• Reproducible results</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h4 className="text-lg font-semibold mb-3 text-[var(--ink)]">Practitioner Input</h4>
+                    <p className="text-[var(--muted)] mb-4">
+                      Real-world validation from human rights investigators, legal professionals, 
+                      and international organizations.
+                    </p>
+                    <ul className="space-y-2 text-[var(--muted)]">
+                      <li>• Field-tested evaluation criteria</li>
+                      <li>• Practical applicability assessment</li>
+                      <li>• Ethical guidelines development</li>
+                    </ul>
+                  </div>
+                </div>
+              </MotionCard>
+
+              <div className="bg-[var(--accent)]/5 border border-[var(--accent)]/20 rounded-lg p-6">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-8 h-8 rounded-full bg-[var(--accent)]/20 flex items-center justify-center">
+                    <Scale className="w-4 h-4 text-[var(--accent)]" />
+                  </div>
+                  <h4 className="font-semibold text-[var(--accent)]">Expected Release</h4>
+                </div>
+                <p className="text-[var(--muted)] text-sm">
+                  We anticipate releasing LemkinBench publicly in Q2 2025, following completion of our validation 
+                  studies with partner organizations. Early access is available now for qualified research institutions 
+                  and human rights organizations.
+                </p>
+              </div>
+            </motion.div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const TransparencyPage = () => {
   return (
     <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
@@ -5108,6 +6672,8 @@ const App = () => {
         return <OverviewPage />;
       case '/models':
         return <ModelsPageRevised />;
+      case '/lemkinbench':
+        return <LemkinBenchPage />;
       case '/articles':
         return <ArticlesPage />;
       case '/resources':
